@@ -18,7 +18,7 @@ export const fetchLoginAdmin = createAsyncThunk(
 
 export const fetchAuthAdmin = createAsyncThunk(
   "admin/accessAdminToken",
-  async (token, { getState, requestId }) => {
+  async (token, { getState, requestId, rejectWithValue }) => {
     try {
       const { currentRequestId, loading } = getState().auth;
       if (loading !== true || requestId !== currentRequestId) {
@@ -33,6 +33,8 @@ export const fetchAuthAdmin = createAsyncThunk(
         }
       );
       return accessTokenUsers.data;
-    } catch (err) {}
+    } catch (err) {
+      rejectWithValue(err.response.data);
+    }
   }
 );
