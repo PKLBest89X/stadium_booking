@@ -115,7 +115,7 @@ const MainLayout = () => {
     }
   }, [matchLg]);
 
-  const ShowNavAndSide = data.map((items, index) => {
+  const ShowNavAndSide = data.slice(-1).map((items, index) => {
     return (
       <div key={index}>
         {items.role === "manager" && (
