@@ -43,7 +43,7 @@ const AdminLoginView = React.memo(() => {
   }, []);
 
   useEffect(() => {
-    let isAuth = JSON.parse(localStorage.getItem("accessUserToken"));
+    const isAuth = JSON.parse(localStorage.getItem("accessUserToken"));
     if (isAuth) {
       history.goForward();
     }

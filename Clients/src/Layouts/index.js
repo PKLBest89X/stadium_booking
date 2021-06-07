@@ -3,15 +3,14 @@ import React, { useState, useEffect } from "react";
 import NavbarUser from "./Users/NavbarUser";
 import SidebarUser from "./Users/SidebarUser";
 
-import NavbarAdmin from './StadiumUsers/NavbarAdmin';
-import SidebarAdmin from './StadiumUsers/SidebarAdmin';
-
-
+import NavbarAdmin from "./StadiumUsers/NavbarAdmin";
+import SidebarAdmin from "./StadiumUsers/SidebarAdmin";
 
 import RoutesComponents from "../Routes";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useShallowEqualSelector } from "../Components/useShallowEqualSelector";
 
 const marginMainContainer = 64;
 const useStyles = makeStyles((theme) => ({
@@ -45,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MainLayout = () => {
   const classes = useStyles();
+  const { data } = useShallowEqualSelector((state) => state.auth);
   const [state, setState] = useState({
     nameState: "left",
     visible: false,
@@ -114,19 +114,46 @@ const MainLayout = () => {
       });
     }
   }, [matchLg]);
+
+  const ShowNavAndSide = data.map((items, index) => {
+    return (
+      <div key={index}>
+        {items.role === "manager" && (
+          <>
+            <NavbarAdmin
+              throwstate={state}
+              toggleclicked={toggleDrawer}
+              toggleclicked1={handleOpen1}
+              throwstate1={open1}
+            />
+            <SidebarAdmin
+              getstate={state}
+              toggleclicked={toggleDrawer}
+              getstate1={open1}
+            />
+          </>
+        )}
+        {items.role === "user" && (
+          <>
+            <NavbarUser
+              throwstate={state}
+              toggleclicked={toggleDrawer}
+              toggleclicked1={handleOpen1}
+              throwstate1={open1}
+            />
+            <SidebarUser
+              getstate={state}
+              toggleclicked={toggleDrawer}
+              getstate1={open1}
+            />
+          </>
+        )}
+      </div>
+    );
+  });
   return (
     <>
-      <NavbarUser
-        throwstate={state}
-        toggleclicked={toggleDrawer}
-        toggleclicked1={handleOpen1}
-        throwstate1={open1}
-      />
-      <SidebarUser
-        getstate={state}
-        toggleclicked={toggleDrawer}
-        getstate1={open1}
-      />
+      {ShowNavAndSide}
       <RoutesComponents
         className={clsx(classes.pageStyles, {
           [classes.pageOpenTranslate]: open1.visible,

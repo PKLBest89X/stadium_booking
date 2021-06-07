@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import PageLayout from "../../../Components/PageLayout";
 import { useDispatch } from "react-redux";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { fetchLoginAdmin } from "../../../middlewares/fetchAuth/fetchStadiumUsers";
-import { Link } from "react-router-dom";
+import { history } from '../../../Components/history';
+import { fetchAuthAdmin } from '../../../middlewares/fetchAuth/fetchStadiumUsers'
 import {
   Box,
   Button,
@@ -27,7 +28,23 @@ const AdminLoginView = () => {
     password: "",
   });
   const dispatch = useDispatch();
-  const { loading, error } = useShallowEqualSelector((state) => state.auth);
+  const { data, loading, error } = useShallowEqualSelector((state) => state.auth);
+
+  useEffect(() => {
+    const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
+    if (adminToken && adminToken.token) {
+      dispatch(fetchAuthAdmin(adminToken.token));
+    }
+  }, [dispatch]);
+  useEffect(() => {
+    data.forEach(({st_id, role}) => {
+      if (role === "manager") {
+        history.push(`/admin/stadium/${st_id}`);
+        window.location.reload();
+      }
+    });
+  }, [data]);
+
   const onEmailLoginChange = useCallback((event) => {
     const { name, value } = event.target;
     setAdminLogin((prev) => {
@@ -40,6 +57,7 @@ const AdminLoginView = () => {
       return { ...prev, [name]: value };
     });
   }, []);
+
   return (
     <PageLayout title="Admin login" className={classes.root}>
       <Box

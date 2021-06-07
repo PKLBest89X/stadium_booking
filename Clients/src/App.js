@@ -9,6 +9,7 @@ import DefaultLayout from "./Layouts/DefaultLayout";
 import UserLoginView from "./Views/Users/Auth/UserLoginView";
 import UserRegisterView from "./Views/Users/Auth/UserRegisterView";
 import AdminLoginView from "./Views/StadiumUsers/Auth/AdminLoginView";
+import CreateStadium from "./Views/StadiumUsers/CreateStadium";
 
 const App = () => {
   return (
@@ -31,6 +32,10 @@ const App = () => {
             <Route path="/admin/login" exact>
               <DefaultLayout />
               <AdminLoginView />
+            </Route>
+            <Route path="/admin/stadium/create" exact>
+              <DefaultLayout />
+              <CreateStadium />
             </Route>
             <Route path="/">
               <MainLayout />

@@ -24,12 +24,12 @@ const authSlice = createSlice({
     },
     [fetchLoginUser.fulfilled]: (state, action) => {
       state.loading = false;
-      state.error = "";
       localStorage.setItem("accessUserToken", JSON.stringify(action.payload));
       history.push("/");
       window.location.reload();
     },
     [fetchLoginUser.rejected]: (state, action) => {
+      state.loading = false;
       state.error = action.payload;
     },
 
@@ -62,9 +62,8 @@ const authSlice = createSlice({
     },
     [fetchLoginAdmin.fulfilled]: (state, action) => {
       state.loading = false;
-      state.error = "";
-      localStorage.setItem("accessUserToken", JSON.stringify(action.payload));
-      history.push("/");
+      localStorage.setItem("accessAdminToken", JSON.stringify(action.payload));
+      history.push("/admin/stadium/create");
       window.location.reload();
     },
     [fetchLoginAdmin.rejected]: (state, action) => {

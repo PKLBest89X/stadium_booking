@@ -5,6 +5,7 @@ import BookingHistory from "../Views/Users/BookingHistory";
 import StadiumFollow from "../Views/Users/StadiumsFollow";
 
 import DashboardView from "../Views/StadiumUsers/Dashboard";
+import CreateStadium from "../Views/StadiumUsers/CreateStadium";
 
 import PrivateRoutesAdmin from "./PrivateRoutesAdmin";
 import PrivateRoutesUsers from "./PrivateRoutesUsers";
@@ -35,7 +36,7 @@ const RoutesComponents = ({ ...rest }) => {
           <StadiumDetails {...rest} />
         </Route>
 
-        <PrivateRoutesAdmin path="/admin/:stadiumName">
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin" >
           <DashboardView {...rest} />
         </PrivateRoutesAdmin>
 
@@ -46,6 +47,7 @@ const RoutesComponents = ({ ...rest }) => {
         <Redirect to="/login" />
         <Redirect to="/register" />
         <Redirect to="/admin/login" />
+        <Redirect to="/admin/stadium/create" />
       </Switch>
     </>
   );
