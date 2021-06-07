@@ -4,6 +4,7 @@ import Backdrop from "../Backdrop";
 import { user, sidebarAdminData } from "./sidebarAdminData";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
+import { useShallowEqualSelector } from "../../Components/useShallowEqualSelector";
 import {
   Avatar,
   Box,
@@ -61,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: "noWrap",
   },
   icon: {
-    marginRight: '-8px'
+    marginRight: "-8px",
   },
 
   main_container: {
@@ -138,6 +139,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SidebarAdmin = ({ getstate, toggleclicked, getstate1 }) => {
   const classes = useStyles();
+  const { data } = useShallowEqualSelector((state) => state.auth);
 
   // ພາກສ່ວນຂອງ sidebar
   const list = (anchor) => (
@@ -200,25 +202,27 @@ const SidebarAdmin = ({ getstate, toggleclicked, getstate1 }) => {
 
           <Divider />
           <List>
-            {sidebarAdminData.map((item, index) => {
-              return (
-                <NavLink
-                  key={index}
-                  className={classes.link}
-                  activeClassName={classes.activeLink}
-                  to={item.path}
-                  onClick={toggleclicked(anchor.nameState, false)}
-                  onKeyDown={toggleclicked(anchor.nameState, false)}
-                  exact
-                >
-                  <ListItem button>
-                    <ListItemIcon className={classes.icon}>
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText primary={item.title} />
-                  </ListItem>
-                </NavLink>
-              );
+            {data.slice(-1).map((findId) => {
+              return sidebarAdminData.map((item, index) => {
+                return (
+                  <NavLink
+                    key={index}
+                    className={classes.link}
+                    activeClassName={classes.activeLink}
+                    to={`/admin/stadium/${findId.st_id}${item.path}`}
+                    onClick={toggleclicked(anchor.nameState, false)}
+                    onKeyDown={toggleclicked(anchor.nameState, false)}
+                    exact
+                  >
+                    <ListItem button>
+                      <ListItemIcon className={classes.icon}>
+                        {item.icon}
+                      </ListItemIcon>
+                      <ListItemText primary={item.title} />
+                    </ListItem>
+                  </NavLink>
+                );
+              });
             })}
           </List>
           <div
