@@ -9,16 +9,17 @@ export const fetchLoginUser = createAsyncThunk(
         email: loginUser.email,
         password: loginUser.password,
       });
+      if (user.data)
       return user.data;
-    } catch (error) {
-      rejectWithValue(error.response.data);
+    } catch (err) {
+      return rejectWithValue(err.response.data);
     }
   }
 );
 
 export const fetchAuthUser = createAsyncThunk(
   "user/accessUserToken",
-  async (token, { getState, requestId }) => {
+  async (token, { rejectWithValue, getState, requestId }) => {
     try {
       const { currentRequestId, loading } = getState().auth;
       if (loading !== true || requestId !== currentRequestId) {
@@ -33,6 +34,8 @@ export const fetchAuthUser = createAsyncThunk(
         }
       );
       return accessTokenUsers.data;
-    } catch (err) {}
+    } catch (err) {
+      return rejectWithValue(err.response.data)
+    }
   }
 );

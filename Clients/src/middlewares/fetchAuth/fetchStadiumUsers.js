@@ -3,15 +3,15 @@ import Axios from "axios";
 
 export const fetchLoginAdmin = createAsyncThunk(
   "admin/login",
-  async (loginUser, { rejectWithValue }) => {
+  async (loginAdmin, { rejectWithValue }) => {
     try {
-      const user = await Axios.post("http://localhost:5050/customer/login", {
-        email: loginUser.email,
-        password: loginUser.password,
+      const admin = await Axios.post("http://localhost:5050/staff/login", {
+        email: loginAdmin.email,
+        password: loginAdmin.password,
       });
-      return user.data;
-    } catch (error) {
-      rejectWithValue(error.response.data);
+      return admin.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
     }
   }
 );
@@ -25,7 +25,7 @@ export const fetchAuthAdmin = createAsyncThunk(
         return;
       }
       const accessTokenUsers = await Axios.get(
-        "http://localhost:5050/customer/login/user",
+        "http://localhost:5050/staff/login/authen",
         {
           headers: {
             authorization: `Bearer ${token}`,
@@ -34,7 +34,7 @@ export const fetchAuthAdmin = createAsyncThunk(
       );
       return accessTokenUsers.data;
     } catch (err) {
-      rejectWithValue(err.response.data);
+      return rejectWithValue(err.response.data);
     }
   }
 );
