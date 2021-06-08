@@ -209,7 +209,7 @@ const SidebarAdmin = ({ getstate, toggleclicked, getstate1 }) => {
                     key={index}
                     className={classes.link}
                     activeClassName={classes.activeLink}
-                    to={`/admin/stadium/${findId.st_id}${item.path}`}
+                    to={`/admin/stadium/${findId.st_id}/${item.path}`}
                     onClick={toggleclicked(anchor.nameState, false)}
                     onKeyDown={toggleclicked(anchor.nameState, false)}
                     exact

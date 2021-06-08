@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MainLayout = () => {
+const MainLayout = React.memo(() => {
   const classes = useStyles();
   const { data } = useShallowEqualSelector((state) => state.auth);
   const [state, setState] = useState({
@@ -115,7 +115,23 @@ const MainLayout = () => {
     }
   }, [matchLg]);
 
-  const ShowNavAndSide = data.slice(-1).map((items, index) => {
+  const QuestUser = (
+    <>
+      <NavbarUser
+        throwstate={state}
+        toggleclicked={toggleDrawer}
+        toggleclicked1={handleOpen1}
+        throwstate1={open1}
+      />
+      <SidebarUser
+        getstate={state}
+        toggleclicked={toggleDrawer}
+        getstate1={open1}
+      />
+    </>
+  );
+
+  const UserLoggedIn = data.slice(-1).map((items, index) => {
     return (
       <div key={index}>
         {items.role === "manager" && (
@@ -153,7 +169,7 @@ const MainLayout = () => {
   });
   return (
     <>
-      {ShowNavAndSide}
+      {data.length > 0 ? UserLoggedIn : QuestUser}
       <RoutesComponents
         className={clsx(classes.pageStyles, {
           [classes.pageOpenTranslate]: open1.visible,
@@ -162,6 +178,6 @@ const MainLayout = () => {
       />
     </>
   );
-};
+});
 
 export default MainLayout;

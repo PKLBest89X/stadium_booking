@@ -2,11 +2,11 @@ import React from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
 import MenuIcon from "@material-ui/icons/Menu";
+import { adminLogOut } from '../../Slices/Authentication/authSlice';
+import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
 
 import {
-  InputBase,
-  Paper,
   Button,
   AppBar,
   IconButton,
@@ -43,11 +43,6 @@ const useStyles = makeStyles((theme) => ({
     "& > :first-child": {
       display: "flex",
       alignItems: "center",
-    },
-    "& > :nth-child(2)": {
-      flex: 1,
-      maxWidth: 600,
-      padding: "0 1em",
     },
 
     "& > :last-child": {
@@ -100,6 +95,7 @@ const useStyles = makeStyles((theme) => ({
 
 const NavbarAdmin = ({ throwstate, toggleclicked, toggleclicked1, throwstate1 }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   return (
     <div>
       <AppBar className={classes.appbarTop} position="fixed">
@@ -127,28 +123,8 @@ const NavbarAdmin = ({ throwstate, toggleclicked, toggleclicked1, throwstate1 })
             </Typography>
           </div>
 
-          <div className="search-container">
-            <Paper component="form" className={classes.root}>
-              <InputBase
-                className={classes.input}
-                placeholder="ຄົ້ນຫາເດີ່ນ..."
-                inputProps={{ "aria-label": "search" }}
-              />
-              <IconButton
-                type="submit"
-                className={classes.iconButton}
-                aria-label="search"
-                onClick={(event) => {
-                  event.preventDefault();
-                }}
-              >
-                <SearchIcon />
-              </IconButton>
-            </Paper>
-          </div>
-
           <div className="login-container">
-            <Button color="inherit">ລົງທະບຽນ</Button>
+            <Button color="inherit" onClick={() => dispatch(adminLogOut())}>log out</Button>
           </div>
         </div>
       </AppBar>

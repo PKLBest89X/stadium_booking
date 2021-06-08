@@ -38,7 +38,7 @@ const AdminLoginView = () => {
   }, [dispatch]);
   useEffect(() => {
     data.slice(-1).forEach(({st_id, role}) => {
-      if (role === "manager") {
+      if (st_id !== null) {
         history.push(`/admin/stadium/${st_id}`);
         window.location.reload();
       }

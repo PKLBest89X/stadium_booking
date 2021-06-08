@@ -4,7 +4,10 @@ import {
   fetchLoginUser,
   fetchAuthUser,
 } from "../../middlewares/fetchAuth/fetchUser";
-import { fetchLoginAdmin, fetchAuthAdmin } from '../../middlewares/fetchAuth/fetchStadiumUsers'
+import {
+  fetchLoginAdmin,
+  fetchAuthAdmin,
+} from "../../middlewares/fetchAuth/fetchStadiumUsers";
 const initialState = {
   loading: false,
   data: [],
@@ -15,9 +18,21 @@ const initialState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    userLogOut: (state, action) => {
+      state.data = [];
+      localStorage.removeItem("accessUserToken");
+      history.push('/');
+      window.location.reload();
+    },
+    adminLogOut: (state, action) => {
+      state.data = [];
+      localStorage.removeItem("accessAdminToken");
+      history.push('/');
+      window.location.reload();
+    },
+  },
   extraReducers: {
-
     //ເປັນ process ຂອງຝັ່ງລູກຄ້າໃນການ set state ຫຼັງຈາກ ຮັບ response
     [fetchLoginUser.pending]: (state, action) => {
       state.loading = true;
@@ -95,4 +110,5 @@ const authSlice = createSlice({
   },
 });
 
+export const { userLogOut, adminLogOut } = authSlice.actions;
 export default authSlice.reducer;
