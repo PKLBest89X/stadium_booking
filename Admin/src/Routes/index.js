@@ -8,13 +8,12 @@ import PrivateRoutes from "./PrivateRoutes";
 import { Switch, Route, Redirect, useRouteMatch } from "react-router-dom";
 
 const RoutesComponents = ({ ...rest }) => {
-  const { path } = useRouteMatch();
   return (
     <>
       <Switch>
-        <PrivateRoutes path="/" exact>
+        <Route path="/" exact>
           <DashboardView {...rest} />
-        </PrivateRoutes>
+        </Route>
 
         <PrivateRoutes path="/all_stadiums">
           <AllStadium {...rest} />

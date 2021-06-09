@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
+import Navbar from './NavbarComponent';
+import Sidebar from './SidebarComponent'
 import RoutesComponents from "../../Routes";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useShallowEqualSelector } from "../../Components/useShallowEqualSelector";
+import { useDispatch } from "react-redux";
+import {
+  onSmUpOpen,
+  onSmUpClose,
+  onSmDownClose,
+} from "../../Slices/Features/ToggleDrawer/toggleSlice";
 
 const marginMainContainer = 64;
 const useStyles = makeStyles((theme) => ({
@@ -36,39 +43,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DashboardLayout = () => {
+const DashboardLayout = React.memo(() => {
   const classes = useStyles();
-  const [state, setState] = useState({
-    nameState: "left",
-    visible: false,
-  });
-  const [open1, setOpen1] = useState({
-    visible: false,
-  });
-
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    setState((prev) => {
-      return { ...prev, nameState: anchor, visible: open };
-    });
-  };
-
-  const handleOpen1 = (open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    setOpen1((prev) => {
-      return { ...prev, visible: open };
-    });
-  };
+  const { smUp } = useShallowEqualSelector((state) => state.toggle);
+  const dispatch = useDispatch();
 
   const matchSm = useMediaQuery((theme) =>
     theme.breakpoints.between("sm", "sm")
@@ -78,58 +56,40 @@ const DashboardLayout = () => {
   );
   const matchLg = useMediaQuery((theme) => theme.breakpoints.up("lg"));
 
+
   useEffect(() => {
     if (matchSm === true) {
-      setOpen1((previous) => {
-        return { ...previous, visible: false };
-      });
-      setState((previous) => {
-        return { ...previous, visible: false };
-      });
+      dispatch(onSmUpClose());
+      dispatch(onSmDownClose());
     }
-  }, [matchSm]);
+  }, [matchSm, dispatch]);
 
   useEffect(() => {
     if (matchMd === true) {
-      setOpen1((prev) => {
-        return { ...prev, visible: false };
-      });
-      setState((previous) => {
-        return { ...previous, visible: false };
-      });
+      dispatch(onSmUpClose());
+      dispatch(onSmDownClose());
     }
-  }, [matchMd]);
+  }, [matchMd, dispatch]);
 
   useEffect(() => {
     if (matchLg === true) {
-      setOpen1((prev) => {
-        return { ...prev, visible: true };
-      });
+      dispatch(onSmUpOpen(true));
     }
-  }, [matchLg]);
+  }, [matchLg, dispatch]);
   return (
     <>
       <>
-        <Navbar
-          throwstate={state}
-          toggleclicked={toggleDrawer}
-          toggleclicked1={handleOpen1}
-          throwstate1={open1}
-        />
-        <Sidebar
-          getstate={state}
-          toggleclicked={toggleDrawer}
-          getstate1={open1}
-        />
+        <Navbar />
+        <Sidebar />
         <RoutesComponents
           className={clsx(classes.pageStyles, {
-            [classes.pageOpenTranslate]: open1.visible,
-            [classes.pageCloseTranslate]: !open1.visible,
+            [classes.pageOpenTranslate]: smUp,
+            [classes.pageCloseTranslate]: !smUp,
           })}
         />
       </>
     </>
   );
-};
+});
 
 export default DashboardLayout;

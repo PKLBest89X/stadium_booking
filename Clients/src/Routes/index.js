@@ -3,9 +3,10 @@ import Stadiums from "../Views/Users/Stadiums";
 import StadiumDetails from "../Views/Users/StadiumDetails";
 import BookingHistory from "../Views/Users/BookingHistory";
 import StadiumFollow from "../Views/Users/StadiumsFollow";
+import AccountView from '../Views/Users/Account'
 
 import DashboardView from "../Views/StadiumUsers/Dashboard";
-import CreateStadium from "../Views/StadiumUsers/CreateStadium";
+
 
 import PrivateRoutesAdmin from "./PrivateRoutesAdmin";
 import PrivateRoutesUsers from "./PrivateRoutesUsers";
@@ -35,6 +36,10 @@ const RoutesComponents = ({ ...rest }) => {
         <Route path="/stadium/:stadiumName">
           <StadiumDetails {...rest} />
         </Route>
+
+        <PrivateRoutesUsers path="/account">
+          <AccountView {...rest} />
+        </PrivateRoutesUsers>
 
         <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin" >
           <DashboardView {...rest} />

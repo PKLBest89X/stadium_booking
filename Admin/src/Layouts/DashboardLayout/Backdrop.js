@@ -1,5 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useShallowEqualSelector } from "../../Components/useShallowEqualSelector";
+import { useDispatch } from "react-redux";
+import { onSmDownClose } from "../../Slices/Features/ToggleDrawer/toggleSlice";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -16,16 +19,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Backdrop = ({ show, clicked, ...rest }) => {
+const Backdrop = () => {
   const classes = useStyles();
+  const { smDown } = useShallowEqualSelector((state) => state.toggle);
+  const dispatch = useDispatch();
   return (
-    <React.Fragment>
-      <div {...rest}>
-        {show.nameState === "left" && show.visible === true ? (
-          <div className={classes.root} onClick={clicked}></div>
-        ) : null}
-      </div>
-    </React.Fragment>
+    <>
+      {smDown === true ? (
+        <div
+          className={classes.root}
+          onClick={() => dispatch(onSmDownClose())}
+        ></div>
+      ) : null}
+    </>
   );
 };
 

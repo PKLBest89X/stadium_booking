@@ -22,8 +22,6 @@ const authSlice = createSlice({
     userLogOut: (state, action) => {
       state.data = [];
       localStorage.removeItem("accessUserToken");
-      history.push('/');
-      window.location.reload();
     },
     adminLogOut: (state, action) => {
       state.data = [];

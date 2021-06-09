@@ -19,6 +19,7 @@ const App = () => {
         <Router>
           <Switch>
             <Route path="/404" exact>
+              <DefaultLayout />
               <NotFoundView />
             </Route>
             <Route path="/login" exact>

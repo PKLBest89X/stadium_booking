@@ -24,7 +24,7 @@ export const fetchAuthAdmin = createAsyncThunk(
       if (loading !== true || requestId !== currentRequestId) {
         return;
       }
-      const accessTokenUsers = await Axios.get(
+      const accessTokenAdmin = await Axios.get(
         "http://localhost:5050/staff/login/authen",
         {
           headers: {
@@ -32,7 +32,7 @@ export const fetchAuthAdmin = createAsyncThunk(
           },
         }
       );
-      return accessTokenUsers.data;
+      return accessTokenAdmin.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }

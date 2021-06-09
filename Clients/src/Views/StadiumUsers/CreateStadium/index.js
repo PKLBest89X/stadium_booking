@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { useDispatch } from "react-redux";
 import { fetchAuthAdmin } from "../../../middlewares/fetchAuth/fetchStadiumUsers";
-import { history } from "../../../Components/history";
+import { useHistory } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
 const CreateStadium = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const { data, loading, error } = useShallowEqualSelector(
     (state) => state.auth
   );
@@ -34,12 +35,11 @@ const CreateStadium = () => {
   }, [dispatch]);
   useEffect(() => {
     data.slice(-1).forEach(({ st_id, role }) => {
-      if (st_id !== null) {
+      if (st_id !== null && role === 'manager') {
         history.push(`/admin/stadium/${st_id}`);
-        window.location.reload();
       }
     });
-  }, [data]);
+  }, [data, history]);
   return (
     <PageLayout title="ສ້າງເດີ່ນຂອງທ່ານ" className={classes.root}>
       <Box
@@ -86,7 +86,7 @@ const CreateStadium = () => {
                 type="submit"
                 variant="contained"
               >
-                {loading === true ? "loading" : "Sign in now"}
+                {loading === true ? "loading" : "ສ້າງເດີ່ນ"}
               </Button>
               {error && <p>{error}</p>}
             </Box>

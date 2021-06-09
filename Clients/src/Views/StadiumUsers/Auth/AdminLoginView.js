@@ -3,8 +3,8 @@ import PageLayout from "../../../Components/PageLayout";
 import { useDispatch } from "react-redux";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { fetchLoginAdmin } from "../../../middlewares/fetchAuth/fetchStadiumUsers";
-import { history } from '../../../Components/history';
-import { fetchAuthAdmin } from '../../../middlewares/fetchAuth/fetchStadiumUsers'
+import { history } from "../../../Components/history";
+import { fetchAuthAdmin } from "../../../middlewares/fetchAuth/fetchStadiumUsers";
 import {
   Box,
   Button,
@@ -28,7 +28,9 @@ const AdminLoginView = () => {
     password: "",
   });
   const dispatch = useDispatch();
-  const { data, loading, error } = useShallowEqualSelector((state) => state.auth);
+  const { data, loading, error } = useShallowEqualSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
     const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
@@ -37,8 +39,8 @@ const AdminLoginView = () => {
     }
   }, [dispatch]);
   useEffect(() => {
-    data.slice(-1).forEach(({st_id, role}) => {
-      if (st_id !== null) {
+    data.slice(-1).forEach(({ st_id, role }) => {
+      if (st_id !== null && role === "manager") {
         history.push(`/admin/stadium/${st_id}`);
         window.location.reload();
       }
