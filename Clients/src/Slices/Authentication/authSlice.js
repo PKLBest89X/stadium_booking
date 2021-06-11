@@ -10,6 +10,7 @@ import {
 } from "../../middlewares/fetchAuth/fetchStadiumUsers";
 const initialState = {
   loading: false,
+  user: null,
   data: [],
   currentRequestId: undefined,
   error: "",
@@ -19,6 +20,9 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    userNow: (state, action) => {
+      state.user = action.payload
+    },
     userLogOut: (state, action) => {
       state.data = [];
       localStorage.removeItem("accessUserToken");
@@ -108,5 +112,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { userLogOut, adminLogOut } = authSlice.actions;
+export const { userNow, userLogOut, adminLogOut } = authSlice.actions;
 export default authSlice.reducer;

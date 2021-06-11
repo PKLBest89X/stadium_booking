@@ -20,7 +20,7 @@ export const fetchAuthAdmin = createAsyncThunk(
   "admin/accessAdminToken",
   async (token, { getState, requestId, rejectWithValue }) => {
     try {
-      const { currentRequestId, loading } = getState().auth;
+      const { loading, currentRequestId } = getState().auth;
       if (loading !== true || requestId !== currentRequestId) {
         return;
       }

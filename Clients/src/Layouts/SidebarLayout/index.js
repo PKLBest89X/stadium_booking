@@ -1,12 +1,14 @@
-import React from "react";
-import Backdrop from "../../Backdrop";
+import React, { useRef, useMemo } from "react";
+import Backdrop from "../Backdrop";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-import { onSmDownClose } from "../../../Slices/Features/ToggleDrawer/toggleSlice";
+import { onSmDownClose } from "../../Slices/Features/ToggleDrawer/toggleSlice";
 import { useDispatch } from "react-redux";
-import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
-import HeaderUser from "./HeaderUser";
-import ListUser from "./ListUser";
+import { useShallowEqualSelector } from "../../Components/useShallowEqualSelector";
+import Header from "./Header";
+import ListAdmin from "./SidebarAdmin/ListAdmin";
+import ListUser from "./SidebarUser/ListUser";
+
 import { Drawer, Divider, Hidden } from "@material-ui/core";
 
 const drawerWidth = 250;
@@ -45,21 +47,28 @@ const useStyles = makeStyles((theme) => ({
   drawerClose: {
     width: 64,
   },
-
 }));
 
-const SidebarUser = () => {
+const SidebarLayout = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
+  const { data } = useShallowEqualSelector((state) => state.auth);
+  const stateRef = useRef(data);
   const { smUp, smDown } = useShallowEqualSelector((state) => state.toggle);
+  const dispatch = useDispatch();
+
+  useMemo(() => {
+    data.forEach((items) => {
+      return (stateRef.current = items);
+    });
+  }, [data]);
 
   // ພາກສ່ວນຂອງ sidebar
   const list = () => (
     <div className={classes.main_container} role="presentation">
-      <HeaderUser />
-
+      <Header />
       <Divider />
-      <ListUser />
+      <ListUser userLoggedIn={stateRef.current} />
+      <ListAdmin userLoggedIn={stateRef.current}/>
     </div>
   );
 
@@ -116,4 +125,4 @@ const SidebarUser = () => {
   );
 };
 
-export default SidebarUser;
+export default SidebarLayout;

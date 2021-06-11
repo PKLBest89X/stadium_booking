@@ -1,18 +1,19 @@
 import React, { useEffect, useMemo, useRef } from "react";
 
-import NavbarUser from "./Users/NavbarUser";
-import SidebarUser from "./Users/SidebarUser";
-
-import NavbarAdmin from "./StadiumUsers/NavbarAdmin";
-import SidebarAdmin from "./StadiumUsers/SidebarAdmin";
+import NavbarLayout from "./NavbarLayout";
+import SidebarLayout from "./SidebarLayout";
 
 import RoutesComponents from "../Routes";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useShallowEqualSelector } from "../Components/useShallowEqualSelector";
-import { useDispatch } from 'react-redux';
-import { onSmUpOpen, onSmUpClose, onSmDownClose } from '../Slices/Features/ToggleDrawer/toggleSlice';
+import { useDispatch } from "react-redux";
+import {
+  onSmUpOpen,
+  onSmUpClose,
+  onSmDownClose,
+} from "../Slices/Features/ToggleDrawer/toggleSlice";
 
 const marginMainContainer = 64;
 const useStyles = makeStyles((theme) => ({
@@ -47,9 +48,8 @@ const useStyles = makeStyles((theme) => ({
 const MainLayout = React.memo(() => {
   const classes = useStyles();
   const { data } = useShallowEqualSelector((state) => state.auth);
-  const { smUp } = useShallowEqualSelector(state => state.toggle);
+  const { smUp } = useShallowEqualSelector((state) => state.toggle);
   const dispatch = useDispatch();
-
 
   const matchSm = useMediaQuery((theme) =>
     theme.breakpoints.between("sm", "sm")
@@ -79,38 +79,17 @@ const MainLayout = React.memo(() => {
     }
   }, [matchLg, dispatch]);
 
-  const QuestUser = (
-    <>
-      <NavbarUser/>
-      <SidebarUser/>
-    </>
-  );
-  let stategg = useRef(data);
+  const stategg = useRef(data);
   useMemo(() => {
     data.forEach((items) => {
-      stategg.current = items.role;
+      return (stategg.current = items.role);
     });
   }, [data]);
 
-  const UserLoggedIn = (
-    <>
-      {stategg.current === "manager" && (
-        <>
-          <NavbarAdmin/>
-          <SidebarAdmin/>
-        </>
-      )}
-      {stategg.current === "user" && (
-        <>
-          <NavbarUser/>
-          <SidebarUser/>
-        </>
-      )}
-    </>
-  );
   return (
     <>
-      {data.length > 0 ? UserLoggedIn : QuestUser}
+      <NavbarLayout />
+      <SidebarLayout />
       <RoutesComponents
         className={clsx(classes.pageStyles, {
           [classes.pageOpenTranslate]: smUp,

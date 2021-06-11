@@ -1,7 +1,7 @@
 import React from "react";
 import PageLayout from "../../../Components/PageLayout";
 import { Button } from "@material-ui/core";
-import { userLogOut } from '../../../Slices/Authentication/authSlice';
+import { userNow, userLogOut } from '../../../Slices/Authentication/authSlice';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -13,6 +13,7 @@ const AccountView = ({ ...rest }) => {
       <div>
         <Button onClick={() => {
           dispatch(userLogOut());
+          dispatch(userNow('quest'))
           history.push('/')
         }}>Log out</Button>
       </div>

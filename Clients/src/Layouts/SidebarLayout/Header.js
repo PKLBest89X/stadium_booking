@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { onSmDownClose } from '../../../Slices/Features/ToggleDrawer/toggleSlice';
+import { onSmDownClose } from '../../Slices/Features/ToggleDrawer/toggleSlice';
 import { useDispatch } from 'react-redux';
 import {
   ListItemIcon,
@@ -24,7 +24,7 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-const HeaderAdmin = () => {
+const Header = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
     return (
@@ -68,4 +68,4 @@ const HeaderAdmin = () => {
     );
 };
 
-export default HeaderAdmin;
+export default Header;

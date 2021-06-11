@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useMemo, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-
-import LogoUser from "./LogoUser";
-import ProfileUser from "./ProfileUser";
-import SearchUser from "./SearchUser";
-
 import { AppBar } from "@material-ui/core";
+import { useShallowEqualSelector } from "../../Components/useShallowEqualSelector";
+import ToggleHandle from "./ToggleHandle";
+
+import LogoutAdmin from "./NavbarAdmin/LogoutAdmin";
+
+import ProfileUser from "./NavbarUser/ProfileUser";
+import SearchUser from "./NavbarUser/SearchUser";
 
 const useStyles = makeStyles((theme) => ({
   appbarTop: {
@@ -52,20 +54,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NavbarUser = () => {
+const NavbarLayout = () => {
   const classes = useStyles();
-
+  const { data } = useShallowEqualSelector((state) => state.auth);
+  const stateRef = useRef(data);
+  useMemo(() => {
+    data.forEach((items) => {
+      return (stateRef.current = items);
+    });
+  }, [data]);
   return (
     <div>
       <AppBar className={classes.appbarTop} position="fixed">
         <div className={classes.toolbar}>
-          <LogoUser />
-          <SearchUser />
-          <ProfileUser />
+          <ToggleHandle />
+          <SearchUser role={stateRef.current.role} />
+          <ProfileUser userLoggedIn={stateRef.current} />
+          <LogoutAdmin role={stateRef.current.role} />
         </div>
       </AppBar>
     </div>
   );
 };
 
-export default NavbarUser;
+export default NavbarLayout;

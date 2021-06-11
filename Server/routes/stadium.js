@@ -9,6 +9,17 @@ router.use(express.json());
 const db = mysql.createConnection(dbconfig.db);
 
 
+function verifyToken(req, res, next) {
+    const bearerHeader = req.headers["authorization"];
+    if (typeof bearerHeader !== "undefined") {
+      const bearerToken = bearerHeader.split(" ")[1];
+      req.token = bearerToken;
+      next();
+    } else {
+      res.sendStatus(403); //forbidden
+    }
+  } // function ແປງ token ເປັນຂໍ້ມູນ
+
 router.get('/reserve', async function(req,res,next){
     const stadium_id = req.body.st_id;
     await db.query("call reserve_staff_all(?)", [stadium_id], (err, result) => {
@@ -61,7 +72,7 @@ router.get('/test' ,async function(req,res,next){
 })
 
 
-router.post('/add', async function(req,res,next){
+router.post('/add',verifyToken, async function(req,res,next){
     
     const stadium_name = req.body.st_name;
     const description = req.body.description;
@@ -71,8 +82,8 @@ router.post('/add', async function(req,res,next){
     const province = req.body.province;
     const time_cancel = req.body.time_cancelbooking;
     
-    db.query("select MAX(st_id) as mid from tbstadium", (err,resu) => {
-        if(resu[0] == null){
+    db.query("select MAX(st_id) as mid from tbstadium", (err,result) => {
+        if(result[0] === null){
             const stadium_id = "st1";
             if(!req.files){
                 res.status(500)
@@ -107,8 +118,20 @@ router.post('/add', async function(req,res,next){
                                 res.status(400)
                                 console.log(err);
                             }else{
-                                res.status(200)
-                                res.send(result);
+                                jwt.verify(req.token, "secret", async (err, authData) => {
+                                    if (err) {
+                                      res.sendStatus(403);
+                                    } else {
+                                      const admin_id = authData.data;
+                                      await db.query("call staff_auth(?)", [admin_id], (er, result) => {
+                                        if (er) {
+                                          console.log(er);
+                                        } else {
+                                          res.sendStatus(200);
+                                        }
+                                      });
+                                    }
+                                  });
                             }
                         })
                     })
@@ -150,8 +173,20 @@ router.post('/add', async function(req,res,next){
                                 res.status(400)
                                 console.log(err);
                             }else{
-                                res.status(200)
-                                res.send(result);
+                                jwt.verify(req.token, "secret", async (err, authData) => {
+                                    if (err) {
+                                      res.sendStatus(403);
+                                    } else {
+                                      const admin_id = authData.data;
+                                      await db.query("call staff_auth(?)", [admin_id], (er, result) => {
+                                        if (er) {
+                                          console.log(er);
+                                        } else {
+                                          res.sendStatus(200);
+                                        }
+                                      });
+                                    }
+                                  });
                             }
                         })
                     })
@@ -162,9 +197,8 @@ router.post('/add', async function(req,res,next){
         
     })
 
-    
-    
 }) // ເພີ່ມເດີ່ນເຂົ້າໃນລະບົບ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
 
 
 router.post('/add/phone', async function(req,res,next){

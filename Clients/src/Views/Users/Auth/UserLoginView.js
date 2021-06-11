@@ -57,7 +57,7 @@ const AdminLoginView = React.memo(() => {
         height="100%"
         justifyContent="center"
       >
-        <Container maxWidth="sm">
+        <Container maxWidth="md">
           <form
             onSubmit={(event) => {
               event.preventDefault();

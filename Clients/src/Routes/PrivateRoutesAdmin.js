@@ -1,7 +1,6 @@
-import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
-const PrivateRoutes = ({ children, ...rest }) => {
+const PrivateRoutesAdmin = ({ children, ...rest }) => {
   const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
   return (
     <>
@@ -14,4 +13,4 @@ const PrivateRoutes = ({ children, ...rest }) => {
   );
 };
 
-export default PrivateRoutes;
+export default PrivateRoutesAdmin;

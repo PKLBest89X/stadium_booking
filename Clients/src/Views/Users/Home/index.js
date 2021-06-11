@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import HomeContents from "./HomeContents";
 import ImageData from "./ImageData";
 import { fetchAuthUser } from "../../../middlewares/fetchAuth/fetchUser";
+import { userNow } from '../../../Slices/Authentication/authSlice';
 import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles(() => ({
@@ -48,6 +49,9 @@ const Home = ({ ...rest }) => {
     let userToken = JSON.parse(localStorage.getItem('accessUserToken'))
     if (userToken && userToken.token) {
       dispatch(fetchAuthUser(userToken.token))
+      dispatch(userNow('userLoggedIn'))
+    } else {
+      dispatch(userNow('quest'));
     }
     
   }, [dispatch]);

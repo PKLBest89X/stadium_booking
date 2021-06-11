@@ -1,10 +1,10 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef, useMemo } from "react";
 import PageLayout from "../../../Components/PageLayout";
 import { useDispatch } from "react-redux";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { fetchLoginAdmin } from "../../../middlewares/fetchAuth/fetchStadiumUsers";
-import { history } from "../../../Components/history";
 import { fetchAuthAdmin } from "../../../middlewares/fetchAuth/fetchStadiumUsers";
+import { useHistory } from 'react-router-dom'
 import {
   Box,
   Button,
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 const AdminLoginView = () => {
   const classes = useStyles();
+  const history = useHistory();
   const [adminLogin, setAdminLogin] = useState({
     email: "",
     password: "",
@@ -31,6 +32,7 @@ const AdminLoginView = () => {
   const { data, loading, error } = useShallowEqualSelector(
     (state) => state.auth
   );
+  const stateRef = useRef(data);
 
   useEffect(() => {
     const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
@@ -38,14 +40,17 @@ const AdminLoginView = () => {
       dispatch(fetchAuthAdmin(adminToken.token));
     }
   }, [dispatch]);
-  useEffect(() => {
-    data.slice(-1).forEach(({ st_id, role }) => {
-      if (st_id !== null && role === "manager") {
-        history.push(`/admin/stadium/${st_id}`);
-        window.location.reload();
-      }
+  useMemo(() => {
+    data.forEach((items) => {
+      return (stateRef.current = items);
     });
   }, [data]);
+  useEffect(() => {
+    const { st_id, role } = stateRef.current;
+    if (st_id !== null && role === "manager") {
+      history.push(`/admin/stadium/${st_id}`);
+    }
+  }, [history]);
 
   const onEmailLoginChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -68,7 +73,7 @@ const AdminLoginView = () => {
         height="100%"
         justifyContent="center"
       >
-        <Container maxWidth="sm">
+        <Container maxWidth="md">
           <form
             onSubmit={(event) => {
               event.preventDefault();
