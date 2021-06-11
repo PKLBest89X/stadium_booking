@@ -70,7 +70,7 @@ const NavbarLayout = () => {
           <ToggleHandle />
           <SearchUser role={stateRef.current.role} />
           <ProfileUser userLoggedIn={stateRef.current} />
-          <LogoutAdmin role={stateRef.current.role} />
+          <LogoutAdmin userLoggedIn={stateRef.current} />
         </div>
       </AppBar>
     </div>

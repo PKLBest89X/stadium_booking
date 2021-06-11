@@ -4,7 +4,8 @@ import { NavLink } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { useDispatch } from "react-redux";
 import { onSmDownClose } from "../../../Slices/Features/ToggleDrawer/toggleSlice";
-import { user, sidebarAdminData } from "../data/sidebarAdminData";
+import { sidebarAdminData } from "../data/sidebarAdminData";
+import { deepOrange } from "@material-ui/core/colors";
 import Footer from "../Footer";
 import clsx from "clsx";
 import {
@@ -34,6 +35,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     cursor: "pointer",
+    color: theme.palette.getContrastText(deepOrange[500]),
+    backgroundColor: deepOrange[500],
     width: 64,
     height: 64,
   },
@@ -100,6 +103,7 @@ const useStyles = makeStyles((theme) => ({
 const ListAdmin = React.memo(({ userLoggedIn }) => {
   const classes = useStyles();
   const { smUp } = useShallowEqualSelector((state) => state.toggle);
+  const { user } = useShallowEqualSelector((state) => state.auth);
   const dispatch = useDispatch();
   const onToggleClose = (event) => {
     if (
@@ -112,7 +116,7 @@ const ListAdmin = React.memo(({ userLoggedIn }) => {
   }
   return (
     <>
-      {userLoggedIn.role === "manager" || userLoggedIn.role === "staff" ? (
+      {user === 'admin' ? (
         <div className={classes.content_wrapper}>
           <div className={classes.overflow_container}>
             <div
@@ -129,7 +133,8 @@ const ListAdmin = React.memo(({ userLoggedIn }) => {
               >
                 <Avatar
                   className={classes.avatar}
-                  src={user.avatar}
+                  src={`/assets/images/adminsPics/adminProfile/stadiumOwner/${userLoggedIn.picture}`}
+                  alt={`${userLoggedIn.su_name}`}
                   to="/account"
                 />
                 <Typography
@@ -137,10 +142,10 @@ const ListAdmin = React.memo(({ userLoggedIn }) => {
                   color="textPrimary"
                   variant="h5"
                 >
-                  {user.name}
+                  {userLoggedIn.su_name}
                 </Typography>
                 <Typography color="textSecondary" variant="body2">
-                  {user.jobTitle}
+                  {userLoggedIn.su_surname}
                 </Typography>
               </Box>
             </div>

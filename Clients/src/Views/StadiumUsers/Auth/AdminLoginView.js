@@ -50,7 +50,7 @@ const AdminLoginView = () => {
     if (st_id !== null && role === "manager") {
       history.push(`/admin/stadium/${st_id}`);
     }
-  }, [history]);
+  }, [data, history]);
 
   const onEmailLoginChange = useCallback((event) => {
     const { name, value } = event.target;

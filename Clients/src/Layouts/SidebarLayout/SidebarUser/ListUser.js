@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import { onSmDownClose } from "../../../Slices/Features/ToggleDrawer/toggleSlice";
 import { useDispatch } from "react-redux";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
+import AccountCircle from "@material-ui/icons/AccountCircle";
 import { sidebarUserData, sidebarUserData2 } from "../data/sidebarUserData";
 import { useHistory } from "react-router-dom";
 import Footer from "../Footer";
@@ -163,7 +164,7 @@ const ListUser = React.memo(({ userLoggedIn }) => {
                     <p>
                       ທ່ານຕ້ອງລົງທະບຽນເຂົ້າສູ້ກ່ອນຈຶ່ງສາມາດຕິດຕາມເດີ່ນທີ່ທ່ານມັກໄດ້
                     </p>
-                    <Button onClick={() => history.push("/login")}>
+                    <Button startIcon={<AccountCircle />} onClick={() => history.push("/login")}>
                       ເຂົ້າສູ່ລະບົບ
                     </Button>
                   </div>

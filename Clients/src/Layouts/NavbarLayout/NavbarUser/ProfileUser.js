@@ -3,6 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { Button, Box, Avatar } from "@material-ui/core";
+import SportsSoccerIcon from "@material-ui/icons/SportsSoccer";
+import AccountCircle from "@material-ui/icons/AccountCircle";
 import { deepOrange } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,6 +38,7 @@ const ProfileUser = React.memo(({ userLoggedIn }) => {
             onClick={() => {
               history.push("/admin/login");
             }}
+            startIcon={<SportsSoccerIcon />}
           >
             ເດີ່ນຂອງຂ້ອຍ
           </Button>
@@ -55,8 +58,9 @@ const ProfileUser = React.memo(({ userLoggedIn }) => {
               onClick={() => {
                 history.push("/login");
               }}
+              startIcon={<AccountCircle />}
             >
-              login
+              ເຂົ້າສູ່ລະບົບ
             </Button>
           )}
         </>

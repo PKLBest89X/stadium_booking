@@ -5,7 +5,7 @@ import SportsSoccerIcon from "@material-ui/icons/SportsSoccer";
 import LocalOffer from "@material-ui/icons/LocalOffer";
 import LocalDrink from "@material-ui/icons/LocalDrink";
 import Payment from "@material-ui/icons/Payment";
-import AccountCircle from "@material-ui/icons/AccountCircle";
+import Assignment from "@material-ui/icons/Assignment";
 import Book from "@material-ui/icons/Book";
 
 export const sidebarAdminData = [
@@ -16,7 +16,7 @@ export const sidebarAdminData = [
   },
   {
     title: "ພະນັກງານ",
-    path: `employee_manage`,
+    path: `employee-manage`,
     icon: <Group />,
   },
   {
@@ -25,8 +25,13 @@ export const sidebarAdminData = [
     icon: <SportsSoccerIcon />,
   },
   {
+    title: "Post ຂອງເດີ່ນ",
+    path: `stadium-post`,
+    icon: <Assignment />,
+  },
+  {
     title: "ລາຄາເດີ່ນ",
-    path: `stadium_price`,
+    path: `stadium-price`,
     icon: <LocalOffer />,
   },
   {
@@ -44,15 +49,4 @@ export const sidebarAdminData = [
     path: `payment`,
     icon: <Payment />,
   },
-  {
-    title: "ບັນຊີຂອງຂ້ອຍ",
-    path: `account`,
-    icon: <AccountCircle />,
-  },
 ];
-
-export const user = {
-  avatar: "/assets/images/admin_img/neymar.jpg",
-  jobTitle: "Senior Developer",
-  name: "Katarina Smith",
-};
