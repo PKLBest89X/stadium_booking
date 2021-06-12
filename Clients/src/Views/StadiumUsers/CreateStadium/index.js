@@ -13,6 +13,7 @@ import { fetchAuthAdmin } from "../../../middlewares/fetchAuth/fetchStadiumUsers
 import { useHistory } from "react-router-dom";
 import StadiumLogo from "./StadiumLogo";
 import StadiumPicture from "./StadiumPicture";
+import { userNow } from "../../../Slices/Authentication/authSlice";
 import { fetchAddStadium } from "../../../middlewares/stadiumUser/fetchCRUDStadium/fetchCRUDStadium";
 import {
   Box,
@@ -100,7 +101,7 @@ const CreateStadium = () => {
     if (adminToken && adminToken.token) {
       dispatch(fetchAuthAdmin(adminToken.token));
     }
-  }, [dispatch]);
+  }, [data, addSuccess, dispatch]);
   useMemo(() => {
     data.forEach((items) => {
       return (stateRef.current = items);
@@ -108,10 +109,12 @@ const CreateStadium = () => {
   }, [data]);
   useEffect(() => {
     const { st_id, role } = stateRef.current;
-    if (addSuccess || (st_id !== null && role === "manager")) {
+    if (st_id !== null && role === "manager") {
       history.push(`/admin/stadium/${st_id}`);
+      dispatch(userNow("admin"));
+      window.location.reload();
     }
-  }, [data, history, addSuccess]);
+  }, [data, history, addSuccess, dispatch]);
 
   const onStadiumNameChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -146,7 +149,6 @@ const CreateStadium = () => {
       ...prev,
       stadium_logo: getStadiumLogoFile,
     }));
-    console.log(createStadium);
   };
 
   const onUploadStadiumPicture = () => {
@@ -155,7 +157,6 @@ const CreateStadium = () => {
       ...prev,
       stadium_picture: getStadiumPicture,
     }));
-    console.log(createStadium);
   };
 
   const onSubmitNewStadium = (event) => {
@@ -277,6 +278,7 @@ const CreateStadium = () => {
                 className={classes.inputProperties}
                 getFile={onUploadStadiumLogo}
                 ref={stadiumLogoFile}
+                required
               />
             </div>
             <div className={classes.picture}>
@@ -285,6 +287,7 @@ const CreateStadium = () => {
                 className={classes.inputProperties}
                 getFile={onUploadStadiumPicture}
                 ref={stadiumPictureFile}
+                required
               />
             </div>
 

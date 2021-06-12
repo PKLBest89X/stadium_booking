@@ -106,9 +106,14 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
     
                 let logo = req.files.logo;
                 let uploadlogo = `${__dirname}../../Clients/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
+                let uploadlogoToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
         
                 let sampleFile = req.files.sampleFile;
                 let uploadPath = `${__dirname}../../Clients/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
+                let uploadPathToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
+
+                logo.mv(uploadlogoToAdminFolder, (err) => {if (err) return res.status(500).send(err);});
+                sampleFile.mv(uploadPathToAdminFolder, (err) => {if (err) return res.status(500).send(err)});
         
                 logo.mv(uploadlogo,function(err){
                     if(err) return res.status(500).send(err);
@@ -147,7 +152,6 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
                                       });
                                     }
                                   });
-                                // res.status(200).send('Insert completed!!');
                             }
                         })
                     })
@@ -169,9 +173,15 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
                 
                 let logo = req.files.logo;
                 let uploadlogo = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
+                let uploadlogoToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
     
                 let sampleFile = req.files.sampleFile;
                 let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
+                let uploadPathToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
+
+                logo.mv(uploadlogoToAdminFolder, (err) => {if (err) return res.status(500).send(err);});
+                sampleFile.mv(uploadPathToAdminFolder, (err) => {if (err) return res.status(500).send(err)});
+
                 logo.mv(uploadlogo,function(err){
                     if (err) {
                         console.log(err)
@@ -211,7 +221,6 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
                                       });
                                     }
                                   });
-                                // res.status(200).send('Insert completed!!');
                             }
                         })
                     })

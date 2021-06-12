@@ -1,10 +1,17 @@
-import React, { useCallback, useState, useEffect, useRef, useMemo } from "react";
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+} from "react";
 import PageLayout from "../../../Components/PageLayout";
 import { useDispatch } from "react-redux";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { fetchLoginAdmin } from "../../../middlewares/fetchAuth/fetchStadiumUsers";
 import { fetchAuthAdmin } from "../../../middlewares/fetchAuth/fetchStadiumUsers";
-import { useHistory } from 'react-router-dom'
+import { userNow } from "../../../Slices/Authentication/authSlice";
+import { useHistory } from "react-router-dom";
 import {
   Box,
   Button,
@@ -49,8 +56,10 @@ const AdminLoginView = () => {
     const { st_id, role } = stateRef.current;
     if (st_id !== null && role === "manager") {
       history.push(`/admin/stadium/${st_id}`);
+      dispatch(userNow("admin"));
+      window.location.reload();
     }
-  }, [data, history]);
+  }, [data, dispatch, history]);
 
   const onEmailLoginChange = useCallback((event) => {
     const { name, value } = event.target;
