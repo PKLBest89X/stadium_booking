@@ -79,7 +79,7 @@ router.get('/test' ,async function(req,res,next){
 })
 
 
-router.post('/stadium_add', async function(req,res,next){
+router.post('/stadium_add', verifyToken, async function(req,res,next){
     
     const stadium_name = req.body.stadium_name;
     const description = req.body.description;
@@ -119,33 +119,35 @@ router.post('/stadium_add', async function(req,res,next){
                         if(err) return res.status(500).send(err);
                         console.log(err)
                         const img = sampleFile.name;
+                        db.query("call check_config_code(?)", [configcode], (err, result) => {
+                            if (result[0].length > 0) return res.status(400).send("ລະຫັດນີ້ຖືກໃຊ້ແລ້ວ!!")})
                         db.query("call stadium_add(?,?,?,?,?,?,?,?,?,?)", [stadium_id,stadium_name,description,configcode,village,district,province,time_cancel,lg,img], (err,result) => {
                             if(err){
                                 res.status(400)
                                 console.log(err);
                             }else{
-                                // jwt.verify(req.token, "secret", async (err, authData) => {
-                                //     if (err) {
-                                //       res.sendStatus(403);
-                                //     } else {
-                                //       const admin_id = authData.data;
-                                //       await db.query("call staff_auth(?)", [admin_id], (er, result) => {
-                                //         if (er) {
-                                //           console.log(er);
-                                //         } else {
-                                //           const staff_id = result[0][0].su_id;
-                                //            db.query("call staff_update_stadium_id(?)", [staff_id], (err, result) => {
-                                //             if (err) {
-                                //                 console.log(err);
-                                //             } else {
-                                //                 res.send('ເພີ່ມຂໍ້ມູນສຳເລັດ!!')
-                                //             }
-                                //           })
-                                //         }
-                                //       });
-                                //     }
-                                //   });
-                                res.status(200);
+                                jwt.verify(req.token, "secret", async (err, authData) => {
+                                    if (err) {
+                                      res.sendStatus(403);
+                                    } else {
+                                      const admin_id = authData.data;
+                                      await db.query("call staff_auth(?)", [admin_id], (er, result) => {
+                                        if (er) {
+                                          console.log(er);
+                                        } else {
+                                          const stadium_id = result[0][0].st_id;
+                                           db.query("call staff_update_stadium_id(?, ?)", [stadium_id, admin_id], (err, result) => {
+                                            if (err) {
+                                                console.log(err);
+                                            } else {
+                                                res.status(200).send('Insert completed!!');
+                                            }
+                                          })
+                                        }
+                                      });
+                                    }
+                                  });
+                                // res.status(200).send('Insert completed!!');
                             }
                         })
                     })
@@ -170,7 +172,6 @@ router.post('/stadium_add', async function(req,res,next){
     
                 let sampleFile = req.files.sampleFile;
                 let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
-                console.log({__dirname})
                 logo.mv(uploadlogo,function(err){
                     if (err) {
                         console.log(err)
@@ -180,35 +181,37 @@ router.post('/stadium_add', async function(req,res,next){
         
                     sampleFile.mv(uploadPath, function(err){
                         if(err) return res.status(500).send(err);
-                        console.log(err)
                         const img = sampleFile.name;
+                        db.query("call check_config_code(?)", [configcode], (err, result) => {
+                            if (result[0].length > 0) return res.status(400).send("ລະຫັດນີ້ຖືກໃຊ້ແລ້ວ!!")})
                         db.query("call stadium_add(?,?,?,?,?,?,?,?,?,?)", [stadium_id,stadium_name,description,configcode,village,district,province,time_cancel,lg,img], (err,result) => {
                             if(err){
                                 res.status(400)
                                 console.log(err);
                             }else{
-                                // jwt.verify(req.token, "secret", async (err, authData) => {
-                                //     if (err) {
-                                //       res.sendStatus(403);
-                                //     } else {
-                                //       const admin_id = authData.data;
-                                //       await db.query("call staff_auth(?)", [admin_id], (er, result) => {
-                                //         if (er) {
-                                //           console.log(er);
-                                //         } else {
-                                //             const staff_id = result[0][0].su_id;
-                                //             db.query("call staff_update_stadium_id(?)", [staff_id], (err, result) => {
-                                //              if (err) {
-                                //                  console.log(err);
-                                //              } else {
-                                //                  res.send('ເພີ່ມຂໍ້ມູນສຳເລັດ!!')
-                                //              }
-                                //            })
-                                //         }
-                                //       });
-                                //     }
-                                //   });
-                                res.status(200);
+                                jwt.verify(req.token, "secret", async (err, authData) => {
+                                    if (err) {
+                                      res.sendStatus(403);
+                                    } else {
+                                      const admin_id = authData.data;
+                                      await db.query("select MAX(st_id) as useId from tbstadium", (er, result) => {
+                                        if (er) {
+                                          console.log(er);
+                                        } else {
+                                          const stadium_id = result[0].useId;
+                                          console.log(stadium_id);
+                                           db.query("call staff_update_stadium_id(?, ?)", [stadium_id, admin_id], (err, result) => {
+                                            if (err) {
+                                                console.log(err);
+                                            } else {
+                                                res.status(200).send('Insert completed!!');
+                                            }
+                                          })
+                                        }
+                                      });
+                                    }
+                                  });
+                                // res.status(200).send('Insert completed!!');
                             }
                         })
                     })

@@ -5,7 +5,17 @@ export const fetchAddStadium = createAsyncThunk(
   "stadium/add",
   async (data, { rejectWithValue }) => {
     try {
-      const addStadiumData = await Axios.post("http://localhost:5050/stadium/stadium_add",data);
+      const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
+      const addStadiumData = await Axios.post(
+        "http://localhost:5050/stadium/stadium_add",
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            'authorization': `Bearer ${adminToken.token}`,
+          },
+        }
+      );
       return addStadiumData.data;
     } catch (err) {
       return rejectWithValue(err.response.data);

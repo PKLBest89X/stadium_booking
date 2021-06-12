@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
 const CreateStadium = () => {
   const classes = useStyles();
   const { data } = useShallowEqualSelector((state) => state.auth);
-  const { addLoading, addError } = useShallowEqualSelector(
+  const { addLoading, addSuccess, addError } = useShallowEqualSelector(
     (state) => state.crudStadium
   );
   const [createStadium, setCreateStatdium] = useState({
@@ -108,10 +108,10 @@ const CreateStadium = () => {
   }, [data]);
   useEffect(() => {
     const { st_id, role } = stateRef.current;
-    if (st_id !== null && role === "manager") {
+    if (addSuccess || (st_id !== null && role === "manager")) {
       history.push(`/admin/stadium/${st_id}`);
     }
-  }, [data, history]);
+  }, [data, history, addSuccess]);
 
   const onStadiumNameChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -300,6 +300,7 @@ const CreateStadium = () => {
               </Button>
             </Box>
             {addError && <p>{addError}</p>}
+            {addSuccess && <p>{addSuccess}</p>}
           </form>
         </Container>
       </div>

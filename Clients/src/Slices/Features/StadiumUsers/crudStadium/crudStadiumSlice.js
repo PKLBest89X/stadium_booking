@@ -3,6 +3,7 @@ import { fetchAddStadium, fetchUpdateStadium } from '../../../../middlewares/sta
 
 const initialState = {
     addLoading: false,
+    addSuccess: null,
     addError: null
 };
 
@@ -16,6 +17,7 @@ const crudStadiumSlice = createSlice({
         },
         [fetchAddStadium.fulfilled]: (state, action) => {
             state.addLoading = false;
+            state.addSuccess = action.payload
         },
         [fetchAddStadium.rejected]: (state, action) => {
             state.addLoading = false;
