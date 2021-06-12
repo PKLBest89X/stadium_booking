@@ -54,15 +54,11 @@ const AdminLoginView = () => {
 
   const onEmailLoginChange = useCallback((event) => {
     const { name, value } = event.target;
-    setAdminLogin((prev) => {
-      return { ...prev, [name]: value };
-    });
+    setAdminLogin((prev) => ({ ...prev, [name]: value }));
   }, []);
   const onPasswordLoginChange = useCallback((event) => {
     const { name, value } = event.target;
-    setAdminLogin((prev) => {
-      return { ...prev, [name]: value };
-    });
+    setAdminLogin((prev) => ({ ...prev, [name]: value }));
   }, []);
 
   return (

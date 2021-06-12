@@ -31,15 +31,11 @@ const AdminLoginView = React.memo(() => {
   const dispatch = useDispatch();
   const onEmailLoginChange = useCallback((event) => {
     const { name, value } = event.target;
-    setUserLogin((prev) => {
-      return { ...prev, [name]: value };
-    });
+    setUserLogin((prev) => ({ ...prev, [name]: value }));
   }, []);
   const onPasswordLoginChange = useCallback((event) => {
     const { name, value } = event.target;
-    setUserLogin((prev) => {
-      return { ...prev, [name]: value };
-    });
+    setUserLogin((prev) => ({ ...prev, [name]: value }));
   }, []);
 
   useEffect(() => {

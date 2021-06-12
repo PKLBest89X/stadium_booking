@@ -1,11 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import Axios from "axios";
+import axios from "axios";
 
 export const addStadiumOwner = createAsyncThunk(
   "stadiumOwner/add",
   async (addStadiumOwner, { rejectWithValue }) => {
     try {
-      const addPeople = Axios.post("http://localhost:5050/staff/add", {
+      const addPeople = axios.post("http://localhost:5050/staff/add", {
         firstName: addStadiumOwner.firstName,
         lastName: addStadiumOwner.lastName,
         age: addStadiumOwner.age,
@@ -23,7 +23,7 @@ export const updateStadiumOwner = createAsyncThunk(
   "stadiumOwner/update",
   async () => {
     try {
-      const deletePeople = Axios.delete("", {});
+      const deletePeople = axios.delete("", {});
       return deletePeople.data;
     } catch (err) {}
   }

@@ -1,10 +1,17 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-const mysql = require('mysql');
-const dbconfig = require('../dbConnect/dbconnect');
+const mysql = require("mysql");
+const dbconfig = require("../dbConnect/dbconnect");
+
+const bcrypt = require("bcrypt");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 
 router.use(express.json());
+router.use(cors());
+router.use(cookieParser());
 
 const db = mysql.createConnection(dbconfig.db);
 
@@ -72,9 +79,9 @@ router.get('/test' ,async function(req,res,next){
 })
 
 
-router.post('/add',verifyToken, async function(req,res,next){
+router.post('/stadium_add', async function(req,res,next){
     
-    const stadium_name = req.body.st_name;
+    const stadium_name = req.body.stadium_name;
     const description = req.body.description;
     const configcode = req.body.config_code;
     const village = req.body.village;
@@ -89,112 +96,125 @@ router.post('/add',verifyToken, async function(req,res,next){
                 res.status(500)
                 res.send("Please choose the image");
             }else{
-                
-                
                 if(!req.files.logo){
                     return res.status(500).send("Please choose the logo");
                 }
                 if(!req.files.sampleFile){
                     return res.status(500).send("Please choose the image");
                 }
-
+                
+    
                 let logo = req.files.logo;
-                let uploadlogo = "./upload/stadium/" + logo.name;
+                let uploadlogo = `${__dirname}../../Clients/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
         
                 let sampleFile = req.files.sampleFile;
-                let uploadPath = "./upload/stadium/" + sampleFile.name;
+                let uploadPath = `${__dirname}../../Clients/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
         
                 logo.mv(uploadlogo,function(err){
                     if(err) return res.status(500).send(err);
-        
+                    console.log(err)
                     const lg = logo.name;
         
                     sampleFile.mv(uploadPath, function(err){
                         if(err) return res.status(500).send(err);
-            
+                        console.log(err)
                         const img = sampleFile.name;
                         db.query("call stadium_add(?,?,?,?,?,?,?,?,?,?)", [stadium_id,stadium_name,description,configcode,village,district,province,time_cancel,lg,img], (err,result) => {
                             if(err){
                                 res.status(400)
                                 console.log(err);
                             }else{
-                                jwt.verify(req.token, "secret", async (err, authData) => {
-                                    if (err) {
-                                      res.sendStatus(403);
-                                    } else {
-                                      const admin_id = authData.data;
-                                      await db.query("call staff_auth(?)", [admin_id], (er, result) => {
-                                        if (er) {
-                                          console.log(er);
-                                        } else {
-                                          res.sendStatus(200);
-                                        }
-                                      });
-                                    }
-                                  });
+                                // jwt.verify(req.token, "secret", async (err, authData) => {
+                                //     if (err) {
+                                //       res.sendStatus(403);
+                                //     } else {
+                                //       const admin_id = authData.data;
+                                //       await db.query("call staff_auth(?)", [admin_id], (er, result) => {
+                                //         if (er) {
+                                //           console.log(er);
+                                //         } else {
+                                //           const staff_id = result[0][0].su_id;
+                                //            db.query("call staff_update_stadium_id(?)", [staff_id], (err, result) => {
+                                //             if (err) {
+                                //                 console.log(err);
+                                //             } else {
+                                //                 res.send('ເພີ່ມຂໍ້ມູນສຳເລັດ!!')
+                                //             }
+                                //           })
+                                //         }
+                                //       });
+                                //     }
+                                //   });
+                                res.status(200);
                             }
                         })
                     })
                 })
-                
             }
+
         }else{
-            const stadium_id = "st" + (parseInt(resu[0].mid.substring(2),10)+1);
+            const stadium_id = "st" + (parseInt(result[0].mid.substring(2),10)+1);
             if(!req.files){
                 res.status(500)
                 res.send("Please choose the image");
             }else{
-                
-                
                 if(!req.files.logo){
                     return res.status(500).send("Please choose the logo");
                 }
                 if(!req.files.sampleFile){
                     return res.status(500).send("Please choose the image");
                 }
-
+                
                 let logo = req.files.logo;
-                let uploadlogo = "./upload/stadium/" + logo.name;
-        
+                let uploadlogo = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
+    
                 let sampleFile = req.files.sampleFile;
-                let uploadPath = "./upload/stadium/" + sampleFile.name;
-        
+                let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
+                console.log({__dirname})
                 logo.mv(uploadlogo,function(err){
-                    if(err) return res.status(500).send(err);
-        
+                    if (err) {
+                        console.log(err)
+                        return res.status(500).send(err);
+                    }
                     const lg = logo.name;
         
                     sampleFile.mv(uploadPath, function(err){
                         if(err) return res.status(500).send(err);
-            
+                        console.log(err)
                         const img = sampleFile.name;
                         db.query("call stadium_add(?,?,?,?,?,?,?,?,?,?)", [stadium_id,stadium_name,description,configcode,village,district,province,time_cancel,lg,img], (err,result) => {
                             if(err){
                                 res.status(400)
                                 console.log(err);
                             }else{
-                                jwt.verify(req.token, "secret", async (err, authData) => {
-                                    if (err) {
-                                      res.sendStatus(403);
-                                    } else {
-                                      const admin_id = authData.data;
-                                      await db.query("call staff_auth(?)", [admin_id], (er, result) => {
-                                        if (er) {
-                                          console.log(er);
-                                        } else {
-                                          res.sendStatus(200);
-                                        }
-                                      });
-                                    }
-                                  });
+                                // jwt.verify(req.token, "secret", async (err, authData) => {
+                                //     if (err) {
+                                //       res.sendStatus(403);
+                                //     } else {
+                                //       const admin_id = authData.data;
+                                //       await db.query("call staff_auth(?)", [admin_id], (er, result) => {
+                                //         if (er) {
+                                //           console.log(er);
+                                //         } else {
+                                //             const staff_id = result[0][0].su_id;
+                                //             db.query("call staff_update_stadium_id(?)", [staff_id], (err, result) => {
+                                //              if (err) {
+                                //                  console.log(err);
+                                //              } else {
+                                //                  res.send('ເພີ່ມຂໍ້ມູນສຳເລັດ!!')
+                                //              }
+                                //            })
+                                //         }
+                                //       });
+                                //     }
+                                //   });
+                                res.status(200);
                             }
                         })
                     })
                 })
-                
             }
         }
-        
     })
 
 }) // ເພີ່ມເດີ່ນເຂົ້າໃນລະບົບ ||||||||||||||||||||||||||||||||||||||||||||||||||

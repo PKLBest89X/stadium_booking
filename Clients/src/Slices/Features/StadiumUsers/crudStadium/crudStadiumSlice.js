@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import { fetchAddStadium, fetchUpdateStadium } from '../../../../middlewares/stadiumUser/fetchCRUDStadium/fetchCRUDStadium';
 
 const initialState = {
-    loading: false,
-    error: ''
+    addLoading: false,
+    addError: null
 };
 
 const crudStadiumSlice = createSlice({
@@ -12,13 +12,14 @@ const crudStadiumSlice = createSlice({
     reducers: {},
     extraReducers: {
         [fetchAddStadium.pending]: (state, action) => {
-
+            state.addLoading = true;
         },
         [fetchAddStadium.fulfilled]: (state, action) => {
-
+            state.addLoading = false;
         },
         [fetchAddStadium.rejected]: (state, action) => {
-
+            state.addLoading = false;
+            state.addError = action.payload
         },
         [fetchUpdateStadium.pending]: (state, action) => {
 

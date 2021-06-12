@@ -32,33 +32,23 @@ const UserRegisterView = React.memo(() => {
   });
   const onFirstNameChange = useCallback((event) => {
     const { name, value } = event.target;
-    setUserRegis((prev) => {
-      return { ...prev, [name]: value };
-    });
+    setUserRegis((prev) => ({ ...prev, [name]: value }));
   }, []);
   const onLastNameChange = useCallback((event) => {
     const { name, value } = event.target;
-    setUserRegis((prev) => {
-      return { ...prev, [name]: value };
-    });
+    setUserRegis((prev) => ({ ...prev, [name]: value }));
   }, []);
   const onPhoneChange = useCallback((event) => {
     const { name, value } = event.target;
-    setUserRegis((prev) => {
-      return { ...prev, [name]: value };
-    });
+    setUserRegis((prev) => ({ ...prev, [name]: value }));
   }, []);
   const onEmailChange = useCallback((event) => {
     const { name, value } = event.target;
-    setUserRegis((prev) => {
-      return { ...prev, [name]: value };
-    });
+    setUserRegis((prev) => ({ ...prev, [name]: value }))
   }, []);
   const onPasswordChange = useCallback((event) => {
     const { name, value } = event.target;
-    setUserRegis((prev) => {
-      return { ...prev, [name]: value };
-    });
+    setUserRegis((prev) => ({ ...prev, [name]: value }));
   }, []);
   return (
     <PageLayout title="Register user" className={classes.root}>

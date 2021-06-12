@@ -145,7 +145,7 @@ router.post("/add", async function (req, res, next) {
                 staff_email,
                 hash,
                 im,
-                staff_status,
+                'manager',
               ],
               (err, result) => {
                 if (err) {
