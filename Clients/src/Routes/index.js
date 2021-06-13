@@ -41,7 +41,7 @@ const RoutesComponents = ({ ...rest }) => {
           <AccountView {...rest} />
         </PrivateRoutesUsers>
 
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin" >
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin" exact>
           <DashboardView {...rest} />
         </PrivateRoutesAdmin>
 

@@ -15,6 +15,11 @@ export const sidebarAdminData = [
     icon: <HomeIcon />,
   },
   {
+    title: "Post ຂອງເດີ່ນ",
+    path: `stadium-post`,
+    icon: <Assignment />,
+  },
+  {
     title: "ພະນັກງານ",
     path: `employee-manage`,
     icon: <Group />,
@@ -23,11 +28,6 @@ export const sidebarAdminData = [
     title: "ເດີ່ນ",
     path: `stadium`,
     icon: <SportsSoccerIcon />,
-  },
-  {
-    title: "Post ຂອງເດີ່ນ",
-    path: `stadium-post`,
-    icon: <Assignment />,
   },
   {
     title: "ລາຄາເດີ່ນ",
