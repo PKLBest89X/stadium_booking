@@ -6,7 +6,13 @@ import StadiumFollow from "../Views/Users/StadiumsFollow";
 import AccountView from '../Views/Users/Account'
 
 import DashboardView from "../Views/StadiumUsers/Dashboard";
-
+import StadiumView from '../Views/StadiumUsers/Stadiums';
+import StadiumPosts from '../Views/StadiumUsers/StadiumPosts';
+import StadiumEmployee from '../Views/StadiumUsers/StadiumEmployee';
+import StadiumPrice from '../Views/StadiumUsers/StadiumPrice';
+import StadiumDrink from '../Views/StadiumUsers/StadiumDrink';
+import StadiumBooking from '../Views/StadiumUsers/StadiumBooking';
+import StadiumPayment from '../Views/StadiumUsers/StadiumPayment';
 
 import PrivateRoutesAdmin from "./PrivateRoutesAdmin";
 import PrivateRoutesUsers from "./PrivateRoutesUsers";
@@ -21,7 +27,7 @@ const RoutesComponents = ({ ...rest }) => {
           <Home {...rest} />
         </Route>
 
-        <Route path="/ເດີ່ນ">
+        <Route path="/stadium">
           <Stadiums {...rest} />
         </Route>
 
@@ -33,7 +39,7 @@ const RoutesComponents = ({ ...rest }) => {
           <StadiumFollow {...rest} />
         </PrivateRoutesUsers>
 
-        <Route path="/stadium/:stadiumName">
+        <Route path="/stadium/:stadiumId">
           <StadiumDetails {...rest} />
         </Route>
 
@@ -43,6 +49,34 @@ const RoutesComponents = ({ ...rest }) => {
 
         <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin" exact>
           <DashboardView {...rest} />
+        </PrivateRoutesAdmin>
+
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-details">
+          <StadiumView {...rest} />
+        </PrivateRoutesAdmin>
+        
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-post">
+          <StadiumPosts {...rest} />
+        </PrivateRoutesAdmin>
+
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/employee-manage">
+          <StadiumEmployee {...rest} />
+        </PrivateRoutesAdmin>
+
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-price">
+          <StadiumPrice {...rest} />
+        </PrivateRoutesAdmin>
+
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-drink">
+          <StadiumDrink {...rest} />
+        </PrivateRoutesAdmin>
+
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-booking">
+          <StadiumBooking {...rest} />
+        </PrivateRoutesAdmin>
+
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-payment">
+          <StadiumPayment {...rest} />
         </PrivateRoutesAdmin>
 
         <Route path="*">

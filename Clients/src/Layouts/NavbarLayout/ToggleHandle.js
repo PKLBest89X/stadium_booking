@@ -73,7 +73,7 @@ const ToggleHandle = React.memo(() => {
       >
         <MenuIcon />
       </IconButton>
-      <Typography className={classes.title} variant="h6" noWrap>
+      <Typography className={classes.title} variant="h4" noWrap>
         PK-SPORT
       </Typography>
     </div>

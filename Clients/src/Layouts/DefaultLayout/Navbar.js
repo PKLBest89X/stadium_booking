@@ -2,7 +2,6 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 import {
-  Button,
   AppBar,
   Typography,
 } from "@material-ui/core";
@@ -52,7 +51,7 @@ const Navbar = () => {
       <AppBar className={classes.appbarTop} position="fixed">
         <div className={classes.toolbar}>
           <div className="logo-container">
-            <Typography className={classes.title} variant="h6" noWrap>
+            <Typography className={classes.title} variant="h4" noWrap>
               PK-SPORT
             </Typography>
           </div>

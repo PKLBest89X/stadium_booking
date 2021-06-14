@@ -46,7 +46,6 @@ router.post("/login", async (req, res) => {
   await db.query("call check_staff_email(?)", [staff_email], (err, result) => {
     if (result[0].length > 0) {
       const database_password = result[0][0].su_password;
-      //const staff_role = result[0][0].status;
 
       bcrypt.compare(staff_password, database_password).then((match) => {
         if (!match) {
@@ -80,7 +79,6 @@ router.get("/login/authen", verifyToken, (req, res) => {
         if (er) {
           console.log(er);
         } else {
-          console.log(result);
           res.send(result[0][0]);
         }
       });

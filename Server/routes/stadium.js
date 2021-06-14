@@ -1,10 +1,10 @@
+const fs = require('fs')
 var express = require("express");
 var router = express.Router();
 
 const mysql = require("mysql");
 const dbconfig = require("../dbConnect/dbconnect");
 
-const bcrypt = require("bcrypt");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
@@ -26,6 +26,23 @@ function verifyToken(req, res, next) {
       res.sendStatus(403); //forbidden
     }
   } // function ແປງ token ເປັນຂໍ້ມູນ
+
+  
+router.get('/checkValidData/:stadiumId_Admin', async function(req,res,next){
+    const stadium_id = req.params.stadiumId_Admin
+    
+    await db.query("call check_valid_stadium(?)", [stadium_id], (err, result) => {
+        if(err){
+            console.log(err);
+            return res.status(500).send(err);
+        }
+        if (result[0].length > 0) {
+            return res.status(200).send('200')
+        } else {
+            return res.status(404).send('404')
+        }
+    })
+}) // check ວ່າມີ stadium ໃນຖານຂໍ້ມູນແທ້ ຫຼື ບໍ່? ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 router.get('/reserve', async function(req,res,next){
     const stadium_id = req.body.st_id;
@@ -360,6 +377,17 @@ router.put('/edit', async function(req,res,next){
 
 router.delete('/:st_id', async function(req,res,next){
     const stadium_id = req.params.st_id;
+    // fs.unlink(`public/images/${image}`, (err) => {
+    //     if (err) {
+    //         return res.status(500).send(err);
+    //     }
+    //     db.query(deleteUserQuery, (err, result) => {
+    //         if (err) {
+    //             res.status(500).send(err);
+    //         }
+    //         res.redirect('/player');
+    //     });
+    // });
     await db.query("call stadium_delete(?)", [stadium_id], (err,result) => {
         if(err){
             res.status(400)

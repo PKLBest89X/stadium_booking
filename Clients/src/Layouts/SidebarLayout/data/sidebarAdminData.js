@@ -11,42 +11,42 @@ import Book from "@material-ui/icons/Book";
 export const sidebarAdminData = [
   {
     title: "ໜ້າຫຼັກ",
-    path: ``,
+    path: `/`,
     icon: <HomeIcon />,
   },
   {
     title: "Post ຂອງເດີ່ນ",
-    path: `stadium-post`,
+    path: `/stadium-post`,
     icon: <Assignment />,
   },
   {
     title: "ພະນັກງານ",
-    path: `employee-manage`,
+    path: `/employee-manage`,
     icon: <Group />,
   },
   {
     title: "ເດີ່ນ",
-    path: `stadium`,
+    path: `/stadium-details`,
     icon: <SportsSoccerIcon />,
   },
   {
     title: "ລາຄາເດີ່ນ",
-    path: `stadium-price`,
+    path: `/stadium-price`,
     icon: <LocalOffer />,
   },
   {
     title: "ເຄື່ອງດື່ມ",
-    path: `drink`,
+    path: `/stadium-drink`,
     icon: <LocalDrink />,
   },
   {
     title: "ຈອງເດີ່ນ",
-    path: `booking`,
+    path: `/stadium-booking`,
     icon: <Book />,
   },
   {
     title: "ຊຳລະຄ່າເດີ່ນ",
-    path: `payment`,
+    path: `/stadium-payment`,
     icon: <Payment />,
   },
 ];

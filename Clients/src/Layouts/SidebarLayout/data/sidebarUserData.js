@@ -13,17 +13,17 @@ export const sidebarUserData = [
   },
   {
     title: "ເດີ່ນ",
-    path: "/ເດີ່ນ",
+    path: "/stadium",
     icon: <SportsSoccerIcon />,
   },
   {
     title: "ປະຫວັດການຈອງ",
-    path: "/ປະຫວັດການຈອງ",
+    path: "/booking-history",
     icon: <HistoryIcon />,
   },
   {
     title: "ຕິດຕາມເດີ່ນ",
-    path: "/ຕິດຕາມເດີ່ນ",
+    path: "/stadium-follow",
     icon: <AccountBalanceWalletIcon />,
   },
 ];

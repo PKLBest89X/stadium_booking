@@ -140,7 +140,7 @@ const ListAdmin = React.memo(({ userLoggedIn }) => {
                 <Typography
                   className={classes.name}
                   color="textPrimary"
-                  variant="h5"
+                  variant="h4"
                 >
                   {userLoggedIn.su_name}
                 </Typography>
@@ -158,7 +158,7 @@ const ListAdmin = React.memo(({ userLoggedIn }) => {
                     key={index}
                     className={classes.link}
                     activeClassName={classes.activeLink}
-                    to={`/admin/stadium/${userLoggedIn.st_id}/${item.path}`}
+                    to={`/admin/stadium/${userLoggedIn.st_id}${item.path}`}
                     onClick={onToggleClose}
                     onKeyDown={onToggleClose}
                     exact

@@ -3,7 +3,7 @@ import { adminLogOut } from "../../../Slices/Authentication/authSlice";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, Avatar, IconButton, Button } from "@material-ui/core";
+import { Box, Avatar, IconButton } from "@material-ui/core";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import { useHistory } from "react-router-dom";

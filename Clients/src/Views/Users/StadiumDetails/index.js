@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { tabRoutesData } from "./TabRoutesData";
-import { Switch, Route, Link, Redirect, useParams } from "react-router-dom";
+import { Switch, Route, Redirect, useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Avatar, Box, Typography, Divider } from "@material-ui/core";
 import PageLayout from "../../../Components/PageLayout";

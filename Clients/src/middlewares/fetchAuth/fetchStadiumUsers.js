@@ -28,7 +28,7 @@ export const fetchAuthAdmin = createAsyncThunk(
         "http://localhost:5050/staff/login/authen",
         {
           headers: {
-            authorization: `Bearer ${token}`,
+            'authorization': `Bearer ${token}`,
           },
         }
       );
