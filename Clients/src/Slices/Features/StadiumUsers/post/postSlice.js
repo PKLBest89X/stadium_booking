@@ -36,7 +36,7 @@ const postSlice = createSlice({
         [fetchDeletePost.fulfilled]: (state, action) => {
 
         },
-        [fetchDeletePost.rejectede]: (state, action) => {
+        [fetchDeletePost.rejected]: (state, action) => {
 
         },
     },

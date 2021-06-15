@@ -29,6 +29,7 @@ const TotalProfit = ({ className, ...rest }) => {
   return (
     <Card
       className={clsx(classes.root, className)}
+      elevation={10}
       {...rest}
     >
       <CardContent>
@@ -43,7 +44,7 @@ const TotalProfit = ({ className, ...rest }) => {
               gutterBottom
               variant="h6"
             >
-              ລາຍຮັບທັງໝົດ
+              ລາຍຮັບຕໍ່ມື້
             </Typography>
             <Typography
               color="textPrimary"

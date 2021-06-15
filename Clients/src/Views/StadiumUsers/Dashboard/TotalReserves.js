@@ -31,6 +31,7 @@ const TotalReserves = ({ className, ...rest }) => {
   return (
     <Card
       className={clsx(classes.root, className)}
+      elevation={10}
       {...rest}
     >
       <CardContent>

@@ -162,7 +162,7 @@ const ListUser = React.memo(({ userLoggedIn }) => {
                 <div className={classes.loginFirstContainer}>
                   <div className={classes.goToLoginFirst}>
                     <p>
-                      ທ່ານຕ້ອງລົງທະບຽນເຂົ້າສູ້ກ່ອນຈຶ່ງສາມາດຕິດຕາມເດີ່ນທີ່ທ່ານມັກໄດ້
+                      ລົງທະບຽນເຂົ້າສູ່ລະບົບຈຶ່ງສາມາດຕິດຕາມເດີ່ນທີ່ທ່ານມັກໄດ້
                     </p>
                     <Button startIcon={<AccountCircle />} onClick={() => history.push("/login")}>
                       ເຂົ້າສູ່ລະບົບ

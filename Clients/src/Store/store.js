@@ -5,6 +5,8 @@ import toggleSlice from '../Slices/Features/ToggleDrawer/toggleSlice';
 import crudStadiumSlice from '../Slices/Features/StadiumUsers/crudStadium/crudStadiumSlice';
 import checkValidDataSlice from '../Slices/Features/CheckValidData/checkValidDataSlice';
 import postSlice from '../Slices/Features/StadiumUsers/post/postSlice';
+import reportReserveSlice from '../Slices/Features/StadiumUsers/Reports/reportReserveSlice';
+
 
 const store = configureStore({
     reducer: {  
@@ -13,7 +15,8 @@ const store = configureStore({
         toggle: toggleSlice,
         crudStadium: crudStadiumSlice,
         validData: checkValidDataSlice,
-        posts: postSlice
+        posts: postSlice,
+        reportReserve: reportReserveSlice
     }
 })
 
