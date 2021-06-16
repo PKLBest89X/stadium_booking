@@ -67,7 +67,7 @@ const DashboardView = ({ ...rest }) => {
           <Grid item lg={8} md={12} xl={9} xs={12}>
             <ListStadiums />
           </Grid>
-          <Grid item lg={4} md={6} xl={3} xs={12}>
+          <Grid item lg={4} md={12} xl={3} xs={12}>
             <ReserveByCustomers />
           </Grid>
           <Grid item lg={4} md={6} xl={3} xs={12}>

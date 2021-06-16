@@ -7,7 +7,9 @@ import AccountView from '../Views/Users/Account'
 
 import DashboardView from "../Views/StadiumUsers/Dashboard";
 import StadiumView from '../Views/StadiumUsers/Stadiums';
-import StadiumPosts from '../Views/StadiumUsers/StadiumPosts';
+import StadiumPosts from '../Views/StadiumUsers/StadiumPosts/ShowAllPost';
+import AddPost from '../Views/StadiumUsers/StadiumPosts/AddPost';
+import EditPost from '../Views/StadiumUsers/StadiumPosts/EditPost';
 import StadiumEmployee from '../Views/StadiumUsers/StadiumEmployee';
 import StadiumPrice from '../Views/StadiumUsers/StadiumPrice';
 import StadiumDrink from '../Views/StadiumUsers/StadiumDrink';
@@ -55,8 +57,16 @@ const RoutesComponents = ({ ...rest }) => {
           <StadiumView {...rest} />
         </PrivateRoutesAdmin>
         
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-post">
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-post" exact>
           <StadiumPosts {...rest} />
+        </PrivateRoutesAdmin>
+
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-post/add-post">
+          <AddPost {...rest} />
+        </PrivateRoutesAdmin>
+
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-post/edit-post/:postId">
+          <EditPost {...rest} />
         </PrivateRoutesAdmin>
 
         <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/employee-manage">
