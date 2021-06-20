@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import NavbarLayout from "./NavbarLayout";
 import SidebarLayout from "./SidebarLayout";
 
-import RoutesComponents from "../Routes";
+import RoutesComponents from "../Routes/RoutesComponents";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -81,9 +81,7 @@ const MainLayout = React.memo(() => {
 
   const stategg = useRef(data);
   useMemo(() => {
-    data.forEach((items) => {
-      return (stategg.current = items.role);
-    });
+    data.forEach((items) => (stategg.current = items.role));
   }, [data]);
 
   return (

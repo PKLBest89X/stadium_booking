@@ -8,7 +8,7 @@ import {
 
 const initialState = {
   postLoading: false,
-  postDatas: [],
+  postsData: [],
   postError: null,
 };
 

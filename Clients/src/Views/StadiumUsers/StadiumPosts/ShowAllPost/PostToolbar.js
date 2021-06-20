@@ -15,7 +15,9 @@ import {
 import { Search as SearchIcon } from "react-feather";
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  toolLayout: {
+    marginBottom: "2em",
+  },
   toolContainer: {
     display: "flex",
     justifyContent: "space-between",
@@ -50,13 +52,8 @@ const PostToolbar = ({ className, ...rest }) => {
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Box>
-        <Card>
-          <div
-            className={classes.toolContainer}
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
+        <div className={classes.toolLayout}>
+          <div className={classes.toolContainer}>
             <div className={classes.searchContainer}>
               <TextField
                 fullWidth
@@ -83,7 +80,7 @@ const PostToolbar = ({ className, ...rest }) => {
               ສ້າງ Post ຂອງເດີ່ນ
             </Button>
           </div>
-        </Card>
+        </div>
       </Box>
     </div>
   );

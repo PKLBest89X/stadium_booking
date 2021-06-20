@@ -26,7 +26,7 @@ export const sidebarAdminData = [
   },
   {
     title: "ເດີ່ນ",
-    path: `/stadium-details`,
+    path: `/manage`,
     icon: <SportsSoccerIcon />,
   },
   {

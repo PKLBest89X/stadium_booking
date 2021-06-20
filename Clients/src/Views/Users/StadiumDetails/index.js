@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { tabRoutesData } from "./TabRoutesData";
-import { Switch, Route, Redirect, useParams } from "react-router-dom";
+import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { Avatar, Box, Typography, Divider } from "@material-ui/core";
+import { Avatar, Box, Typography, Divider, AppBar, Tabs, Tab } from "@material-ui/core";
 import PageLayout from "../../../Components/PageLayout";
-
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import RoutesChildComponentsUser from '../../../Routes/RoutesChildComponentsUser';
+import { fetchAuthUser } from "../../../middlewares/fetchAuth/fetchUser";
+import { userNow } from '../../../Slices/Authentication/authSlice';
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles(() => ({
   mainContainer: {
@@ -36,28 +36,58 @@ const useStyles = makeStyles(() => ({
   appBar: {
     position: "sticky",
     top: 0,
+    zIndex: 4
   },
   tab: {
     width: "140px",
   },
 }));
 
-function a11yProps(index) {
-  return {
-    id: `scrollable-force-tab-${index}`,
-    "aria-controls": `scrollable-force-tabpanel-${index}`,
-  };
-}
 
 const StadiumDetails = ({...rest}) => {
   const classes = useStyles();
-  const { stadiumName } = useParams();
+  const { stadiumId } = useParams();
+  let history = useHistory();
+  const { url } = useRouteMatch();
+  const dispatch = useDispatch();
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const tabChange = (payload) => setValue(payload)
+
+  useEffect(() => {
+    const pathName = ['/', '/posts', '/information', '/stadium-booking'];
+    if (window.location.href.match(pathName[0])) setValue(0)
+    if (window.location.href.match(pathName[1])) setValue(1)
+    if (window.location.href.match(pathName[2])) setValue(2)
+    if (window.location.href.match(pathName[3])) setValue(3)
+  }, [])
+
+  useEffect(() => {
+    let userToken = JSON.parse(localStorage.getItem('accessUserToken'))
+    if (userToken && userToken.token) {
+      dispatch(fetchAuthUser(userToken.token))
+      dispatch(userNow('userLoggedIn'))
+    } else {
+      dispatch(userNow('quest'));
+    }
+    
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   dispatch(fetchCheckStadium(stadiumId_Admin));
+  // }, [dispatch, stadiumId_Admin]);
+
+  // useEffect(() => {
+  //   if (checkResult === 404) {
+  //     history.replace('/404')
+  //   }
+  // }, [history, checkResult]);
+
   return (
-    <PageLayout title={`PK-SPORT | ${stadiumName}`} {...rest}>
+    <PageLayout title={`PK-SPORT | ${stadiumId}`} {...rest}>
       <div className={classes.root}>
         <div className={classes.pictureContainer}>
           <img className={classes.pictureProperties} src='/assets/picture/test1.jpg' alt="ຮູບ logo ຂອງເດີ່ນ" />
@@ -94,24 +124,14 @@ const StadiumDetails = ({...rest}) => {
                   key={index}
                   label={items.title}
                   icon={items.icon}
-                  {...a11yProps(index)}
+                  onClick={() => history.push(`${url}${items.path}`)}
                 />
               );
             })}
           </Tabs>
         </AppBar>
       </div>
-      <Switch>
-        <Route path={`/stadium/${stadiumName}/order`}>
-          <h3>haha</h3>
-        </Route>
-        <Route path={`/stadium/${stadiumName}/post`}>
-          <h3>post</h3>
-        </Route>
-        <Route path="/statdium">
-          <Redirect to={`/stadium/${stadiumName}/order`} />
-        </Route>
-      </Switch>
+      <RoutesChildComponentsUser tabChange={tabChange}/>
     </PageLayout>
   );
 };

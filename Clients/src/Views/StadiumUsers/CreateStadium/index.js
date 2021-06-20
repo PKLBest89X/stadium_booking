@@ -101,7 +101,7 @@ const CreateStadium = () => {
     if (adminToken && adminToken.token) {
       dispatch(fetchAuthAdmin(adminToken.token));
     }
-  }, [data, addSuccess, dispatch]);
+  }, [addSuccess, dispatch]);
   useMemo(() => {
     data.forEach((items) => {
       return (stateRef.current = items);

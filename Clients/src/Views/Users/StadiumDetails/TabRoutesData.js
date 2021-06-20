@@ -4,18 +4,23 @@ import PersonPinIcon from "@material-ui/icons/PersonPin";
 
 export const tabRoutesData = [
   {
-    title: "ເລື່ອງລາວ",
-    pathName: "post",
+    title: "ໜ້າຫຼັກ",
+    path: "",
     icon: <ShoppingBasket />,
   },
   {
-    title: "ຂໍ້ມູນເດີ່ນ",
-    pathName: "stadium_details",
+    title: "Post ຂອງເດີ່ນ",
+    path: "/posts",
+    icon: <ShoppingBasket />,
+  },
+  {
+    title: "ກ່ຽວກັບເດີ່ນ",
+    path: "/information",
     icon: <FavoriteIcon />,
   },
   {
     title: "ຈອງເດີ່ນ",
-    pathName: "stadium_order",
+    path: "/stadium-booking",
     icon: <PersonPinIcon />,
   },
 ];
