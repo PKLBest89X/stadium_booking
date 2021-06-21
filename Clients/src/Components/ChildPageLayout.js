@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   pageContainer: {
-    padding: "3rem",
+    padding: "1rem 3rem",
     [theme.breakpoints.down("xs")]: {
       padding: "1rem",
     },

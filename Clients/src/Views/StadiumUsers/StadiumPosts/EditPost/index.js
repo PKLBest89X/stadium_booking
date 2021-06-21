@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import PageLayout from "../../../../Components/PageLayout";
 import { fetchCheckStadium } from "../../../../middlewares/fetchCheckValidData/fetchCheckValidData";
 import { useHistory, useParams } from "react-router-dom";
@@ -7,6 +13,7 @@ import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUs
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
+import { fetchGetPostById } from "../../../../middlewares/stadiumUser/fetchPost/fetchPost";
 import {
   Container,
   Typography,
@@ -47,25 +54,45 @@ const useStyles = makeStyles((theme) => ({
     display: "block",
     width: "100%",
     margin: "1em auto",
-    borderRadius: '5px'
+    borderRadius: "5px",
   },
 }));
 
-const EditPost = ({ ...rest }) => {
+const EditPost = React.memo(({ ...rest }) => {
   const classes = useStyles();
-  const imagePostRef = useRef(null);
+  const { checkResult } = useShallowEqualSelector((state) => state.validData);
+  const { postsData } = useShallowEqualSelector((state) => state.posts);
+  const { stadiumId_Admin, postId } = useParams();
   const [postState, setPostState] = useState({
     post_title: "",
     post_details: "",
     stadium_postImage: null,
+    stadium_postImageName: "",
   });
-  const [testImage, setTestImage] = useState(
-    "/assets/images/adminPics/postPics/addImage.jpg"
-  );
-  const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { stadiumId_Admin } = useParams();
+  const imagePostRef = useRef("");
+  const [testImage, setTestImage] = useState("");
+  const [paramsState] = useState({
+    stadiumId: stadiumId_Admin,
+    postId,
+  });
   const history = useHistory();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchGetPostById(paramsState));
+  }, [dispatch, paramsState]);
+
+  useEffect(() => {
+    postsData.forEach((items) => {
+      setPostState((prev) => ({
+        ...prev,
+        post_title: items.post_title,
+        post_details: items.pt_description,
+        stadium_postImageName: items.post_img
+      }));
+      setTestImage(`/assets/images/adminPics/postPics/${items.post_img}`);
+    });
+  }, [postsData]);
 
   useEffect(() => {
     const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
@@ -85,7 +112,6 @@ const EditPost = ({ ...rest }) => {
     }
   }, [history, checkResult]);
 
-  
   const onPostDescriptionChange = useCallback((event) => {
     const { name, value } = event.target;
     setPostState((prev) => ({ ...prev, [name]: value }));
@@ -106,13 +132,16 @@ const EditPost = ({ ...rest }) => {
     }
   };
 
+
   return (
     <PageLayout title="Stadium | Edit Post" {...rest}>
       <div className={classes.pageContainer}>
         <Container maxwidth="md">
-          <form onSubmit={(event) => {
-            event.preventDefault();
-          }}>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+            }}
+          >
             <Box mb={3}>
               <Typography color="textPrimary" variant="h2">
                 ແກ້ໄຂ Post ຂອງເດີ່ນ
@@ -155,7 +184,7 @@ const EditPost = ({ ...rest }) => {
                     <textarea
                       className={classes.textarea}
                       name="post_details"
-                      value={postState.stadium_post}
+                      value={postState.post_details}
                       type="text"
                       placeholder="ລາຍລະອຽດ Post"
                       rows={20}
@@ -181,6 +210,6 @@ const EditPost = ({ ...rest }) => {
       </div>
     </PageLayout>
   );
-};
+});
 
 export default EditPost;

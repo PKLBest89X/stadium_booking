@@ -57,9 +57,7 @@ const SidebarLayout = () => {
   const dispatch = useDispatch();
 
   useMemo(() => {
-    data.forEach((items) => {
-      return (stateRef.current = items);
-    });
+    data.forEach((items) => (stateRef.current = items));
   }, [data]);
 
   // ພາກສ່ວນຂອງ sidebar

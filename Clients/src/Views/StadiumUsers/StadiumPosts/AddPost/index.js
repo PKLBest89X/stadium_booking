@@ -5,6 +5,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUsers";
 import { userNow } from "../../../../Slices/Authentication/authSlice";
+import { fetchAddPost } from "../../../../middlewares/stadiumUser/fetchPost/fetchPost";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Container,
@@ -103,13 +104,22 @@ const AddPost = ({ ...rest }) => {
       return;
     }
   };
+
+  const onAddPost = (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append('stadium_id', stadiumId_Admin);
+    formData.append('post_title', postState.post_title);
+    formData.append('description', postState.post_details);
+    formData.append('sampleFile', postState.stadium_postImage);
+    dispatch(fetchAddPost(formData));
+  }
+
   return (
     <PageLayout title="Stadium | Add Post" {...rest}>
       <div className={classes.pageContainer}>
         <Container maxwidth="md">
-          <form onSubmit={(event) => {
-            event.preventDefault();
-          }}>
+          <form onSubmit={onAddPost}>
             <Box mb={3}>
               <Typography color="textPrimary" variant="h2">
                 ສ້າງ Post ຂອງເດີ່ນ

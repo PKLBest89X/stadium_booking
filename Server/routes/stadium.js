@@ -122,11 +122,11 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
                 
     
                 let logo = req.files.logo;
-                let uploadlogo = `${__dirname}../../Clients/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
+                let uploadlogo = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
                 let uploadlogoToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
         
                 let sampleFile = req.files.sampleFile;
-                let uploadPath = `${__dirname}../../Clients/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
+                let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
                 let uploadPathToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
 
                 logo.mv(uploadlogoToAdminFolder, (err) => {if (err) return res.status(500).send(err);});
@@ -221,7 +221,7 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
                                       res.sendStatus(403);
                                     } else {
                                       const admin_id = authData.data;
-                                      await db.query("select MAX(st_id) as useId from tbstadium", (er, result) => {
+                                      await db.query("select st_id as useId from tbstadium order by st_id desc limit 0,1", (er, result) => {
                                         if (er) {
                                           console.log(er);
                                         } else {

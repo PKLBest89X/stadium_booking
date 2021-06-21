@@ -114,6 +114,7 @@ router.post("/register", async (req, res) => {
   const nm = req.body.datas.firstName;
   const sn = req.body.datas.lastName;
   const ph = req.body.datas.phone;
+  const pf = 'default.jpg';
 
   await db.query("call check_user_email(?)", [email], (err, result) => {
     if (result[0].length > 0) {
@@ -123,7 +124,7 @@ router.post("/register", async (req, res) => {
       if (!req.files) {
         bcrypt.hash(password, 10).then((hash) => {
           db.query(
-            "call user_add(?,?,?,?,?)",
+            "call user_add(?,?,?,?,?,?)",
             [email, hash, nm, sn, pf, ph],
             (err, result) => {
               if (err) {

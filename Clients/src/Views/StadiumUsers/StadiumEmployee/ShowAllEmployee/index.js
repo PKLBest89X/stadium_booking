@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import EmployeeTable from "./EmployeeTable";
 import EmployeeToolbar from "./EmployeeToolbar";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography, Box, Card } from "@material-ui/core";
+import { Typography, Box, Divider } from "@material-ui/core";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
@@ -44,7 +44,13 @@ const StadiumEmployee = ({ ...rest }) => {
   }, [history, checkResult]);
 
   const ShowEmptyEmployee = () => (
-    <Box display="flex" justifyContent="center" alignItems="center" p={10} boxShadow="1px 1px 3px 1px rgba(0, 0, 0, .5)">
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      p={10}
+      boxShadow="1px 1px 3px 1px rgba(0, 0, 0, .5)"
+    >
       <Typography variant="h3">ບໍ່ມີພະນັກງານຂອງເດີ່ນ</Typography>
     </Box>
   );
@@ -52,8 +58,16 @@ const StadiumEmployee = ({ ...rest }) => {
   return (
     <PageLayout title="Stadium Employee" {...rest}>
       <div className={classes.pageContainer}>
-        <EmployeeToolbar />
-        {employeesData.length > 0 ? <EmployeeTable /> : <ShowEmptyEmployee />}
+        <Box mb={3}>
+          <Typography color="textPrimary" variant="h2">
+            ພະນັກງານຂອງເດີ່ນ
+          </Typography>
+        </Box>
+        <Divider />
+        <Box mt={3}>
+          <EmployeeToolbar />
+          {employeesData.length > 0 ? <EmployeeTable /> : <ShowEmptyEmployee />}
+        </Box>
       </div>
     </PageLayout>
   );

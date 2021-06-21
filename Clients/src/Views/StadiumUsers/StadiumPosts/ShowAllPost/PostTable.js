@@ -4,9 +4,9 @@ import moment from "moment";
 import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
 import { useRouteMatch, useHistory } from "react-router-dom";
+import { Avatar, Box, Typography } from "@material-ui/core";
 
 import TabPostControl from "./TabPostControl";
-import { postsData } from "./postsData";
 import {
   IconButton,
   Card,
@@ -25,13 +25,11 @@ const useStyles = makeStyles({
   },
   btnAction: {
     minWidth: 90,
-    "& > IconButton": {
-
-    },
+    "& > IconButton": {},
   },
 });
 
-const PostTable = () => {
+const PostTable = React.memo(({ posts }) => {
   const classes = useStyles();
   const history = useHistory();
   const { url } = useRouteMatch();
@@ -39,7 +37,7 @@ const PostTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, postsData.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, posts.length - page * rowsPerPage);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -57,25 +55,37 @@ const PostTable = () => {
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox">
-                <Checkbox />
+                <Box display="flex" alignItems="center">
+                  <Checkbox />
+                  <Typography variant="h5">ລະຫັດ Post</Typography>
+                </Box>
               </TableCell>
-              <TableCell align="center">ຫົວຂໍ້ Post</TableCell>
+              <TableCell align="center">
+                <Typography variant="h5">ຫົວຂໍ້ Post</Typography>
+              </TableCell>
               {/* <TableCell>ຮູບ Post</TableCell> */}
-              <TableCell align="center">ມື້ Post</TableCell>
-              <TableCell align="center">Action</TableCell>
+              <TableCell align="center">
+                <Typography variant="h5">ມື້ Post</Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="h5">Action</Typography>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? postsData.slice(
+              ? posts.slice(
                   page * rowsPerPage,
                   page * rowsPerPage + rowsPerPage
                 )
-              : postsData
+              : posts
             ).map((row) => (
-              <TableRow key={row.post_id}>
-                <TableCell padding="checkbox">
-                  <Checkbox />
+              <TableRow key={row.pt_id}>
+                <TableCell padding="checkbox" component="th">
+                  <Box display="flex" alignItems="center">
+                    <Checkbox />
+                    <Typography variant="h5">{row.pt_id}</Typography>
+                  </Box>
                 </TableCell>
                 <TableCell
                   component="th"
@@ -83,14 +93,34 @@ const PostTable = () => {
                   style={{ width: 160 }}
                   align="left"
                 >
-                  {row.post_title}
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="flex-start"
+                  >
+                    <Box marginRight="1em">
+                      <Avatar
+                        src={`/assets/images/adminPics/postPics/${row.post_img}`}
+                        alt={row.post_title}
+                      />
+                    </Box>
+                    <Box>
+                      <Typography variant="h5">{row.post_title} </Typography>
+                    </Box>
+                  </Box>
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
-                  {moment(row.post_date).format("DD/MM/YYYY")}
+                  <Typography variant="h5">
+                    {moment(row.post_date).format("DD/MM/YYYY")}
+                  </Typography>
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
                   <div className={classes.btnAction}>
-                    <IconButton onClick={() => history.push(`${url}/edit-post/${row.post_id}`)}>
+                    <IconButton
+                      onClick={() =>
+                        history.push(`${url}/edit-post/${row.pt_id}`)
+                      }
+                    >
                       <Edit />
                     </IconButton>
                     <IconButton>
@@ -113,7 +143,7 @@ const PostTable = () => {
         component="div"
         rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
         colSpan={3}
-        count={postsData.length}
+        count={posts.length}
         rowsPerPage={rowsPerPage}
         page={page}
         SelectProps={{
@@ -126,6 +156,6 @@ const PostTable = () => {
       />
     </Card>
   );
-};
+});
 
 export default PostTable;
