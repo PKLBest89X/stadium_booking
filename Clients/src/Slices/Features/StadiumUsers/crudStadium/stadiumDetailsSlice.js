@@ -11,27 +11,27 @@ const stadiumDetailsSlice = createSlice({
     name: 'stadiumDetails',
     initialState,
     reducers: {},
-    extraReducers: {
-        [fetchAddStadiumDetails.pending]: (state, action) => {
+    extraReducers: (builder) => {
+        builder.addCase(fetchAddStadiumDetails.pending, (state, action) => {
             state.addStadiumsLoading = true;
-        },
-        [fetchAddStadiumDetails.fulfilled]: (state, action) => {
+        })
+        builder.addCase(fetchAddStadiumDetails.fulfilled, (state, action) => {
             state.addDetailsLoading = false;
             state.stadiumsData.push(action.payload);
-        },
-        [fetchAddStadiumDetails.rejected]: (state, action) => {
+        })
+        builder.addCase(fetchAddStadiumDetails.rejected, (state, action) => {
             state.addStadiumsLoading = false;
             state.addStadiumsError = action.payload
-        },
-        [fetchUpdateStadiumDetails.pending]: (state, action) => {
+        })
+        builder.addCase(fetchUpdateStadiumDetails.pending, (state, action) => {
 
-        },
-        [fetchUpdateStadiumDetails.fulfilled]: (state, action) => {
+        })
+        builder.addCase(fetchUpdateStadiumDetails.fulfilled, (state, action) => {
 
-        },
-        [fetchUpdateStadiumDetails.rejected]: (state, action) => {
+        })
+        builder.addCase(fetchUpdateStadiumDetails.rejected, (state, action) => {
 
-        },
+        })
     },
 });
 

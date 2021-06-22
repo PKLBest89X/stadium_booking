@@ -11,27 +11,27 @@ const crudStadiumSlice = createSlice({
     name: 'crudStadium',
     initialState,
     reducers: {},
-    extraReducers: {
-        [fetchAddStadium.pending]: (state, action) => {
+    extraReducers: (builder) => {
+        builder.addCase(fetchAddStadium.pending, (state, action) => {
             state.addLoading = true;
-        },
-        [fetchAddStadium.fulfilled]: (state, action) => {
+        })
+        builder.addCase(fetchAddStadium.fulfilled, (state, action) => {
             state.addLoading = false;
             state.addSuccess = action.payload
-        },
-        [fetchAddStadium.rejected]: (state, action) => {
+        })
+        builder.addCase(fetchAddStadium.rejected, (state, action) => {
             state.addLoading = false;
             state.addError = action.payload
-        },
-        [fetchUpdateStadium.pending]: (state, action) => {
+        })
+        builder.addCase(fetchUpdateStadium.pending, (state, action) => {
 
-        },
-        [fetchUpdateStadium.fulfilled]: (state, action) => {
+        })
+        builder.addCase(fetchUpdateStadium.fulfilled, (state, action) => {
 
-        },
-        [fetchUpdateStadium.rejected]: (state, action) => {
+        })
+        builder.addCase(fetchUpdateStadium.rejected, (state, action) => {
 
-        },
+        })
     },
 });
 

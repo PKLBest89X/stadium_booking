@@ -27,6 +27,18 @@ function verifyToken(req, res, next) {
     }
   } // function ແປງ token ເປັນຂໍ້ມູນ
 
+
+  router.get('/detail/:st_id', (req,res) => {
+    const stadium_id = req.params.st_id;
+    db.query("call stadium_detail(?)", [stadium_id], (err, result) => {
+        if(err){
+            res.status(400)
+            console.log(err)
+        }else{          
+            res.status(200).send(result[0])
+        }
+    })
+}) // ສະແດງລາຍລະອຽດຂອງເດີ່ນນັ້ນໆ ||||||||||||||||||||||||||||||||||||||||||||||||||
   
 router.get('/checkValidData/:stadiumId_Admin', async function(req,res,next){
     const stadium_id = req.params.stadiumId_Admin
@@ -108,7 +120,7 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
     
     db.query("select MAX(st_id) as mid from tbstadium", (err,result) => {
         if(result[0] === null){
-            const stadium_id = "st1";
+            const stadium_id = "st00000001";
             if(!req.files){
                 res.status(500)
                 res.send("Please choose the image");
@@ -176,7 +188,14 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
             }
 
         }else{
-            const stadium_id = "st" + (parseInt(result[0].mid.substring(2),10)+1);
+            const number_id = parseInt(result[0].mid.substring(2),10)+1;
+            const str_id = number_id.toString();
+            var nid = "";
+            const txt = str_id.length;
+            for(let i = parseInt(txt); i < 8; i++){
+                nid=nid+"0";
+            }
+            const stadium_id = "st" + nid+""+str_id;
             if(!req.files){
                 res.status(500)
                 res.send("Please choose the image");

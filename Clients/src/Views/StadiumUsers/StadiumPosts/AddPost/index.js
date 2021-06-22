@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   previewPicture: {
     display: "block",
     width: "100%",
-    borderRadius: '5px'
+    borderRadius: "5px",
   },
 }));
 
@@ -108,12 +108,13 @@ const AddPost = ({ ...rest }) => {
   const onAddPost = (event) => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append('stadium_id', stadiumId_Admin);
-    formData.append('post_title', postState.post_title);
-    formData.append('description', postState.post_details);
-    formData.append('sampleFile', postState.stadium_postImage);
+    formData.append("stadium_id", stadiumId_Admin);
+    formData.append("post_title", postState.post_title);
+    formData.append("description", postState.post_details);
+    formData.append("sampleFile", postState.stadium_postImage);
     dispatch(fetchAddPost(formData));
-  }
+    console.log(formData);
+  };
 
   return (
     <PageLayout title="Stadium | Add Post" {...rest}>
@@ -135,7 +136,12 @@ const AddPost = ({ ...rest }) => {
             </div>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={6} lg={6} xl={4}>
-                <Box border="1px solid #b5aba4" mb={2} mt={2} borderRadius="5px">
+                <Box
+                  border="1px solid #b5aba4"
+                  mb={2}
+                  mt={2}
+                  borderRadius="5px"
+                >
                   <img
                     className={classes.previewPicture}
                     src={testImage}

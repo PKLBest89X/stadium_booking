@@ -11,36 +11,36 @@ const crudStadiumOwnerSlice = createSlice({
     name: 'crudSO',
     initialState,
     reducers: {},
-    extraReducers: {
-        [addStadiumOwner.pending]: (state, action) => {
+    extraReducers: (builder) => {
+        builder.addCase(addStadiumOwner.pending, (state, action) => {
             state.loading = true;
-        },
-        [addStadiumOwner.fulfilled]: (state, action) => {
+        })
+        builder.addCase(addStadiumOwner.fulfilled, (state, action) => {
             state.loading = false;
             state.data.push(action.payload);
-        },
-        [addStadiumOwner.rejected]: (state, action) => {
+        })
+        builder.addCase(addStadiumOwner.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload
-        },        
-        [updateStadiumOwner.pending]: (state, action) => {
+        })       
+        builder.addCase(updateStadiumOwner.pending, (state, action) => {
 
-        },
-        [updateStadiumOwner.fulfilled]: (state, action) => {
+        })
+        builder.addCase(updateStadiumOwner.fulfilled, (state, action) => {
 
-        },
-        [updateStadiumOwner.rejected]: (state, action) => {
+        })
+        builder.addCase(updateStadiumOwner.rejected, (state, action) => {
             
-        },
-        [deleteStadiumOwner.pending]: (state, action) => {
+        })
+        builder.addCase(deleteStadiumOwner.pending,(state, action) => {
 
-        },
-        [deleteStadiumOwner.fulfilled]: (state, action) => {
+        })
+        builder.addCase(deleteStadiumOwner.fulfilled, (state, action) => {
 
-        },
-        [deleteStadiumOwner.rejected]: (state, action) => {
+        })
+        builder.addCase(deleteStadiumOwner.rejected, (state, action) => {
             
-        }
+        })
     },
 })
 

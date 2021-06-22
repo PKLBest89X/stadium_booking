@@ -11,27 +11,27 @@ const stadiumDetailsSlice = createSlice({
     name: 'stadiumDrink',
     initialState,
     reducers: {},
-    extraReducers: {
-        [fetchAddStadiumDrink.pending]: (state, action) => {
+    extraReducers: (builder) => {
+        builder.addCase(fetchAddStadiumDrink.pending, (state, action) => {
             state.addDrinkLoading = true;
-        },
-        [fetchAddStadiumDrink.fulfilled]: (state, action) => {
+        })
+        builder.addCase(fetchAddStadiumDrink.fulfilled, (state, action) => {
             state.addDrinkLoading = false;
             state.drinksData.push(action.payload);
-        },
-        [fetchAddStadiumDrink.rejected]: (state, action) => {
+        })
+        builder.addCase(fetchAddStadiumDrink.rejected, (state, action) => {
             state.addDrinkLoading = false;
             state.addDrinkError = action.payload
-        },
-        [fetchUpdateStadiumDrink.pending]: (state, action) => {
+        })
+        builder.addCase(fetchUpdateStadiumDrink.pending, (state, action) => {
 
-        },
-        [fetchUpdateStadiumDrink.fulfilled]: (state, action) => {
+        })
+        builder.addCase(fetchUpdateStadiumDrink.fulfilled, (state, action) => {
 
-        },
-        [fetchUpdateStadiumDrink.rejected]: (state, action) => {
+        })
+        builder.addCase(fetchUpdateStadiumDrink.rejected, (state, action) => {
 
-        },
+        })
     },
 });
 

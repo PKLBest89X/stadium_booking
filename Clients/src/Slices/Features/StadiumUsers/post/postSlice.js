@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { history } from '../../../../Components/history'
+import { history } from "../../../../Components/history";
 import {
   fetchGetPost,
   fetchGetPostById,
@@ -11,92 +11,117 @@ import {
 const initialState = {
   postLoading: false,
   postsData: [],
+  postsDataById: [],
   postSuccess: null,
   postRequestId: undefined,
   postError: null,
 };
 
 const postSlice = createSlice({
-  name: "posts",
+  name: "postsgg",
   initialState,
-  reducers: {},
-  extraReducers: {
-    [fetchGetPost.pending]: (state, action) => {
+  reducers: {
+    onDeletePost: (state, action) => {
+      state.postsData = state.postsData.filter(
+        (items) => items.pt_id !== action.payload.postId
+      );
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchGetPost.pending, (state, action) => {
       state.postLoading = true;
       if (state.postLoading === true) {
         state.postRequestId = action.meta.requestId;
       }
-    },
-    [fetchGetPost.fulfilled]: (state, action) => {
-      if (state.postLoading === true && state.postRequestId === action.meta.requestId) {
+    });
+    builder.addCase(fetchGetPost.fulfilled, (state, action) => {
+      if (
+        state.postLoading === true &&
+        state.postRequestId === action.meta.requestId
+      ) {
         state.postLoading = false;
         state.postRequestId = undefined;
         state.postSuccess = true;
         state.postsData = [];
         state.postsData = action.payload;
       }
-    },
-    [fetchGetPost.rejected]: (state, action) => {
-      if (state.postLoading === true && state.postRequestId === action.meta.requestId) {
+    });
+    builder.addCase(fetchGetPost.rejected, (state, action) => {
+      if (
+        state.postLoading === true &&
+        state.postRequestId === action.meta.requestId
+      ) {
         state.postLoading = false;
         state.postRequestId = undefined;
         state.postSuccess = false;
         state.postError = action.payload;
       }
-    },
-    [fetchGetPostById.pending]: (state, action) => {
+    });
+    builder.addCase(fetchGetPostById.pending, (state, action) => {
       state.postLoading = true;
       if (state.postLoading === true) {
         state.postRequestId = action.meta.requestId;
       }
-    },
-    [fetchGetPostById.fulfilled]: (state, action) => {
-      if (state.postLoading === true && state.postRequestId === action.meta.requestId) {
+    });
+    builder.addCase(fetchGetPostById.fulfilled, (state, action) => {
+      if (
+        state.postLoading === true &&
+        state.postRequestId === action.meta.requestId
+      ) {
         state.postLoading = false;
         state.postRequestId = undefined;
         state.postSuccess = true;
-        state.postsData = [];
-        state.postsData.push(action.payload);
+        state.postsDataById = [];
+        state.postsDataById.push(action.payload);
       }
-    },
-    [fetchGetPost.rejected]: (state, action) => {
-      if (state.postLoading === true && state.postRequestId === action.meta.requestId) {
+    });
+    builder.addCase(fetchGetPostById.rejected, (state, action) => {
+      if (
+        state.postLoading === true &&
+        state.postRequestId === action.meta.requestId
+      ) {
         state.postLoading = false;
         state.postRequestId = undefined;
         state.postSuccess = false;
         state.postError = action.payload;
       }
-    },
-    [fetchAddPost.pending]: (state, action) => {
+    });
+    builder.addCase(fetchAddPost.pending, (state, action) => {
       state.postLoading = true;
-    },
-    [fetchAddPost.fulfilled]: (state, action) => {
+    });
+    builder.addCase(fetchAddPost.fulfilled, (state, action) => {
       state.postLoading = false;
       history.back();
-    },
-    [fetchAddPost.rejected]: (state, action) => {
+    });
+    builder.addCase(fetchAddPost.rejected, (state, action) => {
       state.postLoading = false;
       state.postError = action.payload;
-    },
-    [fetchUpdatePost.pending]: (state, action) => {
+    });
+    builder.addCase(fetchUpdatePost.pending, (state, action) => {
       state.postLoading = true;
-    },
-    [fetchUpdatePost.fulfilled]: (state, action) => {
+    });
+    builder.addCase(fetchUpdatePost.fulfilled, (state, action) => {
       state.postLoading = false;
-    },
-    [fetchUpdatePost.rejected]: (state, action) => {
+      history.back();
+    });
+    builder.addCase(fetchUpdatePost.rejected, (state, action) => {
       state.postLoading = false;
-    },
-    [fetchDeletePost.pending]: (state, action) => {
+      state.postError = action.payload;
+      state.postSuccess = false;
+    });
+    builder.addCase(fetchDeletePost.pending, (state, action) => {
       state.postLoading = true;
-    },
-    [fetchDeletePost.fulfilled]: (state, action) => {
+    });
+    builder.addCase(fetchDeletePost.fulfilled, (state, action) => {
       state.postLoading = false;
-    },
-    [fetchDeletePost.rejected]: (state, action) => {
+      state.postSuccess = true;
+    });
+    builder.addCase(fetchDeletePost.rejected, (state, action) => {
       state.postLoading = false;
-    },
+      state.postSuccess = false;
+      state.postError = action.payload;
+    });
   },
 });
-
+export const { onDeletePost } = postSlice.actions;
 export default postSlice.reducer;

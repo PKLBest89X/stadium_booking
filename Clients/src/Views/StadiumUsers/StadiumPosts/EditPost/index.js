@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import PageLayout from "../../../../Components/PageLayout";
 import { fetchCheckStadium } from "../../../../middlewares/fetchCheckValidData/fetchCheckValidData";
 import { useHistory, useParams } from "react-router-dom";
@@ -14,6 +8,7 @@ import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { fetchGetPostById } from "../../../../middlewares/stadiumUser/fetchPost/fetchPost";
+import { fetchUpdatePost } from "../../../../middlewares/stadiumUser/fetchPost/fetchPost";
 import {
   Container,
   Typography,
@@ -61,16 +56,20 @@ const useStyles = makeStyles((theme) => ({
 const EditPost = React.memo(({ ...rest }) => {
   const classes = useStyles();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { postsData } = useShallowEqualSelector((state) => state.posts);
+  const { postsDataById } = useShallowEqualSelector((state) => state.posts);
   const { stadiumId_Admin, postId } = useParams();
   const [postState, setPostState] = useState({
+    post_id: '',
+    stadium_id: '',
     post_title: "",
     post_details: "",
     stadium_postImage: null,
     stadium_postImageName: "",
   });
   const imagePostRef = useRef("");
-  const [testImage, setTestImage] = useState("");
+  const [testImage, setTestImage] = useState(
+    "/assets/images/postPics/addImage.jpg"
+  );
   const [paramsState] = useState({
     stadiumId: stadiumId_Admin,
     postId,
@@ -83,16 +82,19 @@ const EditPost = React.memo(({ ...rest }) => {
   }, [dispatch, paramsState]);
 
   useEffect(() => {
-    postsData.forEach((items) => {
+    postsDataById.forEach((items) => {
       setPostState((prev) => ({
         ...prev,
+        post_id: postId,
+        stadium_id: stadiumId_Admin,
         post_title: items.post_title,
         post_details: items.pt_description,
-        stadium_postImageName: items.post_img
+        stadium_postImageName: items.post_img,
       }));
       setTestImage(`/assets/images/adminPics/postPics/${items.post_img}`);
     });
-  }, [postsData]);
+    return () => setTestImage("/assets/images/postPics/addImage.jpg");
+  }, [postsDataById, stadiumId_Admin, postId]);
 
   useEffect(() => {
     const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
@@ -132,16 +134,23 @@ const EditPost = React.memo(({ ...rest }) => {
     }
   };
 
+  const onUpdatePost = (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("postId", postState.post_id);
+    formData.append("stadiumId", postState.stadium_id);
+    formData.append("post_title", postState.post_title);
+    formData.append("post_description", postState.post_details);
+    formData.append("sampleFile", postState.stadium_postImage);
+    formData.append("statdium_postImageName", postState.stadium_postImageName);
+    dispatch(fetchUpdatePost(formData));
+  };
 
   return (
     <PageLayout title="Stadium | Edit Post" {...rest}>
       <div className={classes.pageContainer}>
         <Container maxwidth="md">
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-            }}
-          >
+          <form onSubmit={onUpdatePost}>
             <Box mb={3}>
               <Typography color="textPrimary" variant="h2">
                 ແກ້ໄຂ Post ຂອງເດີ່ນ

@@ -10,18 +10,18 @@ const validDataSlice = createSlice({
   name: "validData",
   initialState,
   reducers: {},
-  extraReducers: {
-    [fetchCheckStadium.pending]: (state, action) => {
+  extraReducers: (builder) => {
+    builder.addCase(fetchCheckStadium.pending, (state, action) => {
       state.checkLoading = true;
-    },
-    [fetchCheckStadium.fulfilled]: (state, action) => {
+    });
+    builder.addCase(fetchCheckStadium.fulfilled, (state, action) => {
       state.checkLoading = false;
       state.checkResult = action.payload;
-    },
-    [fetchCheckStadium.rejected]: (state, action) => {
+    });
+    builder.addCase(fetchCheckStadium.rejected, (state, action) => {
       state.checkLoading = false;
       state.checkResult = action.payload;
-    },
+    });
   },
 });
 

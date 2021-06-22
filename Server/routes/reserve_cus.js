@@ -20,7 +20,7 @@ router.get('/', async function(req,res,next){
             console.log(err);
         }else{
             res.status(200)
-            res.send(result);
+            res.send(result[0]);
         }
     })
 }) // ສະແດງລາຍການຈອງລູກຄ້າທີ່ມີບັນຊີ ||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -38,38 +38,35 @@ router.get('/', async function(req,res,next){
 //     })
 // }) //Test sue2
 
-router.put('/accept', async (req,res) => {
-    const book_id = req.body.b_id;
-    const stadium_id = req.body.st_id;
 
-    db.query("select time_cancelbooking from tbstadium where st_id=?", [stadium_id], (err,resu) => {
-        const timecancel = resu[0].time_cancelbooking;
-        db.query("call reserve_confirm_cus(?,?,?)", [stadium_id,timecancel,book_id], (er,result) => {
-            if(er){
-                res.status(400)
-                console.log(er);
-            }else{
-                res.status(200)
-                res.send(result);
-            }
-        })
-    })
-}) // ຢືນຢັນການຈອງ ||||||||||||||||||||||||||||||||||||||||||||||||||
+// router.post('/tt', async (req,res) => {
+//     // const data = [["a","b","c"],[1,2,3]]
+
+//     // res.send(data[0][0]+" "+data[0][1]+" "+data[0][2])
+
+//     const data = req.body.data;
+
+//     for(let i=0; i < data.length; i++){
+//             console.log(data[i].fid + data[i].name + data[i].price)
+//     }
+//     res.send(data[0].fid);
+// }) //Test sue2
+
 
 router.post('/booking', async (req,res) => {
-    
     
     const customer_id = req.body.c_id;
     
     db.query("select b_id,booking_status,paid_status from tbbooking where c_id=? ORDER BY b_id DESC LIMIT 0, 1", [customer_id], (err,resu) => {
-        if(resu[0].booking_status == "ຍັງບໍ່ຈອງ" && resu[0].paid_status == "ຍັງບໍ່ຈ່າຍ"){
+        if((resu[0].booking_status === "ຍັງບໍ່ຈອງ" && resu[0].paid_status === "ຍັງບໍ່ຈ່າຍ") || (resu[0].booking_status === "ຈອງແລ້ວ" && resu[0].paid_status === "ຍັງບໍ່ຈ່າຍ")){
             res.status(200).send((resu[0].b_id).toString());
         }else{
+            
             db.query("call reserve_cus(?)", [customer_id], (err, resul) => { 
                 if(err){
                     res.status(400)
-                    
                     console.log(err);
+                    res.send("Something Wrong")
                 }else{
                     db.query("select b_id,booking_status,paid_status from tbbooking where c_id=? ORDER BY b_id DESC LIMIT 0, 1", [customer_id], (err,bid) => {
                         if(err) return res.send(err).status(400)
@@ -83,18 +80,6 @@ router.post('/booking', async (req,res) => {
 
 }) // ເພີ່ມລາຍການຈອງ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
-// router.post('/tt', async (req,res) => {
-//     // const data = [["a","b","c"],[1,2,3]]
-
-//     // res.send(data[0][0]+" "+data[0][1]+" "+data[0][2])
-
-//     const data = req.body.data;
-
-//     for(let i=0; i < data.length; i++){
-//             console.log(data[i].fid + data[i].name + data[i].price)
-//     }
-//     res.send(data[0].fid);
-// })
 
 router.post('/bookingfield', async (req,res) => {
     const data = req.body.data;
@@ -131,6 +116,37 @@ router.post('/bookingfield', async (req,res) => {
         
 }) // ເຮັດການຈອງໃຫ້ລູກຄ້າທີ່ມີບັນຊີ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
+
+router.put('/accept', async (req,res) => {
+    const book_id = req.body.b_id;
+    const stadium_id = req.body.st_id;
+
+    db.query("select time_cancelbooking from tbstadium where st_id=?", [stadium_id], (err,resu) => {
+        const timecancel = resu[0].time_cancelbooking;
+        if(timecancel === 0){
+            db.query("call reserve_confirm_cus_notime(?,?)", [stadium_id,book_id], (er,result) => {
+                if(er){
+                    res.status(400)
+                    console.log(er);
+                }else{
+                    res.status(200)
+                    res.send(result);
+                }
+            })
+        }else{
+            db.query("call reserve_confirm_cus(?,?,?)", [stadium_id,timecancel,book_id], (er,result) => {
+                if(er){
+                    res.status(400)
+                    console.log(er);
+                }else{
+                    res.status(200)
+                    res.send(result);
+                }
+            })
+        }
+        
+    })
+}) // ຢືນຢັນການຈອງ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
 module.exports = router;

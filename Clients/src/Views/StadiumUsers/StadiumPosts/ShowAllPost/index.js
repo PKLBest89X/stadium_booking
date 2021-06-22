@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => ({
 const StadiumPosts = React.memo(({ ...rest }) => {
   const classes = useStyles();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { postsData, postSuccess } = useShallowEqualSelector(
+  const { postSuccess } = useShallowEqualSelector(
     (state) => state.posts
   );
   const { stadiumId_Admin } = useParams();
@@ -73,7 +73,7 @@ const StadiumPosts = React.memo(({ ...rest }) => {
         <Divider />
         <Box mt={3}>
           <PostToolbar />
-          {postSuccess === true && <PostTable posts={postsData} />}
+          {postSuccess === true && <PostTable />}
           {postSuccess === false && <ShowEmptyPost />}
         </Box>
       </div>

@@ -34,82 +34,82 @@ const authSlice = createSlice({
       window.location.reload();
     },
   },
-  extraReducers: {
+  extraReducers: (builder) => {
     //ເປັນ process ຂອງຝັ່ງລູກຄ້າໃນການ set state ຫຼັງຈາກ ຮັບ response
-    [fetchLoginUser.pending]: (state, action) => {
+    builder.addCase(fetchLoginUser.pending, (state, action) => {
       state.loading = true;
-    },
-    [fetchLoginUser.fulfilled]: (state, action) => {
+    })
+    builder.addCase(fetchLoginUser.fulfilled, (state, action) => {
       state.loading = false;
       localStorage.setItem("accessUserToken", JSON.stringify(action.payload));
       history.push("/");
       window.location.reload();
-    },
-    [fetchLoginUser.rejected]: (state, action) => {
+    })
+    builder.addCase(fetchLoginUser.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
-    },
+    })
 
-    [fetchAuthUser.pending]: (state, action) => {
+    builder.addCase(fetchAuthUser.pending, (state, action) => {
       state.loading = true;
       if (state.loading === true) {
         state.currentRequestId = action.meta.requestId;
       }
-    },
-    [fetchAuthUser.fulfilled]: (state, action) => {
+    })
+    builder.addCase(fetchAuthUser.fulfilled, (state, action) => {
       const { requestId } = action.meta;
       if (state.loading === true && state.currentRequestId === requestId) {
         state.loading = false;
         state.data.push(action.payload);
         state.currentRequestId = undefined;
       }
-    },
-    [fetchAuthUser.rejected]: (state, action) => {
+    })
+    builder.addCase(fetchAuthUser.rejected, (state, action) => {
       const { requestId } = action.meta;
       if (state.loading === true && state.currentRequestId === requestId) {
         state.loading = false;
         state.error = action.payload;
         state.currentRequestId = undefined;
       }
-    },
-
+    })
     //ເປັນ process ຂອງຝັ່ງເຈົ້າຂອງເດີ່ນໃນການ set state ຫຼັງຈາກ ຮັບ response
-    [fetchLoginAdmin.pending]: (state, action) => {
+    builder.addCase(fetchLoginAdmin.pending, (state, action) => {
       state.loading = true;
-    },
-    [fetchLoginAdmin.fulfilled]: (state, action) => {
+    })
+    builder.addCase(fetchLoginAdmin.fulfilled, (state, action) => {
       state.loading = false;
       localStorage.setItem("accessAdminToken", JSON.stringify(action.payload));
       history.push("/admin/stadium/create");
       window.location.reload();
-    },
-    [fetchLoginAdmin.rejected]: (state, action) => {
+    })
+    builder.addCase(fetchLoginAdmin.rejected, (state, action) => {
       state.error = action.payload;
-    },
+      state.loading = false;
+    })
 
-    [fetchAuthAdmin.pending]: (state, action) => {
+    builder.addCase(fetchAuthAdmin.pending, (state, action) => {
       state.loading = true;
       if (state.loading === true) {
         state.currentRequestId = action.meta.requestId;
       }
-    },
-    [fetchAuthAdmin.fulfilled]: (state, action) => {
+    })
+    builder.addCase(fetchAuthAdmin.fulfilled, (state, action) => {
       const { requestId } = action.meta;
       if (state.loading === true && state.currentRequestId === requestId) {
         state.loading = false;
         state.data.push(action.payload);
         state.currentRequestId = undefined;
       }
-    },
-    [fetchAuthAdmin.rejected]: (state, action) => {
+    })
+    builder.addCase(fetchAuthAdmin.rejected, (state, action) => {
       const { requestId } = action.meta;
       if (state.loading === true && state.currentRequestId === requestId) {
         state.loading = false;
         state.error = action.payload;
         state.currentRequestId = undefined;
       }
-    },
-  },
+    })
+  }
 });
 
 export const { userNow, userLogOut, adminLogOut } = authSlice.actions;

@@ -6,7 +6,6 @@ const ImageUpdatePost = forwardRef(({ selected, ...rest }, ref) => {
     <>
       <input
         type="file"
-        required
         multiple
         accept="image/*"
         id="contained-button-file"

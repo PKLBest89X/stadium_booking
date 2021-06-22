@@ -11,27 +11,27 @@ const employeeSlice = createSlice({
     name: 'employee',
     initialState,
     reducers: {},
-    extraReducers: {
-        [fetchAddEmployee.pending]: (state, action) => {
+    extraReducers: (builder) => {
+        builder.addCase(fetchAddEmployee.pending, (state, action) => {
             state.addEmployeeLoading = true;
-        },
-        [fetchAddEmployee.fulfilled]: (state, action) => {
+        })
+        builder.addCase(fetchAddEmployee.fulfilled, (state, action) => {
             state.addEmployeeLoading = false;
             state.employeesData.push(action.payload);
-        },
-        [fetchAddEmployee.rejected]: (state, action) => {
+        })
+        builder.addCase(fetchAddEmployee.rejected, (state, action) => {
             state.addDetailsLoading = false;
             state.addDetailsError = action.payload
-        },
-        [fetchUpdateEmployee.pending]: (state, action) => {
+        })
+        builder.addCase(fetchUpdateEmployee.pending, (state, action) => {
 
-        },
-        [fetchUpdateEmployee.fulfilled]: (state, action) => {
+        })
+        builder.addCase(fetchUpdateEmployee.fulfilled, (state, action) => {
 
-        },
-        [fetchUpdateEmployee.rejected]: (state, action) => {
+        })
+        builder.addCase(fetchUpdateEmployee.rejected, (state, action) => {
 
-        },
+        })
     },
 });
 

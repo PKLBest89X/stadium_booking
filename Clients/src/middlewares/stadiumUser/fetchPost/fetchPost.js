@@ -54,9 +54,13 @@ export const fetchAddPost = createAsyncThunk(
 
 export const fetchUpdatePost = createAsyncThunk(
   "post/update",
-  async (allData, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
-      const updatePost = await Axios.put("http://localhost:5050/post/addPost");
+      const updatePost = await Axios.put(
+        `http://localhost:5050/post/postUpdate`,
+        data
+      );
+      return updatePost.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -65,8 +69,23 @@ export const fetchUpdatePost = createAsyncThunk(
 
 export const fetchDeletePost = createAsyncThunk(
   "post/delete",
-  async (params, { rejectWithValue }) => {
+  async (requestData, { rejectWithValue }) => {
+    const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
     try {
+      const deletePost = await Axios.delete(
+        "http://localhost:5050/post/postDelete",
+        {
+          headers: {
+            authorization: adminToken.token,
+          },
+          data: {
+            postId: requestData.postId,
+            stadiumId: requestData.stadiumId,
+            postImage: requestData.postImage
+          },
+        }
+      );
+      return deletePost.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }

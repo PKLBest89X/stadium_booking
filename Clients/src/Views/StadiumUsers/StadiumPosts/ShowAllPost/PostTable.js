@@ -5,6 +5,10 @@ import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
 import { useRouteMatch, useHistory } from "react-router-dom";
 import { Avatar, Box, Typography } from "@material-ui/core";
+import { fetchDeletePost } from "../../../../middlewares/stadiumUser/fetchPost/fetchPost";
+import { onDeletePost } from "../../../../Slices/Features/StadiumUsers/post/postSlice";
+import { useDispatch } from "react-redux";
+import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 
 import TabPostControl from "./TabPostControl";
 import {
@@ -29,15 +33,17 @@ const useStyles = makeStyles({
   },
 });
 
-const PostTable = React.memo(({ posts }) => {
+const PostTable = React.memo(() => {
   const classes = useStyles();
   const history = useHistory();
+  const { postsData } = useShallowEqualSelector((state) => state.posts);
   const { url } = useRouteMatch();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const dispatch = useDispatch();
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, posts.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, postsData.length - page * rowsPerPage);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -74,11 +80,11 @@ const PostTable = React.memo(({ posts }) => {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? posts.slice(
+              ? postsData.slice(
                   page * rowsPerPage,
                   page * rowsPerPage + rowsPerPage
                 )
-              : posts
+              : postsData
             ).map((row) => (
               <TableRow key={row.pt_id}>
                 <TableCell padding="checkbox" component="th">
@@ -123,7 +129,18 @@ const PostTable = React.memo(({ posts }) => {
                     >
                       <Edit />
                     </IconButton>
-                    <IconButton>
+                    <IconButton
+                      onClick={() => {
+                        const getIds = {
+                          postId: row.pt_id,
+                          stadiumId: row.st_id,
+                          postImage: row.post_img
+                        };
+                        dispatch(fetchDeletePost(getIds)).then(() =>
+                          dispatch(onDeletePost(getIds))
+                        );
+                      }}
+                    >
                       <Delete />
                     </IconButton>
                   </div>
@@ -143,7 +160,7 @@ const PostTable = React.memo(({ posts }) => {
         component="div"
         rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
         colSpan={3}
-        count={posts.length}
+        count={postsData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         SelectProps={{

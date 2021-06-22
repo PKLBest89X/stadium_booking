@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+const fs = require('fs')
 
 const mysql = require("mysql");
 const dbconfig = require("../dbConnect/dbconnect");
@@ -98,17 +99,16 @@ router.post("/addPost", (req, res) => {
 }); //ເພີ່ມໂພສຂອງສະໜາມ
 
 
-router.put("/postUpdate/:postId", async (req, res) => {
-    const post_id = req.params.p_id;
-    const stadium_id = req.body.st_id;
+router.put("/postUpdate", async (req, res) => {
+    const post_id = req.body.postId;
+    const stadium_id = req.body.stadiumId;
     const title = req.body.post_title;
-    const description = req.body.description;
-    const image = req.body.img;
-  
+    const description = req.body.post_description;
+    const image = req.body.statdium_postImageName;
     if (!req.files) {
       await db.query("call post_update(?,?,?,?,?)", [title, description, image, post_id, stadium_id], (err, result) => {
           if(err){
-            res.status(400).json({ error: err });
+            res.status(400).send('Error!!');
           }else{
             res.status(200);
             res.send("POST UPDATE");
@@ -122,13 +122,13 @@ router.put("/postUpdate/:postId", async (req, res) => {
   
       sampleFile.mv(uploadPathToAdminFolder, (err) => {if (err) return res.status(500).send(err)});
   
-      sampleFile.mv(uploadPath, function (err) {
+      sampleFile.mv(uploadPath, async (err) => {
         if (err) return res.status(500).send(err);
   
           const im = sampleFile.name;
-          db.query("call post_update(?,?,?,?,?)", [title, description, im, post_id, stadium_id], (err, result) => {
+          await db.query("call post_update(?,?,?,?,?)", [title, description, im, post_id, stadium_id], (err, result) => {
               if (err) {
-                res.status(400).json({ error: err });
+                res.status(400).send('Error!!');
               } else {
                 res.status(200);
                 res.send("POST UPDATE");
@@ -139,16 +139,20 @@ router.put("/postUpdate/:postId", async (req, res) => {
 }); //ແກ້ໄຂໂພສຂອງສະໜາມ
 
 
-router.delete('/', (req,res) => {
-    const post_id = req.body.p_id;
-    const stadium_id = req.body.st_id;
-
-    db.query("call post_delete(?,?)", [post_id,stadium_id], (err, result) => {
+router.delete('/postDelete', async (req, res) => {
+    const post_id = req.body.postId;
+    const stadium_id = req.body.stadiumId;
+    const postImage = req.body.postImage;
+    await db.query("call post_delete(?,?)", [post_id,stadium_id], (err, result) => {
         if (err) {
             res.status(400).json({ error: err });
         } else {
             res.status(200);
             res.send("POST DELETE");
+            let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/postPics/${postImage}`;
+            let uploadPathToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/postPics/${postImage}`;
+            fs.unlink(uploadPath, (err) => { if (err) return res.status(500).send('ລຶບຜິດພາດ!!') })
+            fs.unlink(uploadPathToAdminFolder, (err) => { if (err) return res.status(500).send('ລຶບຜິດພາດ!!') })
         }
     })
 }); //ລົບໂພສຂອງສະໜາມ
