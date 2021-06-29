@@ -7,20 +7,22 @@ import { userNow } from "../../../../../Slices/Authentication/authSlice";
 import ChildPageLayout from "../../../../../Components/ChildPageLayout";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, Typography } from "@material-ui/core";
-import StadiumsTable from './StadiumsTable'
+import { Box, Typography, Divider } from "@material-ui/core";
+import StadiumsTable from "./StadiumsTable";
 import Toolbar from "./Toobar";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
-    padding: "2rem",
+    padding: "1rem",
   },
 }));
 
 const ShowStadiumDetails = ({ getTabChange }) => {
   const classes = useStyles();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { stadiumsData } = useShallowEqualSelector((state) => state.stadiumDetails);
+  const { stadiumsData } = useShallowEqualSelector(
+    (state) => state.stadiumDetails
+  );
   const { stadiumId_Admin } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -60,9 +62,16 @@ const ShowStadiumDetails = ({ getTabChange }) => {
   return (
     <ChildPageLayout title="Stadium Details">
       <div className={classes.pageContainer}>
-        <h1>ໜ້າລາຍລະອຽດເດີ່ນນ້ອຍ</h1>
-        <Toolbar />
-        {stadiumsData.length > 0 ? <StadiumsTable /> : <ShowEmptyStadiums />}
+        <Box mb={3}>
+          <Typography color="textPrimary" variant="h2">
+            ສະໜາມຂອງເດີ່ນ
+          </Typography>
+        </Box>
+        <Divider />
+        <Box mt={3}>
+          <Toolbar />
+          {stadiumsData.length > 0 ? <StadiumsTable /> : <ShowEmptyStadiums />}
+        </Box>
       </div>
     </ChildPageLayout>
   );

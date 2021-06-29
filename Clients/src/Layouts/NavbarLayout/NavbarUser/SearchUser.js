@@ -2,7 +2,6 @@ import React from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import { InputBase, Paper, IconButton } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
-import { useShallowEqualSelector } from '../../../Components/useShallowEqualSelector';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,10 +28,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Search = ({ role }) => {
   const classes = useStyles();
-  const { user } = useShallowEqualSelector((state) => state.auth);
   return (
     <div className="search-container">
-      {role === "user" || user === "quest" ? (
+      {role === "userLoggedIn" || role === "quest" ? (
         <>
           <Paper component="form" className={classes.root}>
             <InputBase

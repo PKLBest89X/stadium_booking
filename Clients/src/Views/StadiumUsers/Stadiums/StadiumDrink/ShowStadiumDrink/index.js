@@ -7,13 +7,13 @@ import { userNow } from "../../../../../Slices/Authentication/authSlice";
 import ChildPageLayout from "../../../../../Components/ChildPageLayout";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, Typography } from "@material-ui/core";
-import StadiumDrinkTable from './StadiumDrinkTable'
+import { Box, Typography, Divider } from "@material-ui/core";
+import StadiumDrinkTable from "./StadiumDrinkTable";
 import Toolbar from "./Toobar";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
-    padding: "2rem",
+    padding: "1rem",
   },
 }));
 
@@ -60,9 +60,20 @@ const StadiumDrink = ({ getTabChange }) => {
   return (
     <ChildPageLayout title="Stadium Details">
       <div className={classes.pageContainer}>
-        <h1>ໜ້າລາຍລະອຽດເດີ່ນນ້ອຍ</h1>
-        <Toolbar />
-        {drinksData.length > 0 ? <StadiumDrinkTable /> : <ShowEmptyStadiumDrink />}
+        <Box mb={3}>
+          <Typography color="textPrimary" variant="h2">
+            ເຄື່ອງດື່ມຂອງເດີ່ນ
+          </Typography>
+        </Box>
+        <Divider />
+        <Box mt={3}>
+          <Toolbar />
+          {drinksData.length > 0 ? (
+            <StadiumDrinkTable />
+          ) : (
+            <ShowEmptyStadiumDrink />
+          )}
+        </Box>
       </div>
     </ChildPageLayout>
   );

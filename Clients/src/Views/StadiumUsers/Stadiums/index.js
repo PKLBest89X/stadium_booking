@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import PageLayout from "../../../Components/PageLayout";
-import { fetchCheckStadium } from '../../../middlewares/fetchCheckValidData/fetchCheckValidData';
+import { fetchCheckStadium } from "../../../middlewares/fetchCheckValidData/fetchCheckValidData";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { fetchAuthAdmin } from "../../../middlewares/fetchAuth/fetchStadiumUsers";
+import { fetchGetStadium } from "../../../middlewares/stadiumUser/fetchCRUDStadium/fetchCRUDStadium";
 import { userNow } from "../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Avatar, Box, Typography, Divider, AppBar, Tabs, Tab } from "@material-ui/core";
-import { tabRoutesData } from './tabRoutesData'
-import RoutesChildComponentsAdmin from '../../../Routes/RoutesChildComponentsAdmin';
-
+import { Divider, AppBar, Tabs, Tab } from "@material-ui/core";
+import { tabRoutesData } from "./tabRoutesData";
+import RoutesChildComponentsAdmin from "../../../Routes/RoutesChildComponentsAdmin";
 
 const useStyles = makeStyles(() => ({
   mainContainer: {
@@ -25,11 +25,11 @@ const useStyles = makeStyles(() => ({
   pictureProperties: {
     display: "block",
     width: "100%",
-    height: "auto",
-    maxHeight: '300px',
-    objectFit: 'cover',
-    objectPosition: 'center',
-    aspectRatio: '16/9'
+    height: "calc(100vw / 5 - 1px)",
+    position: "relative",
+    objectFit: "cover",
+    objectPosition: "center center",
+    aspectRatio: "16/9",
   },
   avatar: {
     cursor: "pointer",
@@ -39,20 +39,20 @@ const useStyles = makeStyles(() => ({
   appBar: {
     position: "sticky",
     top: 0,
-    zIndex: 4
+    zIndex: 4,
   },
   tab: {
     width: "140px",
   },
 }));
 
-
-
 const StadiumsView = ({ ...rest }) => {
   const classes = useStyles();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
+  const { stadiumData } = useShallowEqualSelector((state) => state.stadium);
   const { stadiumId_Admin } = useParams();
-  let history = useHistory();
+  const history = useHistory();
+  const stateRef = useRef(stadiumData);
   const { url } = useRouteMatch();
   const dispatch = useDispatch();
 
@@ -61,15 +61,20 @@ const StadiumsView = ({ ...rest }) => {
     setValue(newValue);
   };
 
-  const tabChange = (payload) => setValue(payload)
+  const tabChange = (payload) => setValue(payload);
 
   useEffect(() => {
-    const pathName = ['/manage', '/manage/stadium-details', '/manage/stadium-price', '/manage/stadium-drink'];
-    if (window.location.href.match(pathName[0])) setValue(0)
-    if (window.location.href.match(pathName[1])) setValue(1)
-    if (window.location.href.match(pathName[2])) setValue(2)
-    if (window.location.href.match(pathName[3])) setValue(3)
-  }, [])
+    const pathName = [
+      "/manage",
+      "/manage/stadium-details",
+      "/manage/stadium-price",
+      "/manage/stadium-drink",
+    ];
+    if (window.location.href.match(pathName[0])) setValue(0);
+    if (window.location.href.match(pathName[1])) setValue(1);
+    if (window.location.href.match(pathName[2])) setValue(2);
+    if (window.location.href.match(pathName[3])) setValue(3);
+  }, []);
 
   useEffect(() => {
     const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
@@ -85,27 +90,29 @@ const StadiumsView = ({ ...rest }) => {
 
   useEffect(() => {
     if (checkResult === 404) {
-      history.replace('/404')
+      history.replace("/404");
     }
   }, [history, checkResult]);
+
+  useEffect(() => {
+    dispatch(fetchGetStadium(stadiumId_Admin));
+  }, [dispatch, stadiumId_Admin]);
+
+  useMemo(
+    () => stadiumData.forEach((items) => (stateRef.current = items)),
+    [stadiumData]
+  );
+
   return (
     <PageLayout title="statdium" {...rest}>
       <div className={classes.root}>
         <div className={classes.pictureContainer}>
-          <img className={classes.pictureProperties} src='/assets/picture/test1.jpg' alt="ຮູບ logo ຂອງເດີ່ນ" />
+          <img
+            className={classes.pictureProperties}
+            src={`/assets/images/adminPics/stadiumPics/themeBackground/${stateRef.current.picture}`}
+            alt="ຮູບ logo ຂອງເດີ່ນ"
+          />
         </div>
-      </div>
-      <Divider />
-      <div>
-        <Box alignItems="center" display="flex" flexDirection="row" p={2}>
-          <Avatar className={classes.avatar} to="/account" />
-          <Typography
-            className={classes.name}
-            color="textPrimary"
-            variant="h5"
-          ></Typography>
-          <Typography color="textSecondary" variant="body2"></Typography>
-        </Box>
       </div>
       <Divider />
       <div className={classes.appBar}>
@@ -133,7 +140,7 @@ const StadiumsView = ({ ...rest }) => {
           </Tabs>
         </AppBar>
       </div>
-      <RoutesChildComponentsAdmin tabChange={tabChange}/>
+      <RoutesChildComponentsAdmin tabChange={tabChange} />
     </PageLayout>
   );
 };

@@ -7,13 +7,13 @@ import { userNow } from "../../../../../Slices/Authentication/authSlice";
 import ChildPageLayout from "../../../../../Components/ChildPageLayout";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, Typography } from "@material-ui/core";
-import StadiumPriceTable from './StadiumPriceTable'
+import { Box, Typography, Divider } from "@material-ui/core";
+import StadiumPriceTable from "./StadiumPriceTable";
 import Toolbar from "./Toobar";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
-    padding: "2rem",
+    padding: "1rem",
   },
 }));
 
@@ -60,9 +60,20 @@ const StadiumPrice = ({ getTabChange }) => {
   return (
     <ChildPageLayout title="Stadium Details">
       <div className={classes.pageContainer}>
-        <h1>ໜ້າລາຍລະອຽດເດີ່ນນ້ອຍ</h1>
-        <Toolbar />
-        {priceData.length > 0 ? <StadiumPriceTable /> : <ShowEmptyStadiumPrice />}
+        <Box mb={3}>
+          <Typography color="textPrimary" variant="h2">
+            ລາຄາຂອງເດີ່ນ
+          </Typography>
+        </Box>
+        <Divider />
+        <Box mt={3}>
+          <Toolbar />
+          {priceData.length > 0 ? (
+            <StadiumPriceTable />
+          ) : (
+            <ShowEmptyStadiumPrice />
+          )}
+        </Box>
       </div>
     </ChildPageLayout>
   );

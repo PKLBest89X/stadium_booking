@@ -151,7 +151,7 @@ const AddPost = ({ ...rest }) => {
               </Grid>
               <Grid item xs={12} sm={12} md={6} lg={6} xl={8}>
                 <Box>
-                  <Card elevation={10}>
+                  <div>
                     <Box>
                       <TextField
                         fullWidth
@@ -175,7 +175,7 @@ const AddPost = ({ ...rest }) => {
                       onChange={onPostDescriptionChange}
                       required
                     />
-                  </Card>
+                  </div>
                 </Box>
               </Grid>
             </Grid>

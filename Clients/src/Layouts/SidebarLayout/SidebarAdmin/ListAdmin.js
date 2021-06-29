@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { NavLink } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { onSmDownClose } from "../../../Slices/Features/ToggleDrawer/toggleSlice";
 import { sidebarAdminData } from "../data/sidebarAdminData";
 import { deepOrange } from "@material-ui/core/colors";
+import { useHistory } from "react-router-dom";
 import Footer from "../Footer";
 import clsx from "clsx";
 import {
@@ -102,9 +103,14 @@ const useStyles = makeStyles((theme) => ({
 
 const ListAdmin = React.memo(({ userLoggedIn }) => {
   const classes = useStyles();
+  const history = useHistory();
   const { smUp } = useShallowEqualSelector((state) => state.toggle);
-  const { user } = useShallowEqualSelector((state) => state.auth);
+  const { user, data } = useShallowEqualSelector((state) => state.auth);
+  const stateRef = useRef(data);
   const dispatch = useDispatch();
+
+  useMemo(() => data.forEach((items) => (stateRef.current = items)), [data]);
+
   const onToggleClose = (event) => {
     if (
       event.type === "keydown" &&
@@ -135,7 +141,7 @@ const ListAdmin = React.memo(({ userLoggedIn }) => {
                   className={classes.avatar}
                   src={`/assets/images/adminsPics/adminProfile/stadiumOwner/${userLoggedIn.picture}`}
                   alt={`${userLoggedIn.su_name}`}
-                  to="/account"
+                  onClick={() => history.push(`/admin/stadium/${stateRef.current.st_id}/account`)}
                 />
                 <Typography
                   className={classes.name}

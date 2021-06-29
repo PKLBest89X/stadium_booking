@@ -53,7 +53,7 @@ const Toolbar = ({ className, ...rest }) => {
     <div className={clsx(classes.root, className)} {...rest}>
       <Box>
         <div className={classes.toolLayout}>
-          <div
+          <Box
             className={classes.toolContainer}
             display="flex"
             justifyContent="space-between"
@@ -84,7 +84,7 @@ const Toolbar = ({ className, ...rest }) => {
             >
               ເພີ່ມລາຄາເດີ່ນ
             </Button>
-          </div>
+          </Box>
         </div>
       </Box>
     </div>

@@ -14,10 +14,10 @@ router.use(cookieParser());
 
 const db = mysql.createConnection(dbconfig.db);
 
-router.get("/", (req, res) => {
+router.get("/feedPost", (req, res) => {
   db.query("call timeline()", (err, result) => {
     if (err) {
-      res.status(400);
+      res.status(400).send(err);
       console.log(err);
     } else {
       res.status(200).send(result[0]);
@@ -53,7 +53,7 @@ router.get("/getPostByStadiumIdPostId/:stadiumId/:postId", async function (req, 
       if (result[0].length > 0) {
           return res.send(result[0][0])
       } else {
-          return res.status(404).send('ບໍ່ມີຂໍ້ມູນ!!')
+          return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
       }
   })
 })

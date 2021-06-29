@@ -25,6 +25,7 @@ var water_bill = require('./routes/water_paid');
 var field_bill = require('./routes/field_paid');
 var admin_ac = require('./routes/login_admin');
 var post = require('./routes/post');
+var subscribe = require('./routes/subscribe')
 var report = require('./routes/report');
 
 var app = express();
@@ -54,6 +55,7 @@ app.use('/water_bill', water_bill);
 app.use('/field_bill', field_bill);
 app.use('/admin_ac', admin_ac);
 app.use('/post', post);
+app.use('/subscribe', subscribe);
 app.use('/report', report);
 
 

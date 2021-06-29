@@ -2,8 +2,7 @@ import React from "react";
 import HomeIcon from "@material-ui/icons/Home";
 import HistoryIcon from "@material-ui/icons/History";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
-import SportsSoccerIcon from "@material-ui/icons/SportsSoccer";
-import ClosedCaption from "@material-ui/icons/ClosedCaption";
+import Book from "@material-ui/icons/Book";
 
 export const sidebarUserData = [
   {
@@ -12,9 +11,9 @@ export const sidebarUserData = [
     icon: <HomeIcon />,
   },
   {
-    title: "ເດີ່ນ",
+    title: "ຈອງເດີ່ນ",
     path: "/stadium",
-    icon: <SportsSoccerIcon />,
+    icon: <Book />,
   },
   {
     title: "ປະຫວັດການຈອງ",
@@ -28,10 +27,3 @@ export const sidebarUserData = [
   },
 ];
 
-export const sidebarUserData2 = [
-  {
-    title: "ຮຽນ useEffect",
-    path: "/reactuseeffect",
-    icon: <ClosedCaption />,
-  },
-];

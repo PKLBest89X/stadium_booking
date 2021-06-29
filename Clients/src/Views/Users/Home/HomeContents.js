@@ -1,76 +1,122 @@
 import React from "react";
-import styled from "styled-components";
 import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
+import { IconButton, Typography, Button, Box } from "@material-ui/core";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import { Link, useHistory } from "react-router-dom";
+import {
+  Avatar,
+  Card,
+  CardHeader,
+  CardMedia,
+  CardContent,
+  CardActions,
+} from "@material-ui/core";
+import moment from "moment";
 
 const useStyles = makeStyles(() => ({
-  ItemsContainer: {},
+  avatar: {
+    width: 64,
+    height: 64,
+    boxShadow: ".5px .5px 3px .5px rgba(0, 0, 0, .5)",
+    cursor: "pointer",
+  },
+  ItemsContainer: {
+    boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, .5)",
+    transition: "200ms ease-in-out",
+    "&:hover": {
+      transform: "scale(1.02)",
+    },
+  },
+  media: {
+    height: 0,
+    paddingTop: "56.25%", // 16:9
+  },
+  cardContent: {
+    display: "block",
+    maxHeight: "100px",
+  },
+  typography: {
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    lineHeight: "1.3em",
+    height: "2.6em",
+  },
+  link: {
+    textDecoration: "none",
+    fontSize: "1.2em",
+    cursor: "pointer",
+    color: "black",
+    "&:hover": {
+      textDecoration: "underline",
+    },
+  },
 }));
-
-const ItemsContainer = styled.div`
-  box-shadow: 5px 10px 18px 4px #8888;
-  border-radius: none;
-  transition: 200ms ease-in-out;
-  & > div {
-    & > img {
-      display: block;
-      width: 100%;
-    }
-  }
-  & > [id="title-container"] {
-    display: flex;
-    justify-content: space-between;
-  }
-  :hover {
-    transform: scale(1.02);
-  }
-`;
-
-const EditProfileContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1em;
-  & > button {
-    border: none;
-    box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.5);
-    padding: 0.5em 1em;
-  }
-`;
-
-const ProfileContainer = styled.div`
-  padding: 1em;
-  display: flex;
-  justify-content: space-around;
-  & > img {
-    border-radius: 50%;
-    width: 80px;
-  }
-`;
 
 const HomeContents = ({ getitems }) => {
   const classes = useStyles();
+  const history = useHistory();
   return (
-    <>
-      <ItemsContainer>
-        <div id="title-container">
-          <ProfileContainer>
-            <img src={getitems.avatar} alt={getitems.first_name} />
-            <Link to={`/stadium/${getitems.email}`}>{getitems.email}</Link>
-          </ProfileContainer>
-          <EditProfileContainer></EditProfileContainer>
-        </div>
-        <div className="picture-container">
-          <img src={getitems.pic} alt={getitems.first_name} />
-        </div>
-        <div className="footer-container">
-          <div>
-            <h4>{getitems.first_name}</h4>
-            <p>{getitems.last_name}</p>
-          </div>
-        </div>
-      </ItemsContainer>
-    </>
+    <div className={classes.ItemsContainer}>
+      <Card className={classes.root}>
+        <CardHeader
+          avatar={
+            <Avatar
+              aria-label="recipe"
+              className={classes.avatar}
+              src={`/assets/images/adminPics/stadiumPics/icons/${getitems.logo}`}
+              alt={getitems.st_name}
+              onClick={() => history.push(`/stadium/${getitems.st_id}`)}
+            />
+          }
+          action={
+            <IconButton aria-label="settings">
+              <MoreVertIcon />
+            </IconButton>
+          }
+          title={
+            <Link className={classes.link} to={`/stadium/${getitems.st_id}`}>
+              {getitems.st_name}
+            </Link>
+          }
+          subheader={moment(getitems.post_date).format("dddd MMMM D, Y")}
+        />
+        <CardMedia
+          className={classes.media}
+          image={`/assets/images/adminPics/postPics/${getitems.post_img}`}
+          title={getitems.post_title}
+        />
+        <CardContent className={classes.cardContent}>
+          <Typography gutterBottom variant="h4" component="h2" noWrap>
+            {getitems.post_title}
+          </Typography>
+          <Typography
+            className={classes.typography}
+            variant="body2"
+            color="textSecondary"
+            component="p"
+          >
+            {getitems.pt_description}
+          </Typography>
+        </CardContent>
+        <CardActions disableSpacing>
+          <Box>
+            <Button
+              size="small"
+              color="primary"
+              variant="contained"
+              onClick={() =>
+                history.push(`/stadium/${getitems.st_id}/stadium-booking`)
+              }
+            >
+              ຈອງເດີ່ນ
+            </Button>
+          </Box>
+        </CardActions>
+      </Card>
+    </div>
   );
 };
 

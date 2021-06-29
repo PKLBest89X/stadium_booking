@@ -5,13 +5,7 @@ export const addStadiumOwner = createAsyncThunk(
   "stadiumOwner/add",
   async (addStadiumOwner, { rejectWithValue }) => {
     try {
-      const addPeople = axios.post("http://localhost:5050/staff/add", {
-        firstName: addStadiumOwner.firstName,
-        lastName: addStadiumOwner.lastName,
-        age: addStadiumOwner.age,
-        email: addStadiumOwner.email,
-        password: addStadiumOwner.password,
-      });
+      const addPeople = axios.post("http://localhost:5050/staff/add", addStadiumOwner);
       return addPeople.data;
     } catch (err) {
       return rejectWithValue(err.response.data);

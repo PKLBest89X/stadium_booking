@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import PageLayout from "../../../Components/PageLayout";
 import { makeStyles } from "@material-ui/core/styles";
 import HomeContents from "./HomeContents";
-import ImageData from "./ImageData";
 import { fetchAuthUser } from "../../../middlewares/fetchAuth/fetchUser";
 import { userNow } from '../../../Slices/Authentication/authSlice';
+import { useShallowEqualSelector } from '../../../Components/useShallowEqualSelector';
+import { fetchFeedPost } from "../../../middlewares/user/fetchFeedPost/fetchFeedPost";
 import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles(() => ({
@@ -20,30 +21,18 @@ const useStyles = makeStyles(() => ({
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))",
     gridGap: "1em",
+    
   },
 }));
 
 const Home = ({ ...rest }) => {
   const classes = useStyles();
+  const { feedPostData } = useShallowEqualSelector((state) => state.feedPost);
   const dispatch = useDispatch();
-  const [user, setUser] = useState([]);
-  const [pic] = useState(ImageData);
 
   useEffect(() => {
-    fetch(`https://reqres.in/api/users?page=2`)
-      .then(async (res) => {
-        return await res.json();
-      })
-      .then((getdata) => {
-        const newData = [...getdata.data];
-        setUser(
-          newData.map((items, index) => {
-            const allData = { ...pic[index] };
-            return { ...items, ...allData };
-          })
-        );
-      });
-  }, [pic]);
+    dispatch(fetchFeedPost());
+  }, [dispatch])
 
   useEffect(() => {
     let userToken = JSON.parse(localStorage.getItem('accessUserToken'))
@@ -60,8 +49,8 @@ const Home = ({ ...rest }) => {
       <div className={classes.root}>
         <div className={classes.layoutContainer}>
           <div className={classes.contentContainer}>
-            {user.map((items) => {
-              return <HomeContents key={items.id} getitems={items} />;
+            {feedPostData.map((items) => {
+              return <HomeContents key={items.pt_id} getitems={items} />;
             })}
           </div>
         </div>

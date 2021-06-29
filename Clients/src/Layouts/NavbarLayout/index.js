@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
 const NavbarLayout = () => {
   const classes = useStyles();
-  const { data } = useShallowEqualSelector((state) => state.auth);
+  const { data, user } = useShallowEqualSelector((state) => state.auth);
   const stateRef = useRef(data);
   useMemo(() => {
     data.forEach((items) => {
@@ -68,7 +68,7 @@ const NavbarLayout = () => {
       <AppBar className={classes.appbarTop} position="fixed">
         <div className={classes.toolbar}>
           <ToggleHandle />
-          <SearchUser role={stateRef.current.role} />
+          <SearchUser role={user} />
           <ProfileUser userLoggedIn={stateRef.current} />
           <LogoutAdmin userLoggedIn={stateRef.current} />
         </div>

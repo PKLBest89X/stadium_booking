@@ -3,7 +3,7 @@ import PageLayout from "../../Components/PageLayout";
 import { Box, Container, makeStyles } from "@material-ui/core";
 import Results from "./Results";
 import Toolbar from "./Toolbar";
-import data from "./data";
+import { userData } from "./data";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -12,7 +12,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const StadiumOwner = ({ ...rest }) => {
-  const [customers] = useState(data);
+  const [customers] = useState(userData);
   const classes = useStyles();
   return (
     <PageLayout {...rest} title="ເຈົ້າຂອງເດີ່ນທັງໝົດ">

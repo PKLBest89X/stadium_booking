@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useMemo, useRef } from "react";
 import { adminLogOut } from "../../../Slices/Authentication/authSlice";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Avatar, IconButton } from "@material-ui/core";
 import ExitToApp from "@material-ui/icons/ExitToApp";
-import ArrowBack from '@material-ui/icons/ArrowBack';
+import ArrowBack from "@material-ui/icons/ArrowBack";
 import { useHistory } from "react-router-dom";
 import { deepOrange } from "@material-ui/core/colors";
 import clsx from "clsx";
@@ -14,9 +14,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     alignItems: "center",
-    "& > :nth-child(n)": {
-     
-    },
+    "& > :nth-child(n)": {},
     // "& > [id='btn-back']": {
     //   border: "1px solid white",
     // },
@@ -37,8 +35,10 @@ const useStyles = makeStyles((theme) => ({
 const LogoutAdmin = React.memo(({ userLoggedIn }) => {
   const classes = useStyles();
   const history = useHistory();
-  const { user } = useShallowEqualSelector((state) => state.auth);
+  const { user, data } = useShallowEqualSelector((state) => state.auth);
+  const stateRef = useRef(data);
   const dispatch = useDispatch();
+  useMemo(() => data.forEach((items) => (stateRef.current = items)), [data]);
   return (
     <div
       className={clsx({
@@ -53,10 +53,16 @@ const LogoutAdmin = React.memo(({ userLoggedIn }) => {
               className={classes.avatar}
               src={`/assets/images/adminsPics/adminProfile/stadiumOwner/${userLoggedIn.picture}`}
               alt={`${userLoggedIn.su_name}`}
-              onClick={() => history.push("/admin/account")}
+              onClick={() =>
+                history.push(`/admin/stadium/${stateRef.current.st_id}/account`)
+              }
             />
           </Box>
-          <IconButton id="btn-back" color="inherit" onClick={() => history.push("/")}>
+          <IconButton
+            id="btn-back"
+            color="inherit"
+            onClick={() => history.push("/")}
+          >
             <ArrowBack />
           </IconButton>
           <IconButton

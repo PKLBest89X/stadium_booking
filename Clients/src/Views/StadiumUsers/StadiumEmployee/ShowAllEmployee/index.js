@@ -5,6 +5,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUsers";
 import { userNow } from "../../../../Slices/Authentication/authSlice";
+import { fetchGetEmployee } from "../../../../middlewares/stadiumUser/fetchCRUDEmployee/fetchCRUDEmployee";
 import { useDispatch } from "react-redux";
 import EmployeeTable from "./EmployeeTable";
 import EmployeeToolbar from "./EmployeeToolbar";
@@ -15,12 +16,21 @@ const useStyles = makeStyles(() => ({
   pageContainer: {
     padding: "2rem",
   },
+  emptyView: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "10rem",
+    boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, .5)",
+  },
 }));
 
 const StadiumEmployee = ({ ...rest }) => {
   const classes = useStyles();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { employeesData } = useShallowEqualSelector((state) => state.employees);
+  const { employeeFetchSuccess } = useShallowEqualSelector(
+    (state) => state.employees
+  );
   const { stadiumId_Admin } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -43,16 +53,14 @@ const StadiumEmployee = ({ ...rest }) => {
     }
   }, [history, checkResult]);
 
+  useEffect(() => {
+    dispatch(fetchGetEmployee(stadiumId_Admin))
+  }, [dispatch, stadiumId_Admin])
+
   const ShowEmptyEmployee = () => (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      p={10}
-      boxShadow="1px 1px 3px 1px rgba(0, 0, 0, .5)"
-    >
+    <div className={classes.emptyView}>
       <Typography variant="h3">ບໍ່ມີພະນັກງານຂອງເດີ່ນ</Typography>
-    </Box>
+    </div>
   );
 
   return (
@@ -66,7 +74,8 @@ const StadiumEmployee = ({ ...rest }) => {
         <Divider />
         <Box mt={3}>
           <EmployeeToolbar />
-          {employeesData.length > 0 ? <EmployeeTable /> : <ShowEmptyEmployee />}
+          {employeeFetchSuccess === true && <EmployeeTable />}
+          {employeeFetchSuccess === false && <ShowEmptyEmployee />}
         </Box>
       </div>
     </PageLayout>

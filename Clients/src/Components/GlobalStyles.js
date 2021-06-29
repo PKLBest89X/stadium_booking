@@ -15,6 +15,7 @@ const useStyles = makeStyles(() =>
       "-moz-osx-font-smoothing": "grayscale",
       height: "100%",
       width: "100%",
+      overflow: "hidden",
     },
     body: {
       backgroundColor: "#f4f6f8",

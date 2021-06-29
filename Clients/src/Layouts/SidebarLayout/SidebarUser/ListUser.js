@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { NavLink } from "react-router-dom";
 import { onSmDownClose } from "../../../Slices/Features/ToggleDrawer/toggleSlice";
 import { useDispatch } from "react-redux";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
+import { fetchGetSubscribe } from "../../../middlewares/user/fetchSubscribe/fetchSubscribe";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import { sidebarUserData, sidebarUserData2 } from "../data/sidebarUserData";
+import { sidebarUserData } from "../data/sidebarUserData";
+import ListSubscribe from "./ListSubScribe";
 import { useHistory } from "react-router-dom";
 import Footer from "../Footer";
 import clsx from "clsx";
@@ -16,17 +18,10 @@ import {
   List,
   ListItem,
   ListItemText,
-  Typography,
   Button,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-  displayRoot: {
-    display: "block",
-  },
-  hideRoot: {
-    display: "none",
-  },
   link: {
     textDecoration: "none",
     display: "flex",
@@ -74,11 +69,6 @@ const useStyles = makeStyles((theme) => ({
       display: "block",
     },
   },
-
-  overflow_content: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
   icon: {
     marginRight: "-8px",
   },
@@ -90,15 +80,15 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     "& > Button": {
       border: "1px solid black",
-      marginTop: '.5em'
+      marginTop: ".5em",
     },
     "& > p": {
       width: "100%",
-      marginBottom: '.5em',
+      marginBottom: ".5em",
       overflowWrap: "break-word",
       wordWrap: "break-word",
       wordBreak: "break-all",
-      whiteSpace: 'normal'
+      whiteSpace: "normal",
     },
   },
 }));
@@ -109,6 +99,14 @@ const ListUser = React.memo(({ userLoggedIn }) => {
   const { smUp } = useShallowEqualSelector((state) => state.toggle);
   const history = useHistory();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const userToken = JSON.parse(localStorage.getItem("accessUserToken"));
+    if (userToken && userToken.token) {
+      dispatch(fetchGetSubscribe(userToken.token));
+    }
+  }, [dispatch]);
+
   const onToggleClose = (event) => {
     if (
       event.type === "keydown" &&
@@ -119,12 +117,7 @@ const ListUser = React.memo(({ userLoggedIn }) => {
     dispatch(onSmDownClose());
   };
   return (
-    <div
-      className={clsx({
-        [classes.displayRoot]: user === "userLoggedIn" || user === "quest",
-        [classes.hideRoot]: user === "admin",
-      })}
-    >
+    <>
       {user === "userLoggedIn" || user === "quest" ? (
         <div className={classes.content_wrapper}>
           <div className={classes.overflow_container}>
@@ -164,7 +157,10 @@ const ListUser = React.memo(({ userLoggedIn }) => {
                     <p>
                       ລົງທະບຽນເຂົ້າສູ່ລະບົບຈຶ່ງສາມາດຕິດຕາມເດີ່ນທີ່ທ່ານມັກໄດ້
                     </p>
-                    <Button startIcon={<AccountCircle />} onClick={() => history.push("/login")}>
+                    <Button
+                      startIcon={<AccountCircle />}
+                      onClick={() => history.push("/login")}
+                    >
                       ເຂົ້າສູ່ລະບົບ
                     </Button>
                   </div>
@@ -178,29 +174,7 @@ const ListUser = React.memo(({ userLoggedIn }) => {
                     >
                       {`ຕິດຕາມເດີ່ນ`}
                     </ListSubheader>
-                    {sidebarUserData2.map((item, index) => {
-                      return (
-                        <NavLink
-                          key={index}
-                          className={classes.link}
-                          onClick={onToggleClose}
-                          onKeyDown={onToggleClose}
-                          to={item.path}
-                          exact
-                        >
-                          <ListItem button>
-                            <ListItemIcon className={classes.icon}>
-                              {item.icon}
-                            </ListItemIcon>
-                            <ListItemText>
-                              <Typography className={classes.fontEdit} noWrap>
-                                {item.title}
-                              </Typography>
-                            </ListItemText>
-                          </ListItem>
-                        </NavLink>
-                      );
-                    })}
+                    <ListSubscribe />
                   </div>
                 </List>
               )}
@@ -212,7 +186,7 @@ const ListUser = React.memo(({ userLoggedIn }) => {
           </div>
         </div>
       ) : null}
-    </div>
+    </>
   );
 });
 

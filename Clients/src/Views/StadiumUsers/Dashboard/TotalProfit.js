@@ -44,7 +44,7 @@ const TotalProfit = ({ className, ...rest }) => {
               gutterBottom
               variant="h6"
             >
-              ລາຍຮັບຕໍ່ມື້
+              ລາຍຮັບມື້ນີ້
             </Typography>
             <Typography
               color="textPrimary"

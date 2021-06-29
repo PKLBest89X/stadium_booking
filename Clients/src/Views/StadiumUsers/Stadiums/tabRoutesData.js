@@ -1,4 +1,4 @@
-import SportsSoccerIcon from "@material-ui/icons/SportsSoccer";
+import Sports from "@material-ui/icons/Sports";
 import LocalOffer from "@material-ui/icons/LocalOffer";
 import LocalDrink from "@material-ui/icons/LocalDrink";
 import Home from "@material-ui/icons/Home";
@@ -10,9 +10,9 @@ export const tabRoutesData = [
     icon: <Home />,
   },
   {
-    title: "ເດີ່ນ",
+    title: "ສະໜາມ",
     path: `/stadium-details`,
-    icon: <SportsSoccerIcon />,
+    icon: <Sports />,
   },
   {
     title: "ລາຄາເດີ່ນ",

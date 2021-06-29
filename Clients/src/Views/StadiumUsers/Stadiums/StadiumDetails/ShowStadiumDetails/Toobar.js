@@ -71,7 +71,7 @@ const Toolbar = ({ className, ...rest }) => {
                     </InputAdornment>
                   ),
                 }}
-                placeholder="ຄົ້ນຫາ Post..."
+                placeholder="ຄົ້ນຫາສະໜາມ..."
                 variant="outlined"
               />
             </div>

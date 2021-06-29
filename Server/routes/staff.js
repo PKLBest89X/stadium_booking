@@ -15,15 +15,17 @@ router.use(cookieParser());
 
 const db = mysql.createConnection(dbconfig.db);
 
-router.get("/:st_id", async function (req, res, next) {
+router.get("/get_employee/:st_id", async (req, res) => {
   const stadium_id = req.params.st_id;
-  await db.query("call staff(?)", [stadium_id], (err, result) => {
+  console.log(stadium_id)
+  await db.query("call staff_employee(?)", [stadium_id], (err, result) => {
     if (err) {
-      res.status(400);
-      console.log(err);
+      return res.status(400);
+    } 
+    if (result[0].length > 0) {
+      return res.send(result[0]);
     } else {
-      res.status(200);
-      res.send(result);
+      return res.status(400).send('Not found data!!');
     }
   });
 }); // ສະແດງພະນັກງານທັງໝົດຂອງເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -67,7 +69,7 @@ router.post("/login", async (req, res) => {
       res.send("Wrong Username and Password Combination!");
     }
   });
-}); // ລ໊ອກອິນຂອງພະນັກງານ ||||||||||||||||||||||||||||||||||||||||||||||||||
+}); // ລ໊ອກອິນຂອງຄົນພາຍໃນເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 router.get("/login/authen", verifyToken, (req, res) => {
   jwt.verify(req.token, "secret", async (err, authData) => {
@@ -90,6 +92,7 @@ router.post("/add", async function (req, res, next) {
   const staff_name = req.body.firstName;
   const staff_surname = req.body.lastName;
   const staff_age = req.body.age;
+  const staff_gender = req.body.gender;
   const staff_email = req.body.email;
   const staff_password = req.body.password;
   const img = "defualt.jpg";
@@ -102,11 +105,12 @@ router.post("/add", async function (req, res, next) {
       if (!req.files) {
         bcrypt.hash(staff_password, 10).then((hash) => {
           db.query(
-            "call staff_add(?,?,?,?,?,?,?)",
+            "call staff_add(?,?,?,?,?,?,?,?)",
             [
               staff_name,
               staff_surname,
               staff_age,
+              staff_gender,
               staff_email,
               hash,
               img,
@@ -125,7 +129,10 @@ router.post("/add", async function (req, res, next) {
         });
       } else {
         let sampleFile = req.files.sampleFile;
-        let uploadPath = "./upload/staff/" + sampleFile.name;
+        let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/adminProfile/${sampleFile.name}`;
+        let uploadPathToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/adminProfile/${sampleFile.name}`;
+    
+        sampleFile.mv(uploadPathToAdminFolder, (err) => {if (err) return res.status(500).send(err)});
 
         sampleFile.mv(uploadPath, function (err) {
           if (err) return res.status(500).send(err);
@@ -136,10 +143,10 @@ router.post("/add", async function (req, res, next) {
             db.query(
               "call staff_add(?,?,?,?,?,?,?,?)",
               [
-                stadium_id,
                 staff_name,
                 staff_surname,
                 staff_age,
+                staff_gender,
                 staff_email,
                 hash,
                 im,
@@ -159,7 +166,90 @@ router.post("/add", async function (req, res, next) {
       }
     }
   });
-}); // ເພີ່ມພະນັກງານຂອງເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
+}); // ເພີ່ມເຈົ້າຂອງເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+router.post("/employee/add", async function (req, res, next) {
+  const stadium_id = req.body.stadiumId;
+  const staff_name = req.body.firstName;
+  const staff_surname = req.body.lastName;
+  const staff_age = req.body.age;
+  const staff_gender = req.body.gender;
+  const staff_email = req.body.email;
+  const staff_password = req.body.password;
+  const img = "defualt.jpg";
+
+  await db.query("call check_staff_email(?)", [staff_email], (err, result) => {
+    if (result[0].length > 0) {
+      res.status(400);
+      res.send("Email Already used!");
+    } else {
+      if (!req.files) {
+        bcrypt.hash(staff_password, 10).then((hash) => {
+          db.query(
+            "call staff_employee_add(?,?,?,?,?,?,?,?,?)",
+            [
+              stadium_id,
+              staff_name,
+              staff_surname,
+              staff_age,
+              staff_gender,
+              staff_email,
+              hash,
+              img,
+              "staff",
+            ],
+            (err, result) => {
+              if (err) {
+                console.log(err);
+                res.status(400).json({ error: err });
+              } else {
+                res.status(200);
+                res.send("Staff Complete");
+              }
+            }
+          );
+        });
+      } else {
+        let sampleFile = req.files.sampleFile;
+        let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/adminProfile/${sampleFile.name}`;
+        let uploadPathToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/adminProfile/${sampleFile.name}`;
+    
+        sampleFile.mv(uploadPathToAdminFolder, (err) => {if (err) return res.status(500).send(err)});
+
+        sampleFile.mv(uploadPath, function (err) {
+          if (err) return res.status(500).send(err);
+
+          const im = sampleFile.name;
+
+          bcrypt.hash(staff_password, 10).then((hash) => {
+            db.query(
+              "call staff_employee_add(?,?,?,?,?,?,?,?,?)",
+              [
+                stadium_id,
+                staff_name,
+                staff_surname,
+                staff_age,
+                staff_gender,
+                staff_email,
+                hash,
+                im,
+                'staff',
+              ],
+              (err, result) => {
+                if (err) {
+                  res.status(400).json({ error: err });
+                } else {
+                  res.status(200);
+                  res.send("Staff Complete");
+                }
+              }
+            );
+          });
+        });
+      }
+    }
+  });
+}); // ເພີ່ມພະນັກງານເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 router.put("/", async function (req, res, next) {
   const staff_id = req.body.su_id;
@@ -171,8 +261,8 @@ router.put("/", async function (req, res, next) {
 
   if (!req.files) {
     db.query(
-      "call staff_update(?,?,?,?,?,?)",
-      [staff_name, staff_surname, staff_age, img, staff_status, staff_id],
+      "call staff_update(?,?,?,?,?,?,?)",
+      [staff_name, staff_surname, staff_age, staff_gender,, img, staff_status, staff_id],
       (err, result) => {
         if (err) {
           res.status(400);
@@ -185,7 +275,10 @@ router.put("/", async function (req, res, next) {
     );
   } else {
     let sampleFile = req.files.sampleFile;
-    let uploadPath = "./upload/staff/" + sampleFile.name;
+    let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/adminProfile/${sampleFile.name}`;
+    let uploadPathToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/adminProfile/${sampleFile.name}`;
+
+    sampleFile.mv(uploadPathToAdminFolder, (err) => {if (err) return res.status(500).send(err)});
 
     sampleFile.mv(uploadPath, function (err) {
       if (err) return res.status(500).send(err);
@@ -193,8 +286,8 @@ router.put("/", async function (req, res, next) {
       const im = sampleFile.name;
 
       db.query(
-        "call staff_update(?,?,?,?,?,?)",
-        [staff_name, staff_surname, staff_age, im, staff_status, staff_id],
+        "call staff_update(?,?,?,?,?,?,?)",
+        [staff_name, staff_surname, staff_age, staff_gender,, im, staff_status, staff_id],
         (err, result) => {
           if (err) {
             res.status(400);
@@ -207,7 +300,7 @@ router.put("/", async function (req, res, next) {
       );
     });
   }
-}); // ແກ້ໄຂຂໍ້ມູນພະນັກງານເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
+}); // ແກ້ໄຂຂໍ້ມູນຄົນພາຍໃນເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 router.delete("/", async function (req, res, next) {
   const staff_id = req.body.su_id;

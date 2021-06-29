@@ -82,6 +82,19 @@ router.get('/show', async function(req,res,next){
     })
 }) // ສະແດງຕາຕະລາງເດີ່ນທັງໝົດ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
+router.get('/show/byStadiumId/:stadiumId', async function(req, res){
+    const stadium_id = req.params.stadiumId
+    await db.query("call stadium_byStadiumId(?)", [stadium_id], (err, result) => {
+        if(err){
+            res.status(400)
+            console.log(err);
+        }else{
+            res.status(200)
+            res.send(result[0]);
+        }
+    })
+}) // ສະແດງຕາຕະລາງເດີ່ນທັງໝົດ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
 router.get('/show/phone', async function(req,res,next){
     const stadium_id = req.body.st_id;
     await db.query("call stadium_phone(?)", [stadium_id], (err, result) => {
@@ -117,6 +130,7 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
     const district = req.body.district;
     const province = req.body.province;
     const time_cancel = req.body.time_cancelbooking;
+    const phone = req.body.phone
     
     db.query("select MAX(st_id) as mid from tbstadium", (err,result) => {
         if(result[0] === null){
@@ -155,7 +169,7 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
                         const img = sampleFile.name;
                         db.query("call check_config_code(?)", [configcode], (err, result) => {
                             if (result[0].length > 0) return res.status(400).send("ລະຫັດນີ້ຖືກໃຊ້ແລ້ວ!!")})
-                        db.query("call stadium_add(?,?,?,?,?,?,?,?,?,?)", [stadium_id,stadium_name,description,configcode,village,district,province,time_cancel,lg,img], (err,result) => {
+                        db.query("call stadium_add(?,?,?,?,?,?,?,?,?,?,?)", [stadium_id,stadium_name,description,configcode,village,district,province,time_cancel,lg,img, phone], (err,result) => {
                             if(err){
                                 res.status(400)
                                 console.log(err);
@@ -230,7 +244,7 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
                         const img = sampleFile.name;
                         db.query("call check_config_code(?)", [configcode], (err, result) => {
                             if (result[0].length > 0) return res.status(400).send("ລະຫັດນີ້ຖືກໃຊ້ແລ້ວ!!")})
-                        db.query("call stadium_add(?,?,?,?,?,?,?,?,?,?)", [stadium_id,stadium_name,description,configcode,village,district,province,time_cancel,lg,img], (err,result) => {
+                        db.query("call stadium_add(?,?,?,?,?,?,?,?,?,?,?)", [stadium_id,stadium_name,description,configcode,village,district,province,time_cancel,lg,img,phone], (err,result) => {
                             if(err){
                                 res.status(400)
                                 console.log(err);
@@ -309,63 +323,82 @@ router.put('/edit', async function(req,res,next){
     const logo_old = req.body.logo_pic;
     const img_old = req.body.picture;
     const stadium_status = req.body.status;
+    const phone = req.body.phone
 
     if(!req.files){
-        db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,logo_old,img_old,stadium_status,stadium_id], (err,result) => {
+        db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,logo_old,img_old,stadium_status,phone,stadium_id], (err,result) => {
             if(err){
                 res.status(400)
                 console.log(err);
             }else{
                 res.status(200)
-                res.send(result);
+                res.send('ແກ້ໄຂສຳເລັດ!!');
             }
         })
     }else{
 
         if(!req.files.logo){
             let sampleFile = req.files.sampleFile;
-            let uploadPath = "./upload/stadium/"+sampleFile.name;
+            let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
+            let uploadPathToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
+            sampleFile.mv(uploadPathToAdminFolder, (err) => {if (err) return res.status(500).send(err)});
             sampleFile.mv(uploadPath, function(err){
                 if(err) return res.status(500).send(err);
                 
                 const im = sampleFile.name;
-                db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,logo_old,im,stadium_status,stadium_id], (err,result) => {
+                db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,logo_old,im,stadium_status,phone,stadium_id], (err,result) => {
                     if(err){
                         res.status(400)
                         console.log(err);
                     }else{
+                        let removePath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/themeBackground/${img_old}`;
+                        let removePathFromAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/themeBackground/${img_old}`;
+                        fs.unlink(removePath, (err) => { if (err) return res.status(500).send('ລຶບຜິດພາດ!!') })
+                        fs.unlink(removePathFromAdminFolder, (err) => { if (err) return res.status(500).send('ລຶບຜິດພາດ!!') })
                         res.status(200)
-                        res.send(result);
+                        res.send('ແກ້ໄຂສຳເລັດ!!');
                     }
                 })
             })
 
         }else if(!req.files.sampleFile) {
             let logo = req.files.logo;
-            let uploadlogo = "./upload/stadium/" + logo.name;
+            let uploadlogo = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
+            let uploadlogoToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
+
+            logo.mv(uploadlogoToAdminFolder, (err) => {if (err) return res.status(500).send('ເກີດຂໍ້ຜິດພາດ!!!')})
 
             logo.mv(uploadlogo,function(err){
                 if(err) return res.status(500).send(err);
 
                 const lg = logo.name;
                 
-                db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,lg,img_old,stadium_status,stadium_id], (err,result) => {
+                db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,lg,img_old,stadium_status,phone,stadium_id], (err,result) => {
                     if(err){
                         res.status(400)
                         console.log(err);
                     }else{
+                        let removeLogo = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/icons/${logo_old}`;
+                        let removeLogoFromAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/icons/${logo_old}`;
+                        fs.unlink(removeLogo, (err) => { if (err) return res.status(500).send('ລຶບຜິດພາດ!!') })
+                        fs.unlink(removeLogoFromAdminFolder, (err) => { if (err) return res.status(500).send('ລຶບຜິດພາດ!!') })
                         res.status(200)
-                        res.send(result);
+                        res.send('ແກ້ໄຂສຳເລັດ!!');
                     }
                 })
             })
 
         } else {
             let logo = req.files.logo;
-            let uploadlogo = "./upload/stadium/" + logo.name;
-            
+            let uploadlogo = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
+            let uploadlogoToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/icons/${logo.name}`;
+
             let sampleFile = req.files.sampleFile;
-            let uploadPath = "./upload/stadium/"+sampleFile.name;
+            let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
+            let uploadPathToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/themeBackground/${sampleFile.name}`;
+
+            logo.mv(uploadlogoToAdminFolder, (err) => {if (err) return res.status(500).send(err);});
+            sampleFile.mv(uploadPathToAdminFolder, (err) => {if (err) return res.status(500).send(err)});
 
             logo.mv(uploadlogo,function(err){
                 if(err) return res.status(500).send(err);
@@ -376,13 +409,23 @@ router.put('/edit', async function(req,res,next){
                     if(err) return res.status(500).send(err);
                     
                     const im = sampleFile.name;
-                    db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,lg,im,stadium_status,stadium_id], (err,result) => {
+                    db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,lg,im,stadium_status,phone,stadium_id], (err,result) => {
                         if(err){
                             res.status(400)
                             console.log(err);
                         }else{
+                            let removeLogo = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/icons/${logo_old}`;
+                            let removeLogoFromAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/icons/${logo_old}`;
+
+                            let removePath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumPics/themeBackground/${img_old}`;
+                            let removePathFromAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/stadiumPics/themeBackground/${img_old}`;
+                            fs.unlink(removeLogo, (err) => { if (err) return res.status(500).send('ລຶບຜິດພາດ!!') })
+                            fs.unlink(removeLogoFromAdminFolder, (err) => { if (err) return res.status(500).send('ລຶບຜິດພາດ!!') })
+
+                            fs.unlink(removePath, (err) => { if (err) return res.status(500).send('ລຶບຜິດພາດ!!') })
+                            fs.unlink(removePathFromAdminFolder, (err) => { if (err) return res.status(500).send('ລຶບຜິດພາດ!!') })
                             res.status(200)
-                            res.send(result);
+                            res.send('ແກ້ໄຂສຳເລັດ!!');
                         }
                     })
                 })

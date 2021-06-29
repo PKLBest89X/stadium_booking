@@ -76,8 +76,8 @@ const useStyles = makeStyles((theme) => ({
 const CreateStadium = () => {
   const classes = useStyles();
   const { data } = useShallowEqualSelector((state) => state.auth);
-  const { addLoading, addSuccess, addError } = useShallowEqualSelector(
-    (state) => state.crudStadium
+  const { stadiumLoading, stadiumFetchSuccess, stadiumError } = useShallowEqualSelector(
+    (state) => state.stadium
   );
   const [createStadium, setCreateStatdium] = useState({
     stadium_name: "",
@@ -89,6 +89,7 @@ const CreateStadium = () => {
     stadium_timeCancel: "",
     stadium_logo: null,
     stadium_picture: null,
+    phone: "",
   });
   const dispatch = useDispatch();
   const history = useHistory();
@@ -101,7 +102,7 @@ const CreateStadium = () => {
     if (adminToken && adminToken.token) {
       dispatch(fetchAuthAdmin(adminToken.token));
     }
-  }, [addSuccess, dispatch]);
+  }, [stadiumFetchSuccess, dispatch]);
   useMemo(() => {
     data.forEach((items) => {
       return (stateRef.current = items);
@@ -114,7 +115,7 @@ const CreateStadium = () => {
       dispatch(userNow("admin"));
       window.location.reload();
     }
-  }, [data, history, addSuccess, dispatch]);
+  }, [data, history, stadiumFetchSuccess, dispatch]);
 
   const onStadiumNameChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -159,6 +160,11 @@ const CreateStadium = () => {
     }));
   };
 
+  const onStadiumPhoneChange = useCallback((event) => {
+    const { name, value } = event.target;
+    setCreateStatdium((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
   const onSubmitNewStadium = (event) => {
     event.preventDefault();
     const formData = new FormData();
@@ -171,6 +177,7 @@ const CreateStadium = () => {
     formData.append("time_cancelbooking", createStadium.stadium_timeCancel);
     formData.append("logo", createStadium.stadium_logo);
     formData.append("sampleFile", createStadium.stadium_picture);
+    formData.append('phone', createStadium.phone);
     dispatch(fetchAddStadium(formData));
   };
 
@@ -258,6 +265,17 @@ const CreateStadium = () => {
             />
             <TextField
               fullWidth
+              label="ເບີໂທ"
+              margin="normal"
+              name="phone"
+              type="number"
+              variant="outlined"
+              value={createStadium.phone}
+              onChange={onStadiumPhoneChange}
+              required
+            />
+            <TextField
+              fullWidth
               margin="normal"
               label="ໄລຍະເວລາຍົກເລີກການຈອງເດີ່ນ - ຄິດເປັນຊົ່ວໂມງ"
               name="stadium_timeCancel"
@@ -299,11 +317,11 @@ const CreateStadium = () => {
                 type="submit"
                 variant="contained"
               >
-                {addLoading === true ? "loading" : "ສ້າງເດີ່ນ"}
+                {stadiumLoading === true ? "loading" : "ສ້າງເດີ່ນ"}
               </Button>
             </Box>
-            {addError && <p>{addError}</p>}
-            {addSuccess && <p>{addSuccess}</p>}
+            {stadiumError && <p>{stadiumError}</p>}
+            {stadiumFetchSuccess && <p>{stadiumFetchSuccess}</p>}
           </form>
         </Container>
       </div>

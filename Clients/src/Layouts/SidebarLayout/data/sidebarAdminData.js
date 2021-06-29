@@ -2,11 +2,12 @@ import React from "react";
 import HomeIcon from "@material-ui/icons/Home";
 import Group from "@material-ui/icons/Group";
 import SportsSoccerIcon from "@material-ui/icons/SportsSoccer";
-import LocalOffer from "@material-ui/icons/LocalOffer";
-import LocalDrink from "@material-ui/icons/LocalDrink";
 import Payment from "@material-ui/icons/Payment";
 import Assignment from "@material-ui/icons/Assignment";
 import Book from "@material-ui/icons/Book";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import HistoryIcon from "@material-ui/icons/History";
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 
 export const sidebarAdminData = [
   {
@@ -29,16 +30,7 @@ export const sidebarAdminData = [
     path: `/manage`,
     icon: <SportsSoccerIcon />,
   },
-  {
-    title: "ລາຄາເດີ່ນ",
-    path: `/stadium-price`,
-    icon: <LocalOffer />,
-  },
-  {
-    title: "ເຄື່ອງດື່ມ",
-    path: `/stadium-drink`,
-    icon: <LocalDrink />,
-  },
+
   {
     title: "ຈອງເດີ່ນ",
     path: `/stadium-booking`,
@@ -48,5 +40,15 @@ export const sidebarAdminData = [
     title: "ຊຳລະຄ່າເດີ່ນ",
     path: `/stadium-payment`,
     icon: <Payment />,
+  },
+  {
+    title: "ປະຫວັດການຈອງ",
+    path: `/booking-history`,
+    icon: <HistoryIcon />,
+  },
+  {
+    title: "ລາຍງານການຊຳລະຄ່າເດີ່ນ",
+    path: `/payment-history`,
+    icon: <MonetizationOnIcon />,
   },
 ];

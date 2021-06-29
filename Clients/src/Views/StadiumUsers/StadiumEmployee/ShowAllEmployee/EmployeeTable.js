@@ -4,14 +4,17 @@ import moment from "moment";
 import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
 import { useRouteMatch, useHistory } from "react-router-dom";
+import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 
 import TabEmployeeControl from "./TabEmployeeControl";
-import { employeesData } from "./employeesData";
 import {
   IconButton,
   Card,
   Table,
+  Box,
+  Avatar,
   TableHead,
+  Typography,
   TableRow,
   TablePagination,
   TableContainer,
@@ -25,9 +28,7 @@ const useStyles = makeStyles({
   },
   btnAction: {
     minWidth: 90,
-    "& > IconButton": {
-
-    },
+    "& > IconButton": {},
   },
 });
 
@@ -35,11 +36,13 @@ const EmployeeTable = () => {
   const classes = useStyles();
   const history = useHistory();
   const { url } = useRouteMatch();
+  const { employeesData } = useShallowEqualSelector((state) => state.employees);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, employeesData.length - page * rowsPerPage);
+    rowsPerPage -
+    Math.min(rowsPerPage, employeesData.length - page * rowsPerPage);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -57,12 +60,28 @@ const EmployeeTable = () => {
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox">
-                <Checkbox />
+                <Typography variant="h5">
+                  <Checkbox />
+                </Typography>
               </TableCell>
-              <TableCell align="center">ຫົວຂໍ້ Post</TableCell>
-              {/* <TableCell>ຮູບ Post</TableCell> */}
-              <TableCell align="center">ມື້ Post</TableCell>
-              <TableCell align="center">Action</TableCell>
+              <TableCell align="center">
+                <Typography variant="h5">ຊື່ ແລະ ນາມສະກຸນ</Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="h5">ອາຍຸ</Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="h5">ເພດ</Typography>
+              </TableCell>
+              <TableCell align="center" >
+                <Typography variant="h5">ມື້ລົງທະບຽນ</Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="h5">Email</Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="h5">Action</Typography>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -73,26 +92,54 @@ const EmployeeTable = () => {
                 )
               : employeesData
             ).map((row) => (
-              <TableRow key={row.post_id}>
+              <TableRow key={row.su_id}>
                 <TableCell padding="checkbox">
-                  <Checkbox />
+                  <Box display="flex" alignItems="center">
+                    <Checkbox />
+                  </Box>
                 </TableCell>
                 <TableCell
                   component="th"
                   scope="row"
-                  style={{ width: 160 }}
+                  style={{ width: 300 }}
                   align="left"
                 >
-                  {row.post_title}
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="flex-start"
+                  >
+                    <Box marginRight="1em">
+                      <Avatar
+                        src={`/assets/images/adminPics/adminProfile/${row.picture}`}
+                        alt={row.su_name}
+                      />
+                    </Box>
+                    <Box>
+                      <Typography variant="h5">{`${row.su_name} ${row.su_surname}`}</Typography>
+                    </Box>
+                  </Box>
+                </TableCell>
+                <TableCell style={{ width: 70 }} align="left">
+                  <Box>
+                    <Typography variant="h5">{`${row.su_age} ປີ`}</Typography>
+                  </Box>
+                </TableCell>
+                <TableCell style={{ width: 70 }} align="left">
+                  <Box>
+                    <Typography variant="h5">{row.su_gender}</Typography>
+                  </Box>
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
-                  {moment(row.post_date).format("DD/MM/YYYY")}
+                  {moment(row.regis_date).format("DD/MM/YYYY")}
+                </TableCell>
+                <TableCell style={{ width: 70 }} align="left">
+                  <Box>
+                    <Typography variant="h5">{row.su_email}</Typography>
+                  </Box>
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
                   <div className={classes.btnAction}>
-                    <IconButton onClick={() => history.push(`${url}/edit-employee/${row.post_id}`)}>
-                      <Edit />
-                    </IconButton>
                     <IconButton>
                       <Delete />
                     </IconButton>

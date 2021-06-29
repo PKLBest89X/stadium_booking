@@ -1,6 +1,6 @@
 import ShoppingBasket from "@material-ui/icons/ShoppingBasket";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import PersonPinIcon from "@material-ui/icons/PersonPin";
+import Book from "@material-ui/icons/Book";
 
 export const tabRoutesData = [
   {
@@ -21,6 +21,6 @@ export const tabRoutesData = [
   {
     title: "ຈອງເດີ່ນ",
     path: "/stadium-booking",
-    icon: <PersonPinIcon />,
+    icon: <Book />,
   },
 ];
