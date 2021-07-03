@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: "1rem",
   },
   pictureContainer: {},
   picture: {
@@ -38,17 +37,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Overall = ({ getTabChange, ...rest }) => {
+const Overall = () => {
   const classes = useStyles();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
   const { stadiumData } = useShallowEqualSelector((state) => state.stadium);
-  const { isOpen } = useShallowEqualSelector((state) => state.popup);
+  const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
   const { stadiumId_Admin } = useParams();
   const history = useHistory();
   const stateRef = useRef(stadiumData);
   const dispatch = useDispatch();
-
-  useEffect(() => getTabChange(0), [getTabChange]);
 
   useEffect(() => {
     const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
@@ -78,7 +75,7 @@ const Overall = ({ getTabChange, ...rest }) => {
   );
 
   let UpdateStadiumForm = null;
-  if (isOpen === true) {
+  if (popupName === 'updateStadium' && isOpen === true) {
     UpdateStadiumForm = (
       <PopupLayout>
         <UpdateStadium stadiumData={stateRef.current} />
@@ -89,7 +86,7 @@ const Overall = ({ getTabChange, ...rest }) => {
   return (
     <>
     {UpdateStadiumForm}
-      <ChildPageLayout title="Stadium Overall" {...rest}>
+      <ChildPageLayout title="Stadium Overall">
         <Box>
           <div className={classes.root}>
             <Grid container spacing={3}>
@@ -122,7 +119,7 @@ const Overall = ({ getTabChange, ...rest }) => {
                       </Box>
                     </Box>
 
-                    <Button color="primary" variant="contained" onClick={() => dispatch(onPopupOpen())}>
+                    <Button color="primary" variant="contained" onClick={() => dispatch(onPopupOpen('updateStadium'))}>
                       ແກ້ໄຂ
                     </Button>
                   </Box>

@@ -56,7 +56,8 @@ const employeeSlice = createSlice({
     });
     builder.addCase(fetchAddEmployee.fulfilled, (state, action) => {
       state.employeeLoading = false;
-      history.back();
+      state.employeesData = [];
+      state.employeesData = action.payload;
     });
     builder.addCase(fetchAddEmployee.rejected, (state, action) => {
       state.employeeLoading = false;

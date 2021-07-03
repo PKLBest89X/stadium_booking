@@ -1,22 +1,31 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
+const fs = require('fs')
 
-const mysql = require('mysql');
-const dbconfig = require('../dbConnect/dbconnect');
+const mysql = require("mysql");
+const dbconfig = require("../dbConnect/dbconnect");
+
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 router.use(express.json());
+router.use(cors());
+router.use(cookieParser());
 
 const db = mysql.createConnection(dbconfig.db);
 
-router.get('/:st_id', async function(req,res,next){
+router.get('/getStadiumDrink/:st_id', async function(req,res,next){
     const stadium_id = req.params.st_id;
     await db.query("call water(?)", [stadium_id], (err, result) => {
-        if(err){
-            res.status(400)
+        if (err) {
             console.log(err);
-        }else{
-            res.status(200)
-            res.send(result[0]);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
         }
     })
 }) // ສະແດງລາຍການນໍ້າຂອງເດີ່ນນັ້ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -32,7 +41,7 @@ router.get('/:st_id', async function(req,res,next){
 // }) Test sue2
 
 
-router.post('/', async function(req,res,next){
+router.post('/addStadiumDrink', async function(req,res,next){
     
     const stadium_id = req.body.st_id;
     const water_name = req.body.stw_name;
@@ -53,18 +62,11 @@ router.post('/', async function(req,res,next){
                 }
                 const water_id = cd+nid+nb;
                 if(!req.files){
-                    db.query("call water_add(?,?,?,?,?,'ຂາຍໄດ້')", [water_id,stadium_id,water_name,water_price,pic], (err, result) => {
-                        if(err){
-                            res.status(400)
-                            console.log(err);
-                        }else{
-                            res.status(200)
-                            res.send(result);
-                        }
-                    })
+                    res.status(500)
+                    res.send("Please choose field image to show");
                 }else{
                     let sampleFile = req.files.sampleFile;
-                    let uploadPath = "./upload/water/" + sampleFile.name;
+                    let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumDrinkPics/${sampleFile.name}`;
             
                     sampleFile.mv(uploadPath, function (err){
                         if(err) return res.status(500).send(err);
@@ -76,8 +78,12 @@ router.post('/', async function(req,res,next){
                                 res.status(400)
                                 console.log(err);
                             }else{
-                                res.status(200)
-                                res.send(result);
+                                db.query("call water(?)", [stadium_id], (err, result) => {
+                                    if (err) {
+                                      return res.status(400);
+                                    } 
+                                    return res.send(result[0]);
+                                  });
                             }
                         })
                     })
@@ -89,18 +95,11 @@ router.post('/', async function(req,res,next){
                 const wid = rel[0].config_code
                 const water_id = wid+"-d-00000001";
                 if(!req.files){
-                    db.query("call water_add(?,?,?,?,?,'ຂາຍໄດ້')", [water_id,stadium_id,water_name,water_price,pic], (err, result) => {
-                        if(err){
-                            res.status(400)
-                            console.log(err);
-                        }else{
-                            res.status(200)
-                            res.send(result);
-                        }
-                    })
+                    res.status(500)
+                    res.send("Please choose field image to show");
                 }else{
                     let sampleFile = req.files.sampleFile;
-                    let uploadPath = "./upload/water/" + sampleFile.name;
+                    let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumDrinkPics/${sampleFile.name}`;
             
                     sampleFile.mv(uploadPath, function (err){
                         if(err) return res.status(500).send(err);
@@ -112,8 +111,12 @@ router.post('/', async function(req,res,next){
                                 res.status(400)
                                 console.log(err);
                             }else{
-                                res.status(200)
-                                res.send(result);
+                                db.query("call water(?)", [stadium_id], (err, result) => {
+                                    if (err) {
+                                      return res.status(400);
+                                    } 
+                                    return res.send(result[0]);
+                                  });
                             }
                         })
                     })
@@ -126,7 +129,8 @@ router.post('/', async function(req,res,next){
     
 }) // ເພີ່ມລາຍການນໍ້າໃຫ້ເດີ່ນນັ້ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
-router.put('/', async function(req,res,next){
+router.put('/updateStadiumDrink', async function(req,res,next){
+    const stadium_id = req.body.st_id;
     const water_id = req.body.stw_id;
     const water_name = req.body.stw_name;
     const water_price = req.body.stw_price;
@@ -139,13 +143,17 @@ router.put('/', async function(req,res,next){
                 res.status(400)
                 console.log(err);
             }else{
-                res.status(200)
-                res.send(result);
+                db.query("call water(?)", [stadium_id], (err, result) => {
+                    if (err) {
+                      return res.status(400);
+                    } 
+                    return res.send(result[0]);
+                  });
             }
         })
     }else{
         let sampleFile = req.files.sampleFile;
-        let uploadPath = "./upload/water/" + sampleFile.name;
+        let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumDrinkPics/${sampleFile.name}`;
 
         sampleFile.mv(uploadPath, function (err){
             if(err) return res.status(500).send(err);
@@ -157,8 +165,12 @@ router.put('/', async function(req,res,next){
                     res.status(400)
                     console.log(err);
                 }else{
-                    res.status(200)
-                    res.send(result);
+                    db.query("call water(?)", [stadium_id], (err, result) => {
+                        if (err) {
+                          return res.status(400);
+                        } 
+                        return res.send(result[0]);
+                      });
                 }
             })
         })

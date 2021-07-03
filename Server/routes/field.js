@@ -1,22 +1,31 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
+const fs = require('fs')
 
-const mysql = require('mysql');
-const dbconfig = require('../dbConnect/dbconnect');
+const mysql = require("mysql");
+const dbconfig = require("../dbConnect/dbconnect");
+
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 router.use(express.json());
+router.use(cors());
+router.use(cookieParser());
 
 const db = mysql.createConnection(dbconfig.db);
 
-router.get('/:st_id', async function(req,res,next){
+router.get('/getStadiumDetails/:st_id', async function(req,res,next){
     const stadium_id = req.params.st_id;
     await db.query("call field(?)", [stadium_id] , (err,result) => {
-        if(err){
-            res.status(400)
+        if (err) {
             console.log(err);
-        }else{
-            res.status(200)
-            res.send(result[0]);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
         }
     })
 }) // ສະແດງສະໜາມທັງໝົດທີ່ມີໃນເດີ່ນນັ້ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -41,7 +50,7 @@ router.get('/:st_id', async function(req,res,next){
 // }) Test sue2
 
 
-router.post('/', async function(req, res, next) {
+router.post('/addStadiums', async function(req, res, next) {
     
     const stadium_id = req.body.st_id;
     const stadium_name = req.body.std_name;
@@ -65,7 +74,7 @@ router.post('/', async function(req, res, next) {
                     res.send("Please choose field image to show");
                 }else{
                     let sampleFile = req.files.sampleFile;
-                    let uploadPath = "./upload/field/" + sampleFile.name;
+                    let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumDetailsPics/${sampleFile.name}`;
             
                     sampleFile.mv(uploadPath, function(err){
                         if(err) return res.status(500).send(err);
@@ -77,8 +86,12 @@ router.post('/', async function(req, res, next) {
                                 res.status(400)
                                 console.log(err);
                             }else{
-                                res.status(200)
-                                res.send(result)
+                                db.query("call field(?)", [stadium_id], (err, result) => {
+                                    if (err) {
+                                      return res.status(400);
+                                    } 
+                                    return res.send(result[0]);
+                                  });
                             }
                         })
                     })
@@ -94,7 +107,7 @@ router.post('/', async function(req, res, next) {
                     res.send("Please choose field image to show");
                 }else{
                     let sampleFile = req.files.sampleFile;
-                    let uploadPath = "./upload/field/" + sampleFile.name;
+                    let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumDetailsPics/${sampleFile.name}`;
             
                     sampleFile.mv(uploadPath, function(err){
                         if(err) return res.status(500).send(err);
@@ -106,8 +119,12 @@ router.post('/', async function(req, res, next) {
                                 res.status(400)
                                 console.log(err);
                             }else{
-                                res.status(200)
-                                res.send(result)
+                                db.query("call field(?)", [stadium_id], (err, result) => {
+                                    if (err) {
+                                      return res.status(400);
+                                    } 
+                                    return res.send(result[0]);
+                                  });
                             }
                         })
                     })
@@ -122,7 +139,8 @@ router.post('/', async function(req, res, next) {
 }) // ເພື່ມສະໜາມໃໝ່ໃຫ້ເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
-router.put('/', async function(req, res, next) {
+router.put('/updateStadiums', async function(req, res, next) {
+    const stadium_id = req.body.st_id;
     const field_id = req.body.std_id
     const field_status = req.body.std_status;
     const field_name = req.body.std_name;
@@ -134,13 +152,17 @@ router.put('/', async function(req, res, next) {
                 res.status(400)
                 console.log(err);
             }else{
-                res.status(200)
-                res.send(result)
+                db.query("call field(?)", [stadium_id], (err, result) => {
+                    if (err) {
+                      return res.status(400);
+                    } 
+                    return res.send(result[0]);
+                  });
             }
         })
     }else{
         let sampleFile = req.files.sampleFile;
-        let uploadPath = "./upload/field/"+sampleFile.name;
+        let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/stadiumDetailsPics/${sampleFile.name}`;
 
         sampleFile.mv(uploadPath, function(err){
             if(err) return res.status(500).send(err);
@@ -152,8 +174,12 @@ router.put('/', async function(req, res, next) {
                     res.status(400)
                     console.log(err);
                 }else{
-                    res.status(200)
-                    res.send(result)
+                    db.query("call field(?)", [stadium_id], (err, result) => {
+                        if (err) {
+                          return res.status(400);
+                        } 
+                        return res.send(result[0]);
+                      });
                 }
             })
         })

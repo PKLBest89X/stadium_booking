@@ -3,7 +3,6 @@ import { fetchCheckStadium } from "../../../../../middlewares/fetchCheckValidDat
 import { useHistory, useParams } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../../Components/useShallowEqualSelector";
 import { fetchAuthAdmin } from "../../../../../middlewares/fetchAuth/fetchStadiumUsers";
-import PopupLayout from "../../../../../Components/ChildPageLayout";
 import { userNow } from "../../../../../Slices/Authentication/authSlice";
 import { fetchUpdateStadium } from "../../../../../middlewares/stadiumUser/fetchCRUDStadium/fetchCRUDStadium";
 import { updateStadium } from "../../../../../Slices/Features/StadiumUsers/crudStadium/crudStadiumSlice";
@@ -209,168 +208,161 @@ const UpdateStadium = ({ stadiumData }) => {
       .then(() => dispatch(onPopupClose()));
   };
   return (
-    <PopupLayout title="Add Stadium Details">
-      <div className={classes.pageContainer}>
-        <Container maxwidth="false">
-          <form onSubmit={onUpdateStadium}>
-            <Box mb={3}>
-              <Typography color="textPrimary" variant="h2">
-                ແກ້ໄຂຂໍ້ມູນເດີ່ນ
-              </Typography>
-            </Box>
-            <Divider />
+    <div className={classes.pageContainer}>
+      <Container maxwidth="false">
+        <form onSubmit={onUpdateStadium}>
+          <Box mb={3}>
+            <Typography color="textPrimary" variant="h2">
+              ແກ້ໄຂຂໍ້ມູນເດີ່ນ
+            </Typography>
+          </Box>
+          <Divider />
 
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-                <Box border="1px solid #b5aba4" mt={2} borderRadius="5px">
-                  <div className={classes.picture}>
-                    <EditLogo
-                      ref={logoRef}
-                      selected={onSelectedLogo}
-                      className={classes.inputProperties}
-                    />
-                  </div>
-                  <img
-                    className={classes.previewPicture}
-                    src={testImage}
-                    alt="gg"
-                  />
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-                <Box border="1px solid #b5aba4" mt={2} borderRadius="5px">
-                  <div className={classes.picture}>
-                    <EditPicture
-                      ref={pictureRef}
-                      selected={onSelectedPicture}
-                      className={classes.inputProperties}
-                    />
-                  </div>
-                  <img
-                    className={classes.previewPicture}
-                    src={testImage2}
-                    alt="gg2"
-                  />
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-                <TextField
-                  fullWidth
-                  label="ຊື່ເດີ່ນ"
-                  margin="normal"
-                  name="stadium_name"
-                  type="text"
-                  variant="outlined"
-                  value={stadiumState.stadium_name}
-                  onChange={onStadiumNameChange}
-                  required
-                />
-                <div>
-                  <textarea
-                    name="description"
-                    className={classes.textarea}
-                    rows="10"
-                    placeholder="ປ້ອນຄຳອະທິບາຍເດີ່ນຂອງທ່ານ"
-                    value={stadiumState.description}
-                    onChange={onStadiumDesChange}
-                    required
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+              <Box border="1px solid #b5aba4" mt={2} borderRadius="5px">
+                <div className={classes.picture}>
+                  <EditLogo
+                    ref={logoRef}
+                    selected={onSelectedLogo}
+                    className={classes.inputProperties}
                   />
                 </div>
-                <TextField
-                  fullWidth
-                  label="ບ້ານ"
-                  margin="normal"
-                  name="stadium_village"
-                  type="text"
-                  variant="outlined"
-                  value={stadiumState.stadium_village}
-                  onChange={onStadiumVillageChange}
-                  required
+                <img
+                  className={classes.previewPicture}
+                  src={testImage}
+                  alt="gg"
                 />
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  name="stadium_district"
-                  type="text"
-                  variant="outlined"
-                  value="ໄຊເສດຖາ"
-                  disabled
-                />
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  name="stadium_province"
-                  type="text"
-                  variant="outlined"
-                  value="ນະຄອນຫຼວງວຽງຈັນ"
-                  disabled
-                />
-                <TextField
-                  fullWidth
-                  label="ເບີໂທ"
-                  margin="normal"
-                  name="phone"
-                  type="number"
-                  variant="outlined"
-                  value={stadiumState.phone}
-                  onChange={onStadiumPhoneChange}
-                  required
-                />
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  label="ໄລຍະເວລາຍົກເລີກການຈອງເດີ່ນ - ຄິດເປັນຊົ່ວໂມງ"
-                  name="stadium_timeCancel"
-                  type="number"
-                  onInput={(e) => {
-                    e.target.value = Math.max(0, parseInt(e.target.value))
-                      .toString()
-                      .slice(0, 2);
-                  }}
-                  min={0}
-                  variant="outlined"
-                  value={stadiumState.stadium_timeCancel}
-                  onChange={onStadiumTimeCancelChange}
-                />
-                <FormControl
-                  required
-                  variant="outlined"
-                  className={classes.formControl}
-                >
-                  <InputLabel htmlFor="outlined-age-native-simple">
-                    ສະຖານະ
-                  </InputLabel>
-                  <Select
-                    native
-                    value={stadiumState.stadium_status}
-                    onChange={onStadiumStatusSelected}
-                    label="ສະຖານະ"
-                    inputProps={{
-                      name: "stadium_status",
-                      id: "outlined-age-native-simple",
-                    }}
-                  >
-                    <option aria-label="None" value="" />
-                    <option value="ດຳເນີນການ">ດຳເນີນການ</option>
-                    <option value="ບໍ່ພ້ອມໃຊ້ງານ">ບໍ່ພ້ອມໃຊ້ງານ</option>
-                  </Select>
-                </FormControl>
-              </Grid>
+              </Box>
             </Grid>
-            <Box mt={3}>
-              <Button
-                type="submit"
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+              <Box border="1px solid #b5aba4" mt={2} borderRadius="5px">
+                <div className={classes.picture}>
+                  <EditPicture
+                    ref={pictureRef}
+                    selected={onSelectedPicture}
+                    className={classes.inputProperties}
+                  />
+                </div>
+                <img
+                  className={classes.previewPicture}
+                  src={testImage2}
+                  alt="gg2"
+                />
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+              <TextField
                 fullWidth
-                color="primary"
-                variant="contained"
+                label="ຊື່ເດີ່ນ"
+                margin="normal"
+                name="stadium_name"
+                type="text"
+                variant="outlined"
+                value={stadiumState.stadium_name}
+                onChange={onStadiumNameChange}
+                required
+              />
+              <div>
+                <textarea
+                  name="description"
+                  className={classes.textarea}
+                  rows="10"
+                  placeholder="ປ້ອນຄຳອະທິບາຍເດີ່ນຂອງທ່ານ"
+                  value={stadiumState.description}
+                  onChange={onStadiumDesChange}
+                  required
+                />
+              </div>
+              <TextField
+                fullWidth
+                label="ບ້ານ"
+                margin="normal"
+                name="stadium_village"
+                type="text"
+                variant="outlined"
+                value={stadiumState.stadium_village}
+                onChange={onStadiumVillageChange}
+                required
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                name="stadium_district"
+                type="text"
+                variant="outlined"
+                value="ໄຊເສດຖາ"
+                disabled
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                name="stadium_province"
+                type="text"
+                variant="outlined"
+                value="ນະຄອນຫຼວງວຽງຈັນ"
+                disabled
+              />
+              <TextField
+                fullWidth
+                label="ເບີໂທ"
+                margin="normal"
+                name="phone"
+                type="number"
+                variant="outlined"
+                value={stadiumState.phone}
+                onChange={onStadiumPhoneChange}
+                required
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="ໄລຍະເວລາຍົກເລີກການຈອງເດີ່ນ - ຄິດເປັນຊົ່ວໂມງ"
+                name="stadium_timeCancel"
+                type="number"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 2);
+                }}
+                min={0}
+                variant="outlined"
+                value={stadiumState.stadium_timeCancel}
+                onChange={onStadiumTimeCancelChange}
+              />
+              <FormControl
+                required
+                variant="outlined"
+                className={classes.formControl}
               >
-                ແກ້ໄຂ
-              </Button>
-            </Box>
-          </form>
-        </Container>
-      </div>
-    </PopupLayout>
+                <InputLabel htmlFor="outlined-age-native-simple">
+                  ສະຖານະ
+                </InputLabel>
+                <Select
+                  native
+                  value={stadiumState.stadium_status}
+                  onChange={onStadiumStatusSelected}
+                  label="ສະຖານະ"
+                  inputProps={{
+                    name: "stadium_status",
+                    id: "outlined-age-native-simple",
+                  }}
+                >
+                  <option aria-label="None" value="" />
+                  <option value="ດຳເນີນການ">ດຳເນີນການ</option>
+                  <option value="ບໍ່ພ້ອມໃຊ້ງານ">ບໍ່ພ້ອມໃຊ້ງານ</option>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+          <Box mt={3}>
+            <Button type="submit" fullWidth color="primary" variant="contained">
+              ແກ້ໄຂ
+            </Button>
+          </Box>
+        </form>
+      </Container>
+    </div>
   );
 };
 

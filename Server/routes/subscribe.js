@@ -65,7 +65,7 @@ router.get("/getSubscribeByStadiumIdCustomerId/:stadiumId", verifyToken, functio
         }
   
         if (result[0].length > 0) {
-            return res.send(result[0][0])
+            return res.send(result[0])
         } else {
             return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
         }

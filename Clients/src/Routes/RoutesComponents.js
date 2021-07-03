@@ -7,13 +7,11 @@ import AccountView from '../Views/Users/Account'
 
 import DashboardView from "../Views/StadiumUsers/Dashboard";
 import StadiumView from '../Views/StadiumUsers/Stadiums';
-
+import ShowStadiumDetails from "../Views/StadiumUsers/StadiumDetails/ShowStadiumDetails";
+import StadiumDrink from "../Views/StadiumUsers/StadiumDrink/ShowStadiumDrink";
+import StadiumPrice from "../Views/StadiumUsers/StadiumPrice/ShowStadiumPrice";
 import StadiumPosts from '../Views/StadiumUsers/StadiumPosts/ShowAllPost';
-import AddPost from '../Views/StadiumUsers/StadiumPosts/AddPost';
-import EditPost from '../Views/StadiumUsers/StadiumPosts/EditPost';
 import StadiumEmployee from '../Views/StadiumUsers/StadiumEmployee/ShowAllEmployee';
-import AddEmployee from "../Views/StadiumUsers/StadiumEmployee/AddEmployee";
-import EditEmployee from "../Views/StadiumUsers/StadiumEmployee/EditEmployee"
 
 import StadiumBooking from '../Views/StadiumUsers/StadiumBooking';
 import StadiumPayment from '../Views/StadiumUsers/StadiumPayment';
@@ -58,33 +56,28 @@ const RoutesComponents = ({ ...rest }) => {
           <DashboardView {...rest} />
         </PrivateRoutesAdmin>
 
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/manage">
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-info">
           <StadiumView {...rest} />
         </PrivateRoutesAdmin>
         
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-post" exact>
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-post" >
           <StadiumPosts {...rest} />
         </PrivateRoutesAdmin>
 
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-post/add-post">
-          <AddPost {...rest} />
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-details" >
+          <ShowStadiumDetails {...rest}/>
         </PrivateRoutesAdmin>
 
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-post/edit-post/:postId">
-          <EditPost {...rest} />
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-price" >
+          <StadiumPrice {...rest} />
         </PrivateRoutesAdmin>
 
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/employee-manage" exact>
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/employee-manage" >
           <StadiumEmployee {...rest} />
         </PrivateRoutesAdmin>
 
-        
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/employee-manage/add-employee">
-          <AddEmployee {...rest} />
-        </PrivateRoutesAdmin>
-
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/employee-manage/edit-employee/:employeeId">
-          <EditEmployee {...rest} />
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-drink" >
+          <StadiumDrink {...rest} />
         </PrivateRoutesAdmin>
 
 

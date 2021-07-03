@@ -3,12 +3,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
 import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
-import { useRouteMatch, useHistory } from "react-router-dom";
 import { Avatar, Box, Typography } from "@material-ui/core";
 import { fetchDeletePost } from "../../../../middlewares/stadiumUser/fetchPost/fetchPost";
 import { onDeletePost } from "../../../../Slices/Features/StadiumUsers/post/postSlice";
 import { useDispatch } from "react-redux";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
+import { onPopupOpen } from "../../../../Slices/Features/Popup/popupSlice";
+import { onUpdatePost } from "../../../../Slices/Features/StadiumUsers/post/postSlice";
 
 import TabPostControl from "./TabPostControl";
 import {
@@ -35,9 +36,7 @@ const useStyles = makeStyles({
 
 const PostTable = React.memo(() => {
   const classes = useStyles();
-  const history = useHistory();
   const { postsData } = useShallowEqualSelector((state) => state.posts);
-  const { url } = useRouteMatch();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const dispatch = useDispatch();
@@ -69,7 +68,6 @@ const PostTable = React.memo(() => {
               <TableCell align="center">
                 <Typography variant="h5">ຫົວຂໍ້ Post</Typography>
               </TableCell>
-              {/* <TableCell>ຮູບ Post</TableCell> */}
               <TableCell align="center">
                 <Typography variant="h5">ມື້ Post</Typography>
               </TableCell>
@@ -123,9 +121,10 @@ const PostTable = React.memo(() => {
                 <TableCell style={{ width: 100 }} align="center">
                   <div className={classes.btnAction}>
                     <IconButton
-                      onClick={() =>
-                        history.push(`${url}/edit-post/${row.pt_id}`)
-                      }
+                      onClick={() => {
+                        dispatch(onUpdatePost(row));
+                        dispatch(onPopupOpen("editPost"));
+                      }}
                     >
                       <Edit />
                     </IconButton>
@@ -134,7 +133,7 @@ const PostTable = React.memo(() => {
                         const getIds = {
                           postId: row.pt_id,
                           stadiumId: row.st_id,
-                          postImage: row.post_img
+                          postImage: row.post_img,
                         };
                         dispatch(fetchDeletePost(getIds)).then(() =>
                           dispatch(onDeletePost(getIds))

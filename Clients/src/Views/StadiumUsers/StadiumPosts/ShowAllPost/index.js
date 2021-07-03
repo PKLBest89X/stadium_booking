@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
 import PageLayout from "../../../../Components/PageLayout";
+import PopupLayout from "../../../../Components/PopupLayout";
+import AddPost from "../AddPost";
+import EditPost from '../EditPost'
 import { fetchCheckStadium } from "../../../../middlewares/fetchCheckValidData/fetchCheckValidData";
 import { useHistory, useParams } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
@@ -28,9 +31,8 @@ const useStyles = makeStyles(() => ({
 const StadiumPosts = React.memo(({ ...rest }) => {
   const classes = useStyles();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { postSuccess } = useShallowEqualSelector(
-    (state) => state.posts
-  );
+  const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
+  const { postSuccess } = useShallowEqualSelector((state) => state.posts);
   const { stadiumId_Admin } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -62,22 +64,45 @@ const StadiumPosts = React.memo(({ ...rest }) => {
       <Typography variant="h3">ບໍ່ມີ Post ຂອງເດີ່ນ</Typography>
     </div>
   );
+
+  let AddPostForm = null;
+  if (popupName === "addPost" && isOpen === true) {
+    AddPostForm = (
+      <PopupLayout>
+        <AddPost />
+      </PopupLayout>
+    );
+  }
+
+  let EditPostForm = null;
+  if (popupName === "editPost" && isOpen === true) {
+    EditPostForm = (
+      <PopupLayout>
+        <EditPost />
+      </PopupLayout>
+    );
+  }
+
   return (
-    <PageLayout title="Stadium Post" {...rest}>
-      <div className={classes.pageContainer}>
-        <Box mb={3}>
-          <Typography color="textPrimary" variant="h2">
-            Post ຂອງເດີ່ນ
-          </Typography>
-        </Box>
-        <Divider />
-        <Box mt={3}>
-          <PostToolbar />
-          {postSuccess === true && <PostTable />}
-          {postSuccess === false && <ShowEmptyPost />}
-        </Box>
-      </div>
-    </PageLayout>
+    <>
+    {AddPostForm}
+    {EditPostForm}
+      <PageLayout title="Stadium Post" {...rest}>
+        <div className={classes.pageContainer}>
+          <Box mb={3}>
+            <Typography color="textPrimary" variant="h2">
+              Post ຂອງເດີ່ນ
+            </Typography>
+          </Box>
+          <Divider />
+          <Box mt={3}>
+            <PostToolbar />
+            {postSuccess === true && <PostTable />}
+            {postSuccess === false && <ShowEmptyPost />}
+          </Box>
+        </div>
+      </PageLayout>
+    </>
   );
 });
 

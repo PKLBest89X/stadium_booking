@@ -1,12 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { onPopupOpen } from "../../../../Slices/Features/Popup/popupSlice";
+import { useDispatch } from "react-redux";
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   TextField,
   InputAdornment,
   SvgIcon,
@@ -47,8 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 const EmployeeToolbar = ({ className, ...rest }) => {
   const classes = useStyles();
-  const history = useHistory();
-  const { url } = useRouteMatch();
+  const dispatch = useDispatch();
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Box>
@@ -80,7 +78,7 @@ const EmployeeToolbar = ({ className, ...rest }) => {
               className={classes.buttonStyles}
               color="primary"
               variant="contained"
-              onClick={() => history.push(`${url}/add-employee`)}
+              onClick={() => dispatch(onPopupOpen('addEmployee'))}
             >
               ເພີ່ມພະນັກງານ
             </Button>

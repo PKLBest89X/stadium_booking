@@ -1,22 +1,33 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "axios";
 
+export const fetchGetStadiumDrink = createAsyncThunk(
+  "drink/getStadiumDrink",
+  async (params, { rejectWithValue, getState, requestId }) => {
+    try {
+      const { drinkLoading, drinkRequestId } = getState().stadiumDrink;
+      if (drinkLoading !== true || requestId !== drinkRequestId) {
+        return;
+      }
+      const getStadiumDrink = await Axios.get(
+        `http://localhost:5050/water/getStadiumDrink/${params}`
+      );
+      return getStadiumDrink.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const fetchAddStadiumDrink = createAsyncThunk(
-  "stadium/add",
+  "drink/addStadiumDrink",
   async (data, { rejectWithValue }) => {
     try {
-      const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
-      const addStadiumDetailsData = await Axios.post(
-        "http://localhost:5050/stadium/stadium_add",
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            'authorization': `Bearer ${adminToken.token}`,
-          },
-        }
+      const addStadiumDrink = await Axios.post(
+        "http://localhost:5050/water/addStadiumDrink",
+        data
       );
-      return addStadiumDetailsData.data;
+      return addStadiumDrink.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -24,14 +35,14 @@ export const fetchAddStadiumDrink = createAsyncThunk(
 );
 
 export const fetchUpdateStadiumDrink = createAsyncThunk(
-  "stadium/update",
+  "drink/updateStadiumDrink",
   async (data, { rejectWithValue }) => {
     try {
-      const updateStadiumDetailsData = await Axios.post(
-        "http://localhost:5050/stadium/add",
-        {}
+      const updateStadiumDrink = await Axios.put(
+        "http://localhost:5050/water/updateStadiumDrink",
+        data
       );
-      return updateStadiumDetailsData.data;
+      return updateStadiumDrink.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }

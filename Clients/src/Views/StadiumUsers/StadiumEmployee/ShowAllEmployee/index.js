@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import PageLayout from "../../../../Components/PageLayout";
+import PopupLayout from "../../../../Components/PopupLayout";
 import { fetchCheckStadium } from "../../../../middlewares/fetchCheckValidData/fetchCheckValidData";
 import { useHistory, useParams } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
@@ -9,6 +10,7 @@ import { fetchGetEmployee } from "../../../../middlewares/stadiumUser/fetchCRUDE
 import { useDispatch } from "react-redux";
 import EmployeeTable from "./EmployeeTable";
 import EmployeeToolbar from "./EmployeeToolbar";
+import AddEmployee from '../AddEmployee';
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Box, Divider } from "@material-ui/core";
 
@@ -28,6 +30,7 @@ const useStyles = makeStyles(() => ({
 const StadiumEmployee = ({ ...rest }) => {
   const classes = useStyles();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
+  const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
   const { employeeFetchSuccess } = useShallowEqualSelector(
     (state) => state.employees
   );
@@ -54,8 +57,8 @@ const StadiumEmployee = ({ ...rest }) => {
   }, [history, checkResult]);
 
   useEffect(() => {
-    dispatch(fetchGetEmployee(stadiumId_Admin))
-  }, [dispatch, stadiumId_Admin])
+    dispatch(fetchGetEmployee(stadiumId_Admin));
+  }, [dispatch, stadiumId_Admin]);
 
   const ShowEmptyEmployee = () => (
     <div className={classes.emptyView}>
@@ -63,22 +66,43 @@ const StadiumEmployee = ({ ...rest }) => {
     </div>
   );
 
+  let AddEmployeeForm = null;
+  if (popupName === "addEmployee" && isOpen === true) {
+    AddEmployeeForm = (
+      <PopupLayout>
+        <AddEmployee />
+      </PopupLayout>
+    );
+  }
+
+  // let EditEmployeeForm = null;
+  // if (popupName === "editEmployee" && isOpen === true) {
+  //   UpdateStadiumForm = (
+  //     <PopupLayout>
+  //       <EditEmployee stadiumData={stateRef.current} />
+  //     </PopupLayout>
+  //   );
+  // }
+
   return (
-    <PageLayout title="Stadium Employee" {...rest}>
-      <div className={classes.pageContainer}>
-        <Box mb={3}>
-          <Typography color="textPrimary" variant="h2">
-            ພະນັກງານຂອງເດີ່ນ
-          </Typography>
-        </Box>
-        <Divider />
-        <Box mt={3}>
-          <EmployeeToolbar />
-          {employeeFetchSuccess === true && <EmployeeTable />}
-          {employeeFetchSuccess === false && <ShowEmptyEmployee />}
-        </Box>
-      </div>
-    </PageLayout>
+    <>
+      {AddEmployeeForm}
+      <PageLayout title="Stadium Employee" {...rest}>
+        <div className={classes.pageContainer}>
+          <Box mb={3}>
+            <Typography color="textPrimary" variant="h2">
+              ພະນັກງານຂອງເດີ່ນ
+            </Typography>
+          </Box>
+          <Divider />
+          <Box mt={3}>
+            <EmployeeToolbar />
+            {employeeFetchSuccess === true && <EmployeeTable />}
+            {employeeFetchSuccess === false && <ShowEmptyEmployee />}
+          </Box>
+        </div>
+      </PageLayout>
+    </>
   );
 };
 

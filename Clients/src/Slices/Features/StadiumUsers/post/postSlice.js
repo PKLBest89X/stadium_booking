@@ -1,8 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { history } from "../../../../Components/history";
 import {
   fetchGetPost,
-  fetchGetPostById,
   fetchAddPost,
   fetchUpdatePost,
   fetchDeletePost,
@@ -21,6 +19,10 @@ const postSlice = createSlice({
   name: "postsgg",
   initialState,
   reducers: {
+    onUpdatePost: (state, { payload }) => {
+      state.postsDataById = [];
+      state.postsDataById.push(payload);
+    },
     onDeletePost: (state, action) => {
       state.postsData = state.postsData.filter(
         (items) => items.pt_id !== action.payload.postId
@@ -57,41 +59,14 @@ const postSlice = createSlice({
         state.postError = action.payload;
       }
     });
-    builder.addCase(fetchGetPostById.pending, (state, action) => {
-      state.postLoading = true;
-      if (state.postLoading === true) {
-        state.postRequestId = action.meta.requestId;
-      }
-    });
-    builder.addCase(fetchGetPostById.fulfilled, (state, action) => {
-      if (
-        state.postLoading === true &&
-        state.postRequestId === action.meta.requestId
-      ) {
-        state.postLoading = false;
-        state.postRequestId = undefined;
-        state.postSuccess = true;
-        state.postsDataById = [];
-        state.postsDataById.push(action.payload);
-      }
-    });
-    builder.addCase(fetchGetPostById.rejected, (state, action) => {
-      if (
-        state.postLoading === true &&
-        state.postRequestId === action.meta.requestId
-      ) {
-        state.postLoading = false;
-        state.postRequestId = undefined;
-        state.postSuccess = false;
-        state.postError = action.payload;
-      }
-    });
+
     builder.addCase(fetchAddPost.pending, (state, action) => {
       state.postLoading = true;
     });
     builder.addCase(fetchAddPost.fulfilled, (state, action) => {
       state.postLoading = false;
-      history.back();
+      state.postsData = [];
+      state.postsData = action.payload;
     });
     builder.addCase(fetchAddPost.rejected, (state, action) => {
       state.postLoading = false;
@@ -102,7 +77,8 @@ const postSlice = createSlice({
     });
     builder.addCase(fetchUpdatePost.fulfilled, (state, action) => {
       state.postLoading = false;
-      history.back();
+      state.postsData = [];
+      state.postsData = action.payload;
     });
     builder.addCase(fetchUpdatePost.rejected, (state, action) => {
       state.postLoading = false;
@@ -123,5 +99,5 @@ const postSlice = createSlice({
     });
   },
 });
-export const { onDeletePost } = postSlice.actions;
+export const { onUpdatePost, onDeletePost } = postSlice.actions;
 export default postSlice.reducer;

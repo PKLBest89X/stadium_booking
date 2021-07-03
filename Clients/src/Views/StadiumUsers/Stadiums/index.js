@@ -1,16 +1,15 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import PageLayout from "../../../Components/PageLayout";
 import { fetchCheckStadium } from "../../../middlewares/fetchCheckValidData/fetchCheckValidData";
-import { useHistory, useParams, useRouteMatch } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { fetchAuthAdmin } from "../../../middlewares/fetchAuth/fetchStadiumUsers";
 import { fetchGetStadium } from "../../../middlewares/stadiumUser/fetchCRUDStadium/fetchCRUDStadium";
 import { userNow } from "../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Divider, AppBar, Tabs, Tab } from "@material-ui/core";
-import { tabRoutesData } from "./tabRoutesData";
-import RoutesChildComponentsAdmin from "../../../Routes/RoutesChildComponentsAdmin";
+import { Divider } from "@material-ui/core";
+import Overall from './Overall'
 
 const useStyles = makeStyles(() => ({
   mainContainer: {
@@ -53,28 +52,7 @@ const StadiumsView = ({ ...rest }) => {
   const { stadiumId_Admin } = useParams();
   const history = useHistory();
   const stateRef = useRef(stadiumData);
-  const { url } = useRouteMatch();
   const dispatch = useDispatch();
-
-  const [value, setValue] = useState(0);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const tabChange = (payload) => setValue(payload);
-
-  useEffect(() => {
-    const pathName = [
-      "/manage",
-      "/manage/stadium-details",
-      "/manage/stadium-price",
-      "/manage/stadium-drink",
-    ];
-    if (window.location.href.match(pathName[0])) setValue(0);
-    if (window.location.href.match(pathName[1])) setValue(1);
-    if (window.location.href.match(pathName[2])) setValue(2);
-    if (window.location.href.match(pathName[3])) setValue(3);
-  }, []);
 
   useEffect(() => {
     const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
@@ -115,32 +93,7 @@ const StadiumsView = ({ ...rest }) => {
         </div>
       </div>
       <Divider />
-      <div className={classes.appBar}>
-        <AppBar position="sticky" color="default">
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            variant="scrollable"
-            scrollButtons="on"
-            indicatorColor="primary"
-            textColor="primary"
-            aria-label="scrollable force tabs example"
-          >
-            {tabRoutesData.map((items, index) => {
-              return (
-                <Tab
-                  className={classes.tab}
-                  key={index}
-                  label={items.title}
-                  icon={items.icon}
-                  onClick={() => history.push(`${url}${items.path}`)}
-                />
-              );
-            })}
-          </Tabs>
-        </AppBar>
-      </div>
-      <RoutesChildComponentsAdmin tabChange={tabChange} />
+      <Overall />
     </PageLayout>
   );
 };

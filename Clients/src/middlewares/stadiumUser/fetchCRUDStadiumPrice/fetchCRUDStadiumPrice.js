@@ -1,6 +1,25 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "axios";
 
+
+export const fetchGetStadiumPrice = createAsyncThunk(
+  "post/getPost",
+  async (params, { rejectWithValue, getState, requestId }) => {
+    try {
+      const { postLoading, postRequestId } = getState().posts;
+      if (postLoading !== true || requestId !== postRequestId) {
+        return;
+      }
+      const getPost = await Axios.get(
+        `http://localhost:5050/post/getPostByStadiumId/${params}`
+      );
+      return getPost.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const fetchAddStadiumPrice = createAsyncThunk(
   "stadium/add",
   async (data, { rejectWithValue }) => {

@@ -203,8 +203,12 @@ router.post("/employee/add", async function (req, res, next) {
                 console.log(err);
                 res.status(400).json({ error: err });
               } else {
-                res.status(200);
-                res.send("Staff Complete");
+                db.query("call staff_employee(?)", [stadium_id], (err, result) => {
+                  if (err) {
+                    return res.status(400);
+                  } 
+                  return res.send(result[0]);
+                });
               }
             }
           );
@@ -239,8 +243,12 @@ router.post("/employee/add", async function (req, res, next) {
                 if (err) {
                   res.status(400).json({ error: err });
                 } else {
-                  res.status(200);
-                  res.send("Staff Complete");
+                  db.query("call staff_employee(?)", [stadium_id], (err, result) => {
+                    if (err) {
+                      return res.status(400);
+                    } 
+                    return res.send(result[0]);
+                  });
                 }
               }
             );

@@ -5,7 +5,9 @@ import SportsSoccerIcon from "@material-ui/icons/SportsSoccer";
 import Payment from "@material-ui/icons/Payment";
 import Assignment from "@material-ui/icons/Assignment";
 import Book from "@material-ui/icons/Book";
-import AccountCircle from "@material-ui/icons/AccountCircle";
+import Sports from "@material-ui/icons/Sports";
+import LocalOffer from "@material-ui/icons/LocalOffer";
+import LocalDrink from "@material-ui/icons/LocalDrink";
 import HistoryIcon from "@material-ui/icons/History";
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 
@@ -14,6 +16,11 @@ export const sidebarAdminData = [
     title: "ໜ້າຫຼັກ",
     path: `/`,
     icon: <HomeIcon />,
+  },
+  {
+    title: "ເດີ່ນ",
+    path: `/stadium-info`,
+    icon: <SportsSoccerIcon />,
   },
   {
     title: "Post ຂອງເດີ່ນ",
@@ -26,11 +33,20 @@ export const sidebarAdminData = [
     icon: <Group />,
   },
   {
-    title: "ເດີ່ນ",
-    path: `/manage`,
-    icon: <SportsSoccerIcon />,
+    title: "ສະໜາມ",
+    path: `/stadium-details`,
+    icon: <Sports />,
   },
-
+  {
+    title: "ລາຄາເດີ່ນ",
+    path: `/stadium-price`,
+    icon: <LocalOffer />,
+  },
+  {
+    title: "ເຄື່ອງດື່ມ",
+    path: `/stadium-drink`,
+    icon: <LocalDrink />,
+  },
   {
     title: "ຈອງເດີ່ນ",
     path: `/stadium-booking`,

@@ -19,23 +19,6 @@ export const fetchGetPost = createAsyncThunk(
   }
 );
 
-export const fetchGetPostById = createAsyncThunk(
-  "post/getPostById",
-  async (params, { rejectWithValue, getState, requestId }) => {
-    const { postLoading, postRequestId } = getState().posts;
-    try {
-      if (postLoading !== true || requestId !== postRequestId) {
-        return;
-      }
-      const getPostById = await Axios.get(
-        `http://localhost:5050/post/getPostByStadiumIdPostId/${params.stadiumId}/${params.postId}`
-      );
-      return getPostById.data;
-    } catch (err) {
-      return rejectWithValue(err.response.data);
-    }
-  }
-);
 
 export const fetchAddPost = createAsyncThunk(
   "post/add",

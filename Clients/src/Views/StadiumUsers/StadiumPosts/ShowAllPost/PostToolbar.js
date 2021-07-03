@@ -1,12 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { onPopupOpen } from "../../../../Slices/Features/Popup/popupSlice";
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   TextField,
   InputAdornment,
   SvgIcon,
@@ -47,8 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PostToolbar = ({ className, ...rest }) => {
   const classes = useStyles();
-  const history = useHistory();
-  const { url } = useRouteMatch();
+  const dispatch = useDispatch();
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Box>
@@ -75,7 +73,7 @@ const PostToolbar = ({ className, ...rest }) => {
               className={classes.buttonStyles}
               color="primary"
               variant="contained"
-              onClick={() => history.push(`${url}/add-post`)}
+              onClick={() => dispatch(onPopupOpen('addPost'))}
             >
               ສ້າງ Post ຂອງເດີ່ນ
             </Button>

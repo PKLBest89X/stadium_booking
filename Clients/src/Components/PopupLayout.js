@@ -6,8 +6,11 @@ import { useDispatch } from "react-redux";
 import { IconButton, AppBar } from "@material-ui/core";
 import Close from "@material-ui/icons/Close";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     position: "fixed",
     top: 0,
     left: 0,
@@ -16,12 +19,26 @@ const useStyles = makeStyles(() => ({
     backgroundColor: "rgba(0, 0, 0, .5)",
     zIndex: 10,
   },
+
+  formLayout: {
+    flex: "1 1 auto",
+    maxWidth: "600px",
+    position: "relative",
+    height: "70%",
+    boxShadow: "1px 2px 5px 1px rgba(0, 0, 0, .3)",
+    margin: "1rem",
+    overflow: "hidden",
+    borderRadius: "8px",
+  },
   appbarTop: {
-    zIndex: 5,
+    zIndex: 11,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     height: "54px",
+    position: "absolute",
+    top: 0,
+    left: 0,
   },
   toolbar: {
     display: "flex",
@@ -35,6 +52,7 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flex: "1 1 auto",
     overflow: "hidden",
+    paddingTop: "54px",
   },
   contentContainer: {
     display: "flex",
@@ -42,18 +60,16 @@ const useStyles = makeStyles(() => ({
     alignItems: "center",
     flex: "1 1 auto",
     overflow: "hidden",
-    padding: "1rem",
   },
 
   content: {
-    flex: "1 1 480",
-    maxWidth: "600px",
+    flex: "1 1 auto",
+    position: "relative",
+    width: "100%",
     backgroundColor: "white",
-    height: "70%",
+    height: "100%",
     overflowY: "auto",
-    boxShadow: '1px 2px 5px 1px rgba(0, 0, 0, .3)',
     overflowX: "hidden",
-    borderRadius: "5px",
     "&::-webkit-scrollbar": {
       width: "0.4em",
     },
@@ -64,6 +80,10 @@ const useStyles = makeStyles(() => ({
     "&::-webkit-scrollbar-thumb": {
       backgroundColor: "rgba(0,0,0,.4)",
       outline: "0px solid slategrey",
+    },
+    padding: "2rem",
+    [theme.breakpoints.down("xs")]: {
+      padding: "1rem",
     },
   },
 }));
@@ -78,20 +98,20 @@ const PopupLayout = forwardRef(({ children, title, ...rest }, ref) => {
 
   return (
     <div ref={ref} className={classes.root} {...rest}>
-      <div className={classes.formWrapper}>
-        <div className={classes.contentContainer}>
-          <div className={classes.content}>
-            <AppBar className={classes.appbarTop} position="sticky">
-              <div className={classes.toolbar}>
-                <IconButton
-                  color="inherit"
-                  onClick={() => dispatch(onPopupClose())}
-                >
-                  <Close />
-                </IconButton>
-              </div>
-            </AppBar>
-            {children}
+      <div className={classes.formLayout}>
+        <AppBar className={classes.appbarTop}>
+          <div className={classes.toolbar}>
+            <IconButton
+              color="inherit"
+              onClick={() => dispatch(onPopupClose())}
+            >
+              <Close />
+            </IconButton>
+          </div>
+        </AppBar>
+        <div className={classes.formWrapper}>
+          <div className={classes.contentContainer}>
+            <div className={classes.content}>{children}</div>
           </div>
         </div>
       </div>

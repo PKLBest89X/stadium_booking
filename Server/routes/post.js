@@ -36,7 +36,7 @@ router.get("/getPostByStadiumId/:stadiumId", async function (req, res) {
         if (result[0].length > 0) {
             return res.send(result[0])
         } else {
-            return res.status(404).send('ບໍ່ມີຂໍ້ມູນ!!')
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
         }
     })
 })
@@ -70,8 +70,12 @@ router.post("/addPost", (req, res) => {
         if(err){
           res.status(400).json({ error: err });
         }else{
-          res.status(200);
-          res.send("POST COMPLETE");
+          db.query("call get_post_byStadiumId(?)", [stadium_id], (err, result) => {
+            if (err) {
+              return res.status(400);
+            } 
+            return res.send(result[0]);
+          });
         }
       }
     );
@@ -90,8 +94,12 @@ router.post("/addPost", (req, res) => {
             if (err) {
               res.status(400).json({ error: err });
             } else {
-              res.status(200);
-              res.send("POST COMPLETE");
+              db.query("call get_post_byStadiumId(?)", [stadium_id], (err, result) => {
+                if (err) {
+                  return res.status(400);
+                } 
+                return res.send(result[0]);
+              });
             }
         });
     });
@@ -110,8 +118,12 @@ router.put("/postUpdate", async (req, res) => {
           if(err){
             res.status(400).send('Error!!');
           }else{
-            res.status(200);
-            res.send("POST UPDATE");
+            db.query("call get_post_byStadiumId(?)", [stadium_id], (err, result) => {
+              if (err) {
+                return res.status(400);
+              } 
+              return res.send(result[0]);
+            });
           }
         }
       );
@@ -130,8 +142,12 @@ router.put("/postUpdate", async (req, res) => {
               if (err) {
                 res.status(400).send('Error!!');
               } else {
-                res.status(200);
-                res.send("POST UPDATE");
+                db.query("call get_post_byStadiumId(?)", [stadium_id], (err, result) => {
+                  if (err) {
+                    return res.status(400);
+                  } 
+                  return res.send(result[0]);
+                });
               }
           });
       });

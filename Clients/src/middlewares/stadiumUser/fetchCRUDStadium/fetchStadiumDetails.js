@@ -1,20 +1,32 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "axios";
 
+
+export const fetchGetStadiumDetails = createAsyncThunk(
+  "stadiumDetails/getStadiums",
+  async (params, { rejectWithValue, getState, requestId }) => {
+    try {
+      const { stadiumsLoading, stadiumsRequestId } = getState().stadiumDetails;
+      if (stadiumsLoading !== true || requestId !== stadiumsRequestId) {
+        return;
+      }
+      const getPost = await Axios.get(
+        `http://localhost:5050/field/getStadiumDetails/${params}`
+      );
+      return getPost.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const fetchAddStadiumDetails = createAsyncThunk(
-  "stadium/add",
+  "stadiumDetails/addStadiums",
   async (data, { rejectWithValue }) => {
     try {
-      const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
       const addStadiumDetailsData = await Axios.post(
-        "http://localhost:5050/stadium/stadium_add",
+        "http://localhost:5050/field/addStadiums",
         data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            'authorization': `Bearer ${adminToken.token}`,
-          },
-        }
       );
       return addStadiumDetailsData.data;
     } catch (err) {
@@ -24,12 +36,12 @@ export const fetchAddStadiumDetails = createAsyncThunk(
 );
 
 export const fetchUpdateStadiumDetails = createAsyncThunk(
-  "stadium/update",
+  "stadiumDetails/updateStadiums",
   async (data, { rejectWithValue }) => {
     try {
-      const updateStadiumDetailsData = await Axios.post(
-        "http://localhost:5050/stadium/add",
-        {}
+      const updateStadiumDetailsData = await Axios.put(
+        "http://localhost:5050/field/updateStadiums",
+        data
       );
       return updateStadiumDetailsData.data;
     } catch (err) {

@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  popupName: "",
   isOpen: false,
 };
 
@@ -8,10 +9,12 @@ const popupSlice = createSlice({
   name: "popup",
   initialState,
   reducers: {
-    onPopupOpen: (state) => {
+    onPopupOpen: (state, { payload }) => {
+      state.popupName = payload;
       state.isOpen = true;
     },
     onPopupClose: (state) => {
+      state.popupName = "";
       state.isOpen = false;
     },
   },
