@@ -24,9 +24,16 @@ const postSlice = createSlice({
       state.postsDataById.push(payload);
     },
     onDeletePost: (state, action) => {
-      state.postsData = state.postsData.filter(
+      let afterDeletePost = state.postsData.filter(
         (items) => items.pt_id !== action.payload.postId
       );
+      if (afterDeletePost.length > 0) {
+        state.postsData = afterDeletePost;
+        state.postSuccess = true;
+      } else {
+        state.postsData = [];
+        state.postSuccess = false;
+      }
     },
   },
   extraReducers: (builder) => {

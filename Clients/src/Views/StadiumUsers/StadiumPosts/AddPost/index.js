@@ -5,6 +5,7 @@ import { useShallowEqualSelector } from "../../../../Components/useShallowEqualS
 import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUsers";
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { fetchAddPost } from "../../../../middlewares/stadiumUser/fetchPost/fetchPost";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { onPopupClose } from "../../../../Slices/Features/Popup/popupSlice";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddPost = () => {
+const AddPost = React.memo(() => {
   const classes = useStyles();
   const imagePostRef = useRef(null);
   const [postState, setPostState] = useState({
@@ -100,15 +101,32 @@ const AddPost = () => {
     }
   };
 
-  const onAddPost = (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-    formData.append("stadium_id", stadiumId_Admin);
-    formData.append("post_title", postState.post_title);
-    formData.append("description", postState.post_details);
-    formData.append("sampleFile", postState.stadium_postImage);
-    dispatch(fetchAddPost(formData)).then(() => dispatch(onPopupClose()));
-  };
+  const onAddPost = useCallback(
+    async (event) => {
+      event.preventDefault();
+      const formData = new FormData();
+      formData.append("stadium_id", stadiumId_Admin);
+      formData.append("post_title", postState.post_title);
+      formData.append("description", postState.post_details);
+      formData.append("sampleFile", postState.stadium_postImage);
+      try {
+        const getAddResult = await dispatch(fetchAddPost(formData));
+        const extractResult = unwrapResult(getAddResult);
+        if (extractResult.status !== 500) {
+          dispatch(onPopupClose());
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [
+      dispatch,
+      postState.post_title,
+      postState.post_details,
+      postState.stadium_postImage,
+      stadiumId_Admin,
+    ]
+  );
 
   return (
     <div className={classes.pageContainer}>
@@ -176,6 +194,6 @@ const AddPost = () => {
       </Container>
     </div>
   );
-};
+});
 
 export default AddPost;

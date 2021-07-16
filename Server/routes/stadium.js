@@ -39,22 +39,7 @@ function verifyToken(req, res, next) {
         }
     })
 }) // ສະແດງລາຍລະອຽດຂອງເດີ່ນນັ້ນໆ ||||||||||||||||||||||||||||||||||||||||||||||||||
-  
-router.get('/checkValidData/:stadiumId_Admin', async function(req,res,next){
-    const stadium_id = req.params.stadiumId_Admin
-    
-    await db.query("call check_valid_stadium(?)", [stadium_id], (err, result) => {
-        if(err){
-            console.log(err);
-            return res.status(500).send(err);
-        }
-        if (result[0].length > 0) {
-            return res.status(200).send('200')
-        } else {
-            return res.status(404).send('404')
-        }
-    })
-}) // check ວ່າມີ stadium ໃນຖານຂໍ້ມູນແທ້ ຫຼື ບໍ່? ||||||||||||||||||||||||||||||||||||||||||||||||||
+
 
 router.get('/reserve', async function(req,res,next){
     const stadium_id = req.body.st_id;

@@ -185,29 +185,32 @@ const EditStadiumDetails = React.memo(() => {
                       variant="outlined"
                       required
                     />
-                    <FormControl
-                      required
-                      variant="outlined"
-                      className={classes.formControl}
-                    >
-                      <InputLabel htmlFor="outlined-age-native-simple">
-                        ສະຖານະ
-                      </InputLabel>
-                      <Select
-                        native
-                        value={stadiumState.stadiums_status}
-                        onChange={onStadiumsStatusSelected}
-                        label="ສະຖານະ"
-                        inputProps={{
-                          name: "stadiums_status",
-                          id: "outlined-age-native-simple",
-                        }}
+                    <Box>
+                      <FormControl
+                        required
+                        fullWidth
+                        variant="outlined"
+                        className={classes.formControl}
                       >
-                        <option aria-label="None" value="" />
-                        <option value="ພ້ອມໃຊ້ງານ">ພ້ອມໃຊ້ງານ</option>
-                        <option value="ບໍ່ພ້ອມໃຊ້ງານ">ບໍ່ພ້ອມໃຊ້ງານ</option>
-                      </Select>
-                    </FormControl>
+                        <InputLabel htmlFor="outlined-age-native-simple">
+                          ສະຖານະ
+                        </InputLabel>
+                        <Select
+                          native
+                          value={stadiumState.stadiums_status}
+                          onChange={onStadiumsStatusSelected}
+                          label="ສະຖານະ"
+                          inputProps={{
+                            name: "stadiums_status",
+                            id: "outlined-age-native-simple",
+                          }}
+                        >
+                          <option aria-label="None" value="" />
+                          <option value="ພ້ອມໃຊ້ງານ">ພ້ອມໃຊ້ງານ</option>
+                          <option value="ບໍ່ພ້ອມໃຊ້ງານ">ບໍ່ພ້ອມໃຊ້ງານ</option>
+                        </Select>
+                      </FormControl>
+                    </Box>
                   </Box>
                 </div>
               </Box>

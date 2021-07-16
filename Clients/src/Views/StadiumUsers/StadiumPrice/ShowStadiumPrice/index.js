@@ -1,14 +1,17 @@
 import React, { useEffect } from "react";
 import { fetchCheckStadium } from "../../../../middlewares/fetchCheckValidData/fetchCheckValidData";
+import { fetchGetStadiumPrice } from "../../../../middlewares/stadiumUser/fetchCRUDStadiumPrice/fetchCRUDStadiumPrice";
 import { useHistory, useParams } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUsers";
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import PageLayout from "../../../../Components/PageLayout";
+import PopupLayout from "../../../../Components/PopupLayout";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Divider } from "@material-ui/core";
 import StadiumPriceTable from "./StadiumPriceTable";
+import AddStadiumPrice from "../AddStadiumPrice";
 import Toolbar from "./Toobar";
 
 const useStyles = makeStyles(() => ({
@@ -24,10 +27,11 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const StadiumPrice = ({ ...rest }) => {
+const StadiumPrice = React.memo(({ ...rest }) => {
   const classes = useStyles();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { priceData } = useShallowEqualSelector((state) => state.stadiumPrice);
+  const { priceSuccess } = useShallowEqualSelector((state) => state.stadiumPrice);
+  const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
   const { stadiumId_Admin } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -50,32 +54,47 @@ const StadiumPrice = ({ ...rest }) => {
     }
   }, [history, checkResult]);
 
+  useEffect(() => {
+    dispatch(fetchGetStadiumPrice(stadiumId_Admin));
+  }, [dispatch, stadiumId_Admin]);
+
   const ShowEmptyStadiumPrice = () => (
     <div className={classes.emptyView}>
-      <Typography variant="h3" color="textSecondary">ບໍ່ມີຂໍ້ມູນລາຄາຂອງເດີ່ນ</Typography>
+      <Typography variant="h3" color="textSecondary">
+        ບໍ່ມີຂໍ້ມູນລາຄາຂອງເດີ່ນ
+      </Typography>
     </div>
   );
 
+  let AddStadiumPriceForm = null;
+  if (popupName === "addPrice" && isOpen === true) {
+    AddStadiumPriceForm = (
+      <PopupLayout>
+        <AddStadiumPrice />
+      </PopupLayout>
+    );
+  }
+
   return (
-    <PageLayout title="Stadium Price" {...rest}>
-      <div className={classes.pageContainer}>
-        <Box mb={3}>
-          <Typography color="textPrimary" variant="h2">
-            ລາຄາຂອງເດີ່ນ
-          </Typography>
-        </Box>
-        <Divider />
-        <Box mt={3}>
-          <Toolbar />
-          {priceData.length > 0 ? (
-            <StadiumPriceTable />
-          ) : (
-            <ShowEmptyStadiumPrice />
-          )}
-        </Box>
-      </div>
-    </PageLayout>
+    <>
+      {AddStadiumPriceForm}
+      <PageLayout title="Stadium Price" {...rest}>
+        <div className={classes.pageContainer}>
+          <Box mb={3}>
+            <Typography color="textPrimary" variant="h2">
+              ລາຄາຂອງເດີ່ນ
+            </Typography>
+          </Box>
+          <Divider />
+          <Box mt={3}>
+            <Toolbar />
+            {priceSuccess === true && <StadiumPriceTable />}
+            {priceSuccess === false && <ShowEmptyStadiumPrice />}
+          </Box>
+        </div>
+      </PageLayout>
+    </>
   );
-};
+});
 
 export default StadiumPrice;

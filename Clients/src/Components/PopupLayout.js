@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "600px",
     position: "relative",
     height: "70%",
-    boxShadow: "1px 2px 5px 1px rgba(0, 0, 0, .3)",
     margin: "1rem",
     overflow: "hidden",
     borderRadius: "8px",

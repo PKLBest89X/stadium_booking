@@ -1,19 +1,23 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import PopupLayout from "../../../../../Components/PopupLayout";
-import { fetchCheckStadium } from "../../../../../middlewares/fetchCheckValidData/fetchCheckValidData";
+import React, { useState, useEffect, useCallback } from "react";
+import { fetchCheckStadium } from "../../../../middlewares/fetchCheckValidData/fetchCheckValidData";
 import { useHistory, useParams } from "react-router-dom";
-import { useShallowEqualSelector } from "../../../../../Components/useShallowEqualSelector";
-import { fetchAuthAdmin } from "../../../../../middlewares/fetchAuth/fetchStadiumUsers";
-import { userNow } from "../../../../../Slices/Authentication/authSlice";
+import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
+import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUsers";
+import { fetchAddStadiumPrice } from "../../../../middlewares/stadiumUser/fetchCRUDStadiumPrice/fetchCRUDStadiumPrice";
+import { userNow } from "../../../../Slices/Authentication/authSlice";
+import { onPopupClose } from "../../../../Slices/Features/Popup/popupSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
+import SelectStadiums from "./SelectStadiums";
+import SelectTimes from "./SelectTimes";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Container,
   Typography,
   Box,
   Divider,
+  Card,
   Grid,
   Button,
-  Card,
   TextField,
 } from "@material-ui/core";
 import { useDispatch } from "react-redux";
@@ -22,10 +26,6 @@ const useStyles = makeStyles((theme) => ({
   pageContainer: {
     display: "flex",
     justifyContent: "center",
-    padding: "3rem",
-    [theme.breakpoints.down("xs")]: {
-      padding: "2rem .5rem",
-    },
   },
   textarea: {
     display: "block",
@@ -45,20 +45,18 @@ const useStyles = makeStyles((theme) => ({
   previewPicture: {
     display: "block",
     width: "100%",
-    borderRadius: '5px'
+    borderRadius: "5px",
   },
 }));
 
-const AddStadiumPrice = () => {
+const AddStadiumPrice = React.memo(() => {
   const classes = useStyles();
-  const [priceState, setpriceState] = useState({
-    post_title: "",
-    post_details: "",
-    stadium_postImage: null,
+  const [priceState, setPriceState] = useState({
+    stadiums_id: "",
+    time_id: "",
+    stadiums_price: "",
   });
-  const [testImage, setTestImage] = useState(
-    "/assets/images/adminPics/postPics/addImage.jpg"
-  );
+  const [allPrice, setAllPrice] = useState([]);
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
   const { stadiumId_Admin } = useParams();
   const history = useHistory();
@@ -82,84 +80,107 @@ const AddStadiumPrice = () => {
     }
   }, [history, checkResult]);
 
-  const onPostDescriptionChange = useCallback((event) => {
+  const onSelectedStadiums = (payload) => {
+    setPriceState((prev) => ({ ...prev, stadiums_id: payload }));
+  };
+
+  const onStadiumPriceChange = useCallback((event) => {
     const { name, value } = event.target;
-    setpriceState((prev) => ({ ...prev, [name]: value }));
+    setPriceState((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const onPostTitleChange = useCallback((event) => {
-    const { name, value } = event.target;
-    setpriceState((prev) => ({ ...prev, [name]: value }));
-  }, []);
+  const onMapPriceData = (timeId) => {
+    setPriceState((prev) => ({ ...prev, time_id: timeId }));
+    const foundData = allPrice.find((items) => items.time_id === timeId);
+    if (!foundData) {
+      setAllPrice((prev) => [
+        ...prev,
+        {
+          stadiums_id: priceState.stadiums_id,
+          time_id: timeId,
+          stadiums_price: priceState.stadiums_price,
+        },
+      ]);
+      return;
+    }
+    setAllPrice(
+      allPrice.filter((items) => items.time_id !== foundData.time_id)
+    );
+  };
 
+  const addStadiumPrice = useCallback(
+    async (event) => {
+      event.preventDefault();
+      try {
+        const addPriceRequest = {
+          stadium_id: stadiumId_Admin,
+          allPriceData: allPrice,
+        };
+        const getAddResult = await dispatch(
+          fetchAddStadiumPrice(addPriceRequest)
+        );
+        const extractResult = unwrapResult(getAddResult);
+        if (extractResult.status !== 500) {
+          dispatch(onPopupClose());
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [dispatch, allPrice, stadiumId_Admin]
+  );
   return (
-    <PopupLayout title="Add price">
-      <div className={classes.pageContainer}>
-        <Container maxwidth="md">
-          <form onSubmit={(event) => {
-            event.preventDefault();
-          }}>
-            <Box mb={3}>
-              <Typography color="textPrimary" variant="h2">
-                ສ້າງ Post ຂອງເດີ່ນ
-              </Typography>
-            </Box>
-            <Divider />
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={6} lg={6} xl={4}>
-                <Box border="1px solid #b5aba4" mb={2} mt={2} borderRadius="5px">
-                  <img
-                    className={classes.previewPicture}
-                    src={testImage}
-                    alt="gg"
-                  />
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6} xl={8}>
-                <Box>
-                  <Card elevation={10}>
-                    <Box>
-                      <TextField
-                        fullWidth
-                        type="text"
-                        margin="normal"
-                        label="ຫົວຂໍ້ຂອງ Post"
-                        name="post_title"
-                        value={priceState.post_title}
-                        onChange={onPostTitleChange}
-                        variant="outlined"
-                        required
-                      />
-                    </Box>
-                    <textarea
-                      className={classes.textarea}
-                      name="post_details"
-                      value={priceState.stadium_post}
-                      type="text"
-                      placeholder="ລາຍລະອຽດ Post"
-                      rows={20}
-                      onChange={onPostDescriptionChange}
+    <div className={classes.pageContainer}>
+      <Container maxwidth="false">
+        <form onSubmit={addStadiumPrice}>
+          <Box mb={3}>
+            <Typography color="textPrimary" variant="h2">
+              ກຳນົດລາຄາເດີ່ນ
+            </Typography>
+          </Box>
+          <Divider />
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+              <Box>
+                <div>
+                  <Box>
+                    <SelectStadiums selectedStadiums={onSelectedStadiums} />
+                  </Box>
+
+                  <Box>
+                    <TextField
+                      fullWidth
+                      type="number"
+                      margin="normal"
+                      label="ລາຄາ - ເປັນກີບ"
+                      name="stadiums_price"
+                      value={priceState.stadiums_price}
+                      onChange={onStadiumPriceChange}
+                      variant="outlined"
                       required
                     />
-                  </Card>
-                </Box>
-              </Grid>
+                  </Box>
+                  <Box>
+                    <Card elevation={10}>
+                      <SelectTimes
+                        priceState={priceState}
+                        selectedPrice={onMapPriceData}
+                      />
+                    </Card>
+                  </Box>
+                </div>
+              </Box>
             </Grid>
-            <Box mt={3}>
-              <Button
-                type="submit"
-                fullWidth
-                color="primary"
-                variant="contained"
-              >
-                ສ້າງ Post
-              </Button>
-            </Box>
-          </form>
-        </Container>
-      </div>
-    </PopupLayout>
+          </Grid>
+          <Box mt={3}>
+            <Button type="submit" fullWidth color="primary" variant="contained">
+              ເພີ່ມ
+            </Button>
+          </Box>
+        </form>
+      </Container>
+    </div>
   );
-};
+});
 
 export default AddStadiumPrice;

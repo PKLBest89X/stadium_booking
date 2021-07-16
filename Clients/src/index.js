@@ -9,13 +9,13 @@ import { Provider } from "react-redux";
 import { history } from "./Components/history";
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <Provider store={store}>
       <Router history={history}>
         <App />
       </Router>
     </Provider>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById("root")
 );
 

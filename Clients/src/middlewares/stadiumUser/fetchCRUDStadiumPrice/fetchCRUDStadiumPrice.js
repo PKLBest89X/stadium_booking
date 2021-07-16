@@ -1,19 +1,54 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "axios";
 
-
 export const fetchGetStadiumPrice = createAsyncThunk(
-  "post/getPost",
+  "price/getStadiumPrice",
   async (params, { rejectWithValue, getState, requestId }) => {
     try {
-      const { postLoading, postRequestId } = getState().posts;
-      if (postLoading !== true || requestId !== postRequestId) {
+      const { priceLoading, priceRequestId } = getState().stadiumPrice;
+      if (priceLoading !== true || requestId !== priceRequestId) {
         return;
       }
-      const getPost = await Axios.get(
-        `http://localhost:5050/post/getPostByStadiumId/${params}`
+      const getStadiumPrice = await Axios.get(
+        `http://localhost:5050/price/getStadiumPrice/${params}`
       );
-      return getPost.data;
+      return getStadiumPrice.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const fetchGetStadiumsToAddPrice = createAsyncThunk(
+  "price/getStadiumsToAddPrice",
+  async (params, { rejectWithValue, getState, requestId }) => {
+    try {
+      const { priceLoading, getStadiumsRequestId } = getState().stadiumPrice;
+      if (priceLoading !== true || requestId !== getStadiumsRequestId) {
+        return;
+      }
+      const getStadiumPriceToAddPrice = await Axios.get(
+        `http://localhost:5050/price/getStadiumDetailsToAddPrice/${params}`
+      );
+      return getStadiumPriceToAddPrice.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const fetchGetTimesToAddPrice = createAsyncThunk(
+  "price/getTimesToAddPrice",
+  async (params, { rejectWithValue, getState, requestId }) => {
+    try {
+      const { getTimeLoading, getTimesRequestId } = getState().stadiumPrice;
+      if (getTimeLoading !== true || requestId !== getTimesRequestId) {
+        return;
+      }
+      const getTimeToAddPrice = await Axios.get(
+        `http://localhost:5050/timetb/getTime`
+      );
+      return getTimeToAddPrice.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -21,36 +56,37 @@ export const fetchGetStadiumPrice = createAsyncThunk(
 );
 
 export const fetchAddStadiumPrice = createAsyncThunk(
-  "stadium/add",
-  async (data, { rejectWithValue }) => {
+  "price/addStadiumPrice",
+  async (requestData, { rejectWithValue }) => {
     try {
-      const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
-      const addStadiumDetailsData = await Axios.post(
-        "http://localhost:5050/stadium/stadium_add",
-        data,
+      const addStadiumPriceData = await Axios.post(
+        "http://localhost:5050/price/addStadiumPrice",
         {
-          headers: {
-            "Content-Type": "application/json",
-            'authorization': `Bearer ${adminToken.token}`,
-          },
+          stadium_id: requestData.stadium_id,
+          data: requestData.allPriceData,
         }
       );
-      return addStadiumDetailsData.data;
+      return addStadiumPriceData.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
   }
 );
 
-export const fetchUpdateStadiumPrice = createAsyncThunk(
-  "stadium/update",
+export const fetchDeleteStadiumPrice = createAsyncThunk(
+  "price/deleteStadiumPrice",
   async (data, { rejectWithValue }) => {
     try {
-      const updateStadiumDetailsData = await Axios.post(
-        "http://localhost:5050/stadium/add",
-        {}
+      const deleteStadiumPriceData = await Axios.delete(
+        "http://localhost:5050/price/deleteStadiumPrice",
+        {
+          data: {
+            std_id: data.stadiums_id,
+            timing_id: data.time_id,
+          },
+        }
       );
-      return updateStadiumDetailsData.data;
+      return deleteStadiumPriceData.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }

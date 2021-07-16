@@ -200,29 +200,32 @@ const EditStadiumDrink = React.memo(() => {
                       required
                     />
                   </Box>
-                  <FormControl
-                    required
-                    variant="outlined"
-                    className={classes.formControl}
-                  >
-                    <InputLabel htmlFor="outlined-age-native-simple">
-                      ສະຖານະ
-                    </InputLabel>
-                    <Select
-                      native
-                      value={drinkState.drink_status}
-                      onChange={onDrinkStatusSelected}
-                      label="ສະຖານະ"
-                      inputProps={{
-                        name: "drink_status",
-                        id: "outlined-age-native-simple",
-                      }}
+                  <Box>
+                    <FormControl
+                      required
+                      fullWidth
+                      variant="outlined"
+                      className={classes.formControl}
                     >
-                      <option aria-label="None" value="" />
-                      <option value="ຂາຍໄດ້">ຂາຍໄດ້</option>
-                      <option value="ບໍ່ຂາຍ">ບໍ່ຂາຍ</option>
-                    </Select>
-                  </FormControl>
+                      <InputLabel htmlFor="outlined-age-native-simple">
+                        ສະຖານະ
+                      </InputLabel>
+                      <Select
+                        native
+                        value={drinkState.drink_status}
+                        onChange={onDrinkStatusSelected}
+                        label="ສະຖານະ"
+                        inputProps={{
+                          name: "drink_status",
+                          id: "outlined-age-native-simple",
+                        }}
+                      >
+                        <option aria-label="None" value="" />
+                        <option value="ຂາຍໄດ້">ຂາຍໄດ້</option>
+                        <option value="ບໍ່ຂາຍ">ບໍ່ຂາຍ</option>
+                      </Select>
+                    </FormControl>
+                  </Box>
                 </div>
               </Box>
             </Grid>

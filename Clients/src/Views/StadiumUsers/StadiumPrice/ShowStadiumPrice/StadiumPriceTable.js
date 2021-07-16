@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import moment from "moment";
 import Delete from "@material-ui/icons/Delete";
-import Edit from "@material-ui/icons/Edit";
-import { useRouteMatch, useHistory } from "react-router-dom";
+import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
+import { fetchDeleteStadiumPrice } from "../../../../middlewares/stadiumUser/fetchCRUDStadiumPrice/fetchCRUDStadiumPrice";
+import { onDeleteStadiumPrice } from "../../../../Slices/Features/StadiumUsers/crudStadiumPrice/stadiumPriceSlice";
+import { useDispatch } from "react-redux";
 
 import TabControl from "./TabControl";
-import { priceData } from "./data";
 import {
   IconButton,
   Card,
   Table,
+  Box,
+  Avatar,
+  Typography,
   TableHead,
   TableRow,
   TablePagination,
@@ -25,16 +28,14 @@ const useStyles = makeStyles({
   },
   btnAction: {
     minWidth: 90,
-    "& > IconButton": {
-
-    },
+    "& > IconButton": {},
   },
 });
 
-const StadiumPriceTable = () => {
+const StadiumPriceTable = React.memo(() => {
   const classes = useStyles();
-  const history = useHistory();
-  const { url } = useRouteMatch();
+  const dispatch = useDispatch();
+  const { priceData } = useShallowEqualSelector((state) => state.stadiumPrice);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -59,10 +60,18 @@ const StadiumPriceTable = () => {
               <TableCell padding="checkbox">
                 <Checkbox />
               </TableCell>
-              <TableCell align="center">ຫົວຂໍ້ Post</TableCell>
-              {/* <TableCell>ຮູບ Post</TableCell> */}
-              <TableCell align="center">ມື້ Post</TableCell>
-              <TableCell align="center">Action</TableCell>
+              <TableCell align="center">
+                <Typography variant="h5">ຊື່ສະໜາມ</Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="h5">ຊ່ວງເວລາ</Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="h5">ລາຄາ</Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="h5">Action</Typography>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -72,8 +81,8 @@ const StadiumPriceTable = () => {
                   page * rowsPerPage + rowsPerPage
                 )
               : priceData
-            ).map((row) => (
-              <TableRow key={row.post_id}>
+            ).map((row, index) => (
+              <TableRow key={index}>
                 <TableCell padding="checkbox">
                   <Checkbox />
                 </TableCell>
@@ -81,19 +90,45 @@ const StadiumPriceTable = () => {
                   component="th"
                   scope="row"
                   style={{ width: 160 }}
-                  align="left"
+                  align="center"
                 >
-                  {row.post_title}
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Box marginRight="1em">
+                      <Avatar
+                        src={`/assets/images/adminPics/stadiumDetailsPics/${row.picture}`}
+                        alt={row.std_name}
+                      />
+                    </Box>
+                    <Box>
+                      <Typography variant="h5">{row.std_name} </Typography>
+                    </Box>
+                  </Box>
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
-                  {moment(row.post_date).format("DD/MM/YYYY")}
+                  <Typography variant="h5">{`${row.td_start} ໂມງ - ${row.td_end} ໂມງ`}</Typography>
+                </TableCell>
+                <TableCell style={{ width: 100 }} align="center">
+                  <Typography variant="h5">{`${row.sp_price} ກີບ`}</Typography>
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
                   <div className={classes.btnAction}>
-                    <IconButton onClick={() => history.push(`${url}/edit-employee/${row.post_id}`)}>
-                      <Edit />
-                    </IconButton>
-                    <IconButton>
+                    <IconButton
+                      onClick={() => {
+                        const deletePriceRequest = {
+                          stadiums_id: row.std_id,
+                          time_id: row.td_id,
+                        };
+                        dispatch(
+                          fetchDeleteStadiumPrice(deletePriceRequest)
+                        ).then(() =>
+                          dispatch(onDeleteStadiumPrice(deletePriceRequest))
+                        );
+                      }}
+                    >
                       <Delete />
                     </IconButton>
                   </div>
@@ -126,6 +161,6 @@ const StadiumPriceTable = () => {
       />
     </Card>
   );
-};
+});
 
 export default StadiumPriceTable;

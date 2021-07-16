@@ -12,7 +12,7 @@ const initialState = {
   drinkError: null,
   drinkSuccess: null,
   drinkRequestId: undefined,
-  drinkAddError: "",
+  drinkAddError: null,
   drinkEditError: null,
 };
 

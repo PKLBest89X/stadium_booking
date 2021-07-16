@@ -6,6 +6,7 @@ import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUs
 import { fetchAddStadiumDrink } from "../../../../middlewares/stadiumUser/fetchCRUDStadiumDrink/fetchCRUDStadiumDrink";
 import { onPopupClose } from "../../../../Slices/Features/Popup/popupSlice";
 import { userNow } from "../../../../Slices/Authentication/authSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Container,
@@ -103,19 +104,32 @@ const AddStadiumDrink = React.memo(() => {
     }
   };
 
-  const addStadiumDrink = (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-    formData.append("st_id", stadiumId_Admin);
-    formData.append("stw_name", drinkState.drinkName);
-    formData.append("stw_price", drinkState.drinkPrice);
-    formData.append("sampleFile", drinkState.drinkImage);
-    dispatch(fetchAddStadiumDrink(formData)).then(() => {
-      if (drinkAddError === "") {
-        dispatch(onPopupClose());
+  const addStadiumDrink = useCallback(
+    async (event) => {
+      event.preventDefault();
+      const formData = new FormData();
+      formData.append("st_id", stadiumId_Admin);
+      formData.append("stw_name", drinkState.drinkName);
+      formData.append("stw_price", drinkState.drinkPrice);
+      formData.append("sampleFile", drinkState.drinkImage);
+      try {
+        const getAddResult = await dispatch(fetchAddStadiumDrink(formData));
+        const extractResult = unwrapResult(getAddResult);
+        if (extractResult.status !== 500) {
+          dispatch(onPopupClose());
+        }
+      } catch (err) {
+        console.log(err);
       }
-    });
-  };
+    },
+    [
+      dispatch,
+      drinkState.drinkName,
+      drinkState.drinkPrice,
+      drinkState.drinkImage,
+      stadiumId_Admin,
+    ]
+  );
 
   return (
     <div className={classes.pageContainer}>

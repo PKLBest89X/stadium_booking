@@ -8,6 +8,7 @@ var cors = require('cors');
 
 require("dotenv").config();
 
+var validation = require('./routes/validation');
 var usersRouter = require('./routes/users');
 var timetbRouter = require('./routes/timetb');
 var admin = require('./routes/admin');
@@ -38,6 +39,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(fileUpload());
 
+app.use('/validation', validation);
 app.use('/users', usersRouter);
 app.use('/timetb', timetbRouter);
 app.use('/admin', admin);

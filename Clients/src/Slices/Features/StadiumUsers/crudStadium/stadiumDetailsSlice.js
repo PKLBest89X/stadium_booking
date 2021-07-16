@@ -12,7 +12,7 @@ const initialState = {
   stadiumsSuccess: null,
   stadiumsRequestId: undefined,
   stadiumsError: null,
-  stadiumsAddError: "",
+  stadiumsAddError: null,
   stadiumsEditError: null,
 };
 

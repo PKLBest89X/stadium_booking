@@ -83,7 +83,6 @@ router.get("/login/user", verifyToken, (req, res) => {
         if (er) {
           console.log(er);
         } else {
-          console.log(result);
           res.send(result[0][0]);
         }
       });

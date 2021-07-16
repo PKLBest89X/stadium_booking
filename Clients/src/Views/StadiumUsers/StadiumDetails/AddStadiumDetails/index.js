@@ -5,6 +5,7 @@ import { useShallowEqualSelector } from "../../../../Components/useShallowEqualS
 import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUsers";
 import { fetchAddStadiumDetails } from "../../../../middlewares/stadiumUser/fetchCRUDStadium/fetchStadiumDetails";
 import { onPopupClose } from "../../../../Slices/Features/Popup/popupSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -100,18 +101,30 @@ const AddStadiumDetails = React.memo(() => {
     }
   };
 
-  const addStadiums = (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-    formData.append("st_id", stadiumId_Admin);
-    formData.append("std_name", stadiumState.stadiumsName);
-    formData.append("sampleFile", stadiumState.stadiums_image);
-    dispatch(fetchAddStadiumDetails(formData)).then(() => {
-      if (stadiumsAddError === "") {
-        dispatch(onPopupClose());
+  const addStadiums = useCallback(
+    async (event) => {
+      event.preventDefault();
+      const formData = new FormData();
+      formData.append("st_id", stadiumId_Admin);
+      formData.append("std_name", stadiumState.stadiumsName);
+      formData.append("sampleFile", stadiumState.stadiums_image);
+      try {
+        const getAddResult = await dispatch(fetchAddStadiumDetails(formData));
+        const extractResult = unwrapResult(getAddResult);
+        if (extractResult.status !== 500) {
+          dispatch(onPopupClose());
+        }
+      } catch (err) {
+        console.log(err);
       }
-    });
-  };
+    },
+    [
+      dispatch,
+      stadiumState.stadiumsName,
+      stadiumId_Admin,
+      stadiumState.stadiums_image,
+    ]
+  );
 
   return (
     <div className={classes.pageContainer}>

@@ -6,7 +6,7 @@ export const fetchCheckStadium = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const checkStadiumData = await Axios.get(
-        `http://localhost:5050/stadium/checkValidData/${params}`
+        `http://localhost:5050/validation/checkValidData/${params}`
       );
       return checkStadiumData.data;
     } catch (err) {
