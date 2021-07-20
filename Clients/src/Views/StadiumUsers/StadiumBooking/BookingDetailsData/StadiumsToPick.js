@@ -6,8 +6,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
-import { onFilterAvailableTimes } from "../../../../../Slices/Features/Users/Booking/getTimeSlice";
-import { useShallowEqualSelector } from "../../../../../Components/useShallowEqualSelector";
+import { onFilterAvailableTimesNonAccount } from "../../../../Slices/Features/StadiumUsers/BookingForNoAccount/getTimeNonAccountSlice";
+import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 
 const useStyles = makeStyles((theme) => ({
   cardContainer: {
@@ -37,35 +37,35 @@ const useStyles = makeStyles((theme) => ({
     objectPosition: "center center",
     aspectRatio: "16/9",
     height: "calc(100vw / 10 - 1px)",
-    [theme.breakpoints.down("xs")]: {
-      height: "calc(100vw / 6 - 1px)",
-    },
+    [theme.breakpoints.down('xs')]: {
+        height: "calc(100vw / 6 - 1px)",
+    }
   },
 }));
 
 const StadiumsToPick = React.memo(({ stadiums }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { filterByDateData } = useShallowEqualSelector(
-    (state) => state.getTimes
-  );
   const [activeToDo, setActiveToDo] = useState({
     isActive: false,
     activeIndex: -1,
   });
+  const { filterByDateDataNonAccount } = useShallowEqualSelector(
+    (state) => state.getTimesNonAccount
+  );
 
   const onActiveToDo = (payload, index) => {
     const { isActive, activeIndex } = activeToDo;
     if (activeIndex === index && isActive === true) {
       setActiveToDo((prev) => ({ ...prev, isActive: false, activeIndex: -1 }));
       dispatch(
-        onFilterAvailableTimes({ dateData: filterByDateData, stadiumId: "" })
+        onFilterAvailableTimesNonAccount({ dateData: filterByDateDataNonAccount, stadiumId: "" })
       );
       return;
     }
     setActiveToDo((prev) => ({ ...prev, isActive: true, activeIndex: index }));
     dispatch(
-      onFilterAvailableTimes({ dateData: filterByDateData, stadiumId: payload })
+      onFilterAvailableTimesNonAccount({ dateData: filterByDateDataNonAccount, stadiumId: payload })
     );
   };
 

@@ -1,10 +1,11 @@
-import React, { createRef, useState, useEffect } from "react";
+import React, { createRef, useEffect } from "react";
 import ChildPageLayout from "../../../../../Components/ChildPageLayout";
 import { fetchCheckBooking } from "../../../../../middlewares/fetchCheckValidData/fetchCheckValidBooking";
 import { fetchAuthUser } from "../../../../../middlewares/fetchAuth/fetchUser";
 import { userNow } from "../../../../../Slices/Authentication/authSlice";
 import { useShallowEqualSelector } from "../../../../../Components/useShallowEqualSelector";
 import { useDispatch } from "react-redux";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { useParams, useHistory } from "react-router-dom";
 import DateFnsUtils from "@date-io/date-fns";
 import "date-fns";
@@ -14,7 +15,12 @@ import { Box, Button } from "@material-ui/core";
 import { fetchGetTimesToBooking } from "../../../../../middlewares/user/fetchBooking/fetchBooking";
 import { onClearStadiums } from "../../../../../Slices/Features/Users/Booking/getStadiumsSlice";
 import { fetchGetStadiumsToBooking } from "../../../../../middlewares/user/fetchBooking/fetchBooking";
-import { onClearTimes } from "../../../../../Slices/Features/Users/Booking/getTimeSlice";
+import { fetchGetBookingDetailsUnCheckout } from "../../../../../middlewares/user/fetchBooking/fetchBooking";
+import {
+  onClearTimes,
+  onFilterAvailableTimes,
+} from "../../../../../Slices/Features/Users/Booking/getTimeSlice";
+import moment from "moment";
 
 import { onSaveSelectedData } from "../../../../../Slices/Features/Users/Booking/bookingDetailsSlice";
 import DatePickerBooking from "./DatePickerBooking";
@@ -24,10 +30,7 @@ import TimesAndPrice from "./TimesAndPrice";
 const Booking = React.memo(() => {
   const { bookingId, stadiumId } = useParams();
   const history = useHistory();
-  const [filterState, setFilterState] = useState({
-    stadiums_id: '',
-    dateData: new Date()
-  })
+
   const { checkBookingResult } = useShallowEqualSelector(
     (state) => state.validBookingData
   );
@@ -37,12 +40,20 @@ const Booking = React.memo(() => {
     useShallowEqualSelector((state) => state.getStadiums);
 
   //ຂໍ້ມູນເວລາຈາກການ request
-  const { bookingTimesData, bookingTimesSuccess } = useShallowEqualSelector(
-    (state) => state.getTimes
-  );
+  const {
+    bookingTimesData,
+    filterResult,
+    bookingTimesSuccess,
+    foundUnCheckout,
+    stadiumsSelected,
+    filterResultByStadiums,
+    allTimesByStadiums,
+  } = useShallowEqualSelector((state) => state.getTimes);
 
   //ຂໍ້ມູນລາຄາ, ເວລາເດີ່ນ, ເດີ່ນຫຼັງຈາກການເລືອກ
-  const { timeAndPriceSelected } = useShallowEqualSelector((state) => state.bookingDetails);
+  const { dateSelected, timeAndPriceSelected } = useShallowEqualSelector(
+    (state) => state.bookingDetails
+  );
   const dispatch = useDispatch();
   const datePickerRef = createRef();
 
@@ -78,35 +89,55 @@ const Booking = React.memo(() => {
     return () => dispatch(onClearTimes());
   }, [dispatch, stadiumId]);
 
-  const handleStadiums = (payload) => {
-    setFilterState((prev) => ({...prev, stadiums_id: payload}))
-  }
+  //ການ fetching ເອົາຂໍ້ມູນການຈອງທີ່ຈອງແລ້ວ ແຕ່ຍັງບໍ່ຈ່າຍ
 
-  const handleDateChange = (date) => {
-    setFilterState((prev) => ({...prev, dateData: date}))
-  };
+  useEffect(() => {
+    const filterByDate = async () => {
+      try {
+        const fetchUnBooking = await dispatch(
+          fetchGetBookingDetailsUnCheckout(stadiumId)
+        );
+        const getData = unwrapResult(fetchUnBooking);
+        const filterRequest = {
+          dateData: moment(Date.now()).format("YYYY-MM-DD"),
+          stadiumId: "",
+          unBookingData: getData,
+        };
+        dispatch(onFilterAvailableTimes(filterRequest));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    filterByDate();
+  }, [dispatch, stadiumId]);
 
   const onAddBookingDetails = (event) => {
     event.preventDefault();
-    dispatch(onSaveSelectedData(timeAndPriceSelected))
+    dispatch(onSaveSelectedData(timeAndPriceSelected));
   };
 
   return (
     <ChildPageLayout title="Booking">
       <form onSubmit={onAddBookingDetails}>
         {bookingStadiumsSuccess === true && (
-          <StadiumsToPick stadiums={bookingStadiumsData} selectedStadiums={handleStadiums} />
+          <StadiumsToPick stadiums={bookingStadiumsData} />
         )}
 
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <DatePickerBooking
-            dateData={filterState.dateData}
-            onSelectedDate={handleDateChange}
-            ref={datePickerRef}
-          />
+          <DatePickerBooking dateData={dateSelected} ref={datePickerRef} />
         </MuiPickersUtilsProvider>
         {bookingTimesSuccess === true && (
-          <TimesAndPrice times={bookingTimesData} filterData={filterState} />
+          <TimesAndPrice
+            times={
+              foundUnCheckout.length > 0
+                ? stadiumsSelected !== ""
+                  ? filterResultByStadiums
+                  : filterResult
+                : stadiumsSelected !== ""
+                ? allTimesByStadiums
+                : bookingTimesData
+            }
+          />
         )}
 
         <Box mt={3}>

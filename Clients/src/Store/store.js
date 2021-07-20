@@ -19,10 +19,16 @@ import stadiumPriceSlice from "../Slices/Features/StadiumUsers/crudStadiumPrice/
 import feedPostSlice from "../Slices/Features/Users/feedPost/feedPostSlice";
 import feedStadiumSlice from "../Slices/Features/Users/feedStadium/feedStadiumSlice";
 import subscribeSlice from "../Slices/Features/Users/Subscribe/subscribeSlice";
+
 import bookingSlice from "../Slices/Features/Users/Booking/bookingSlice";
 import bookingDetailsSlice from '../Slices/Features/Users/Booking/bookingDetailsSlice';
 import getStadiumsSlice from '../Slices/Features/Users/Booking/getStadiumsSlice';
 import getTimesSlice from '../Slices/Features/Users/Booking/getTimeSlice';
+
+import bookingNonAccountSlice from '../Slices/Features/StadiumUsers/BookingForNoAccount/bookingNonAccountSlice';
+import bookingDetailsNonAccountSlice from '../Slices/Features/StadiumUsers/BookingForNoAccount/bookingDetailsNonAccountSlice';
+import getStadiumsNonAccountSlice from '../Slices/Features/StadiumUsers/BookingForNoAccount/getStadiumsNonAccountSlice';
+import getTimesNonAccountSlice from '../Slices/Features/StadiumUsers/BookingForNoAccount/getTimeNonAccountSlice';
 
 const store = configureStore({
   reducer: {
@@ -44,10 +50,14 @@ const store = configureStore({
     feedStadium: feedStadiumSlice,
     subscribe: subscribeSlice,
     booking: bookingSlice,
+    bookingNonAccount: bookingNonAccountSlice,
     bookingDetails: bookingDetailsSlice,
+    bookingDetailsNonAccount: bookingDetailsNonAccountSlice,
     getStadiums: getStadiumsSlice,
-    getTimes: getTimesSlice
-  },
+    getStadiumsNonAccount: getStadiumsNonAccountSlice,
+    getTimes: getTimesSlice,
+    getTimesNonAccount: getTimesNonAccountSlice
+  }, 
 });
 
 export default store;

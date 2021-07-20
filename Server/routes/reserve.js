@@ -1,17 +1,36 @@
-const e = require('express');
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-const mysql = require('mysql');
-const dbconfig = require('../dbConnect/dbconnect');
+const mysql = require("mysql");
+const dbconfig = require("../dbConnect/dbconnect");
+
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
+
+
+router.use(express.static("public"));
+router.use(express.static("upload"));
 
 router.use(express.json());
+router.use(cookieParser());
+router.use(cors());
 
 const db = mysql.createConnection(dbconfig.db);
 
 
 //ຈອງກໍລະນີຜູ້ໃຊ້ໂທເອົາ
 
+function verifyToken(req, res, next) {
+    const bearerHeader = req.headers["authorization"];
+    if (typeof bearerHeader !== "undefined") {
+      const bearerToken = bearerHeader.split(" ")[1];
+      req.token = bearerToken;
+      next();
+    } else {
+      res.sendStatus(403); //forbidden
+    }
+  } //ແປງ Token ເປັນ data
 
 router.get('/', async function(req,res,next){
     await db.query("call reserve_all()", (err, result) => {
@@ -26,50 +45,120 @@ router.get('/', async function(req,res,next){
 }) // ສະແດງລາຍການຈອງທັງໝົດໃຫ້ຜູ້ໃຊ້ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
-router.post('/booking', async (req,res) => {
-    
-    const staff_id = req.body.s_id;
+router.get('/getStadiumDetailsToBookingForNonAccount/:st_id', async function(req,res,next){
+    const stadium_id = req.params.st_id;
+    await db.query("call field(?)", [stadium_id] , (err,result) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+}) // ສະແດງສະໜາມທັງໝົດທີ່ມີໃນເດີ່ນນັ້ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+router.get('/getBookingDetailsUnCheckoutForNonAccount/:stadiumId', async function(req, res, next) {
+    const stadium_id = req.params.stadiumId;
+    await db.query("call reserve_getUncheckout(?)", [stadium_id],(err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+}) // ສະແດງລາຍການຈອງລູກຄ້າທີ່ມີບັນຊີ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+router.get('/getPriceToBookingForNonAccount/:stadiumId', async function(req, res, next) {
+    const stadium_id = req.params.stadiumId;
+    await db.query("call stadium_price(?)", [stadium_id],(err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+}) // ສະແດງລາຍການລາຄາຂອງເດີ່ນນັ້ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+router.post('/bookingForNonAccount', verifyToken, async (req,res) => {
+    jwt.verify(req.token, "secret", async (err, authData) => {
+        if (err) {
+            return res.sendStatus(403);
+        }
+        const staff_id = authData.data;
+        await db.query("select * from tbbooking where su_id=?", [staff_id], (err, result) => {
+            if (err) {
+                return res.status(400).send("ເກີດຂໍ້ຜິດພາດ!!");
+            }
+            if (result.length > 0) {
+              db.query("select b_id,booking_status,paid_status from tbbooking where su_id=? ORDER BY b_id DESC LIMIT 0, 1", [staff_id], (err,resu) => {
+                  if((resu[0].booking_status === "ຍັງບໍ່ຈອງ" && resu[0].paid_status === "ຍັງບໍ່ຈ່າຍ")){
+                      res.status(200).send(resu);
+                  }else{
+                      
+                      db.query("call reserve_staff(?)", [staff_id], (err, resul) => { 
+                          if(err){
+                              res.status(400)
+                              console.log(err);
+                              res.send("Something Wrong")
+                          }else{
+                              db.query("select b_id,booking_status,paid_status from tbbooking where su_id=? ORDER BY b_id DESC LIMIT 0, 1", [staff_id], (err,bid) => {
+                                  if(err) return res.send(err).status(400)
+                                  res.status(200).send(bid);
+                              })
+                          }
+                      }) // ເພີ່ມຂໍ້ມູນການຈອງຫຼັກໂດຍຜູ້ໃຊ້ ||||||||||||||||||||||||||||||||||||||||||||||||||
+                  }
+              })
+            } else {
+              db.query("call reserve_staff(?)", [staff_id], (err, resul) => { 
+                  if(err){
+                      res.status(400)
+                      console.log(err);
+                      res.send("Something Wrong")
+                  }else{
+                      db.query("select b_id,booking_status,paid_status from tbbooking where su_id=? ORDER BY b_id DESC LIMIT 0, 1", [staff_id], (err,bid) => {
+                          if(err) return res.send(err).status(400)
+                          res.status(200).send(bid);
+                      })
+                  }
+              }) // ເພີ່ມຂໍ້ມູນການຈອງຫຼັກໂດຍຜູ້ໃຊ້ ||||||||||||||||||||||||||||||||||||||||||||||||||
+            }
+        })
+    })
+}) // ເພີ່ມລາຍການຈອງ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+router.post("/addNonAccountData/:bookingId", async (req, res) => {
+    const book_id = req.params.bookingId;
     const name = req.body.name;
     const team = req.body.team;
     const tel = req.body.tel;
-    
-    db.query("select b_id,booking_status,paid_status from tbbooking where su_id=? ORDER BY b_id DESC LIMIT 0, 1", [staff_id], (err,resu) => {
-        if((resu[0].booking_status === "ຍັງບໍ່ຈອງ" && resu[0].paid_status === "ຍັງບໍ່ຈ່າຍ") || (resu[0].booking_status === "ຈອງແລ້ວ" && resu[0].paid_status === "ຍັງບໍ່ຈ່າຍ")){
-            res.status(200).send((resu[0].b_id).toString());
-        }else{
-            
-            db.query("call reserve_staff(?)", [staff_id], (err, resul) => { 
-                if(err){
-                    res.status(400)
-                    console.log(err);
-                    res.send("Something Wrong")
-                }else{
-                    db.query("select b_id,booking_status,paid_status from tbbooking where su_id=? ORDER BY b_id DESC LIMIT 0, 1", [staff_id], (err,bid) => {
-                        if(err){
-                            return res.send(err).status(400)
-                        } else {
-                            const book_id = (bid[0].b_id).toString()
-                            db.query("call reserve_nou_add(?,?,?,?)", [book_id,name,team,tel], (err1, result) => {
-                                if(err1){
-                                    res.status(400)
-                                    console.log(err1);
-                                }
-                                else{
-                                    res.send(200);
-                                    res.send(book_id);
-                                }
-                            }) // ເພີ່ມຂໍ້ມູນຜູ້ໃຊ້ທີ່ບໍ່ມີບັນຊີ
-                        }
-                        
-                    })
-                }
-            })
+    db.query("call reserve_nou_add(?,?,?,?)", [book_id,name,team,tel], (err1, result) => {
+        if(err1){
+            res.status(400)
+            console.log(err1);
         }
-    })
-    
-
-}) // ເພີ່ມລາຍການຈອງ ||||||||||||||||||||||||||||||||||||||||||||||||||
-
+        else{
+            res.send(200);
+        }
+    }) // ເພີ່ມຂໍ້ມູນຜູ້ໃຊ້ທີ່ບໍ່ມີບັນຊີ
+})
 
 router.post('/bookingfield', async (req,res) => {
     
@@ -103,7 +192,7 @@ router.post('/bookingfield', async (req,res) => {
 }) // ເພີ່ມເດີ່ນທີ່ຈອງ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
-router.put('/accept', async (req,res) => {
+router.put('/acceptForNonAccount', async (req,res) => {
     const stadium_id = req.body.st_id;
     const book_id = req.body.b_id;
     

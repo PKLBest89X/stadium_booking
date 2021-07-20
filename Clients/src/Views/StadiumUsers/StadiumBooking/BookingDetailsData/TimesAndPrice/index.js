@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -14,12 +14,12 @@ import TabControl from "./TabControl";
 
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useShallowEqualSelector } from "../../../../../../Components/useShallowEqualSelector";
+import { useShallowEqualSelector } from "../../../../../Components/useShallowEqualSelector";
 import {
-  onHandleSelect,
-  onHandleSelectAll,
-  onClearSelect,
-} from "../../../../../../Slices/Features/Users/Booking/bookingDetailsSlice";
+  onHandleSelectNonAccount,
+  onHandleSelectAllNonAccount,
+  onClearSelectNonAccount,
+} from "../../../../../Slices/Features/StadiumUsers/BookingForNoAccount/bookingDetailsNonAccountSlice";
 
 const descendingComparator = (a, b, orderBy) => {
   if (a[orderBy] < b[orderBy]) {
@@ -65,8 +65,8 @@ const TimesAndPrice = React.memo(({ times }) => {
   const classes = useStyles();
   const { bookingId } = useParams();
   const dispatch = useDispatch();
-  const { timeAndPriceSelected } = useShallowEqualSelector(
-    (state) => state.bookingDetails
+  const { timeAndPriceSelectedNonAccount } = useShallowEqualSelector(
+    (state) => state.bookingDetailsNonAccount
   );
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("td_start");
@@ -75,7 +75,7 @@ const TimesAndPrice = React.memo(({ times }) => {
 
 
   const stableSort = (array, comparator) => {
-   const stabilizedThis = array.map((el, index) => [el, index]);
+    const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
       const order = comparator(a[0], b[0]);
       if (order !== 0) return order;
@@ -96,15 +96,15 @@ const TimesAndPrice = React.memo(({ times }) => {
         ...items,
         b_id: bookingId,
       }));
-      dispatch(onHandleSelectAll(requestBookingDetails));
+      dispatch(onHandleSelectAllNonAccount(requestBookingDetails));
       return;
     }
-    dispatch(onClearSelect());
+    dispatch(onClearSelectNonAccount());
   };
 
   const handleClick = (event, name) => {
     let selectedData = { ...name, b_id: bookingId };
-    dispatch(onHandleSelect(selectedData));
+    dispatch(onHandleSelectNonAccount(selectedData));
   };
 
   const handleChangePage = (event, newPage) => {
@@ -117,7 +117,7 @@ const TimesAndPrice = React.memo(({ times }) => {
   };
 
   const isSelected = (name) =>
-    timeAndPriceSelected.findIndex(
+    timeAndPriceSelectedNonAccount.findIndex(
       (items) => items.td_id === name.td_id && items.std_id === name.std_id
     ) !== -1;
 
@@ -127,7 +127,7 @@ const TimesAndPrice = React.memo(({ times }) => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <ToolbarControl numSelected={timeAndPriceSelected.length} />
+        <ToolbarControl numSelected={timeAndPriceSelectedNonAccount.length} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -136,7 +136,7 @@ const TimesAndPrice = React.memo(({ times }) => {
           >
             <TableHeaderControl
               classes={classes}
-              numSelected={timeAndPriceSelected.length}
+              numSelected={timeAndPriceSelectedNonAccount.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}

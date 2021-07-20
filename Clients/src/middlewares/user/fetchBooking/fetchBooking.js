@@ -46,9 +46,9 @@ export const fetchGetBookingDetailsUnCheckout = createAsyncThunk(
   "booking/getBookingDetailsUnCheckout",
   async (params, { rejectWithValue, getState, requestId }) => {
     try {
-      const { bookingDetailsLoading, bookingDetailsRequestId } =
-        getState().bookingDetails;
-      if (bookingDetailsLoading !== true || requestId !== bookingDetailsRequestId) {
+      const { bookingUnCheckoutLoading, bookingUnCheckoutRequestId } =
+        getState().getTimes;
+      if (bookingUnCheckoutLoading !== true || requestId !== bookingUnCheckoutRequestId) {
         return;
       }
       const getBookingDetailsUnCheckout = await Axios.get(

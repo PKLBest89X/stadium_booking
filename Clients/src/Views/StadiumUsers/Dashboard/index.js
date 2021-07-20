@@ -20,7 +20,7 @@ import { fetchCheckStadium } from '../../../middlewares/fetchCheckValidData/fetc
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
-    padding: '1em',
+    padding: '2rem',
     flex: 1,
   }
 }))

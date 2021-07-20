@@ -21,7 +21,6 @@ const db = mysql.createConnection(dbconfig.db);
 
 //ຈອງກໍລະນີຜູ້ໃຊ້ທີ່ມີບັນຊີ
 
-
 function verifyToken(req, res, next) {
     const bearerHeader = req.headers["authorization"];
     if (typeof bearerHeader !== "undefined") {
@@ -103,7 +102,7 @@ router.get('/getBookingDetailsUnCheckout/:stadiumId', async function(req, res, n
             return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
         }
 
-        if (result[0].length > 0) {
+        if (result.length > 0) {
             return res.send(result[0])
         } else {
             return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')

@@ -1,72 +1,72 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "axios";
 
-export const fetchGetStadiumsToBooking = createAsyncThunk(
-  "booking/getStadiumsToBooking",
+export const fetchGetStadiumsToBookingNonAccount = createAsyncThunk(
+  "bookingNonAccount/getStadiumsToBookingNonAccount",
   async (params, { rejectWithValue, getState, requestId }) => {
     try {
-      const { bookingStadiumsLoading, bookingStadiumsRequestId } =
-        getState().getStadiums;
+      const { bookingStadiumsNonAccountLoading, bookingStadiumsNonAccountRequestId } =
+        getState().getStadiumsNonAccount;
       if (
-        bookingStadiumsLoading !== true ||
-        requestId !== bookingStadiumsRequestId
+        bookingStadiumsNonAccountLoading !== true ||
+        requestId !== bookingStadiumsNonAccountRequestId
       ) {
         return;
       }
-      const getStadiumsToBooking = await Axios.get(
-        `http://localhost:5050/reserve_cus/getStadiumDetailsToBooking/${params}`
+      const getStadiumsToBookingNonAccount = await Axios.get(
+        `http://localhost:5050/reserve/getStadiumDetailsToBookingForNonAccount/${params}`
       );
-      return getStadiumsToBooking.data;
+      return getStadiumsToBookingNonAccount.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
   }
 );
 
-export const fetchGetTimesToBooking = createAsyncThunk(
-  "booking/getTimesToBooking",
+export const fetchGetTimesToBookingNonAccount = createAsyncThunk(
+  "bookingNonAccount/getTimesToBookingNonAccount",
   async (params, { rejectWithValue, getState, requestId }) => {
     try {
-      const { bookingTimesLoading, bookingTimesRequestId } =
-        getState().getTimes;
-      if (bookingTimesLoading !== true || requestId !== bookingTimesRequestId) {
+      const { bookingTimesNonAccountLoading, bookingTimesNonAccountRequestId } =
+        getState().getTimesNonAccount;
+      if (bookingTimesNonAccountLoading !== true || requestId !== bookingTimesNonAccountRequestId) {
         return;
       }
-      const getTimesToBooking = await Axios.get(
-        `http://localhost:5050/reserve_cus/getPriceToBooking/${params}`
+      const getTimesToBookingNonAccount = await Axios.get(
+        `http://localhost:5050/reserve/getPriceToBookingForNonAccount/${params}`
       );
-      return getTimesToBooking.data;
+      return getTimesToBookingNonAccount.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
   }
 );
 
-export const fetchGetBookingDetailsUnCheckout = createAsyncThunk(
-  "booking/getBookingDetailsUnCheckout",
+export const fetchGetBookingDetailsUnCheckoutNonAccount = createAsyncThunk(
+  "bookingNonAccount/getBookingDetailsUnCheckoutNonAccount",
   async (params, { rejectWithValue, getState, requestId }) => {
     try {
-      const { bookingDetailsLoading, bookingDetailsRequestId } =
-        getState().bookingDetails;
-      if (bookingDetailsLoading !== true || requestId !== bookingDetailsRequestId) {
+      const { bookingUnCheckoutNonAccountLoading, bookingUnCheckoutNonAccountRequestId } =
+        getState().getTimesNonAccount;
+      if (bookingUnCheckoutNonAccountLoading !== true || requestId !== bookingUnCheckoutNonAccountRequestId) {
         return;
       }
-      const getBookingDetailsUnCheckout = await Axios.get(
-        `http://localhost:5050/reserve_cus/getBookingDetailsUnCheckout/${params}`
+      const getBookingDetailsUnCheckoutNonAccount = await Axios.get(
+        `http://localhost:5050/reserve/getBookingDetailsUnCheckoutForNonAccount/${params}`
       );
-      return getBookingDetailsUnCheckout.data;
+      return getBookingDetailsUnCheckoutNonAccount.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
   }
 );
 
-export const fetchAddBooking = createAsyncThunk(
-  "booking/addNewBooking",
+export const fetchAddBookingNonAccount = createAsyncThunk(
+  "bookingNonAccount/addNewBookingNonAccount",
   async (token, { rejectWithValue }) => {
     try {
-      const addBooking = await Axios.post(
-        `http://localhost:5050/reserve_cus/booking/`,
+      const addBookingNonAccount = await Axios.post(
+        `http://localhost:5050/reserve/bookingForNonAccount/`,
         {},
         {
           headers: {
@@ -74,24 +74,24 @@ export const fetchAddBooking = createAsyncThunk(
           },
         }
       );
-      return addBooking.data;
+      return addBookingNonAccount.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
   }
 );
 
-export const fetchAddBookingFields = createAsyncThunk(
-  "booking/addBookingFields",
+export const fetchAddBookingFieldsNonAccount = createAsyncThunk(
+  "bookingNonAccount/addBookingFieldsNonAccount",
   async (details, { rejectWithValue }) => {
     try {
-      const addBookingFields = await Axios.post(
-        `http://localhost:5050/reserve_cus/booking/bookingfields`,
+      const addBookingFieldsNonAccount = await Axios.post(
+        `http://localhost:5050/reserve/bookingfield`,
         {
           data: details,
         }
       );
-      return addBookingFields.data;
+      return addBookingFieldsNonAccount.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -99,13 +99,13 @@ export const fetchAddBookingFields = createAsyncThunk(
 );
 
 export const fetchConfirmBooking = createAsyncThunk(
-  "booking/conformBooking",
+  "bookingNonAccount/conformBookingNonAccount",
   async (params, { rejectWithValue }) => {
     try {
-      const conformBooking = await Axios.put(
-        `http://localhost:5050/reserve_cus/booking/acceptBooking/${params.stadiumId}/${params.bookingId}`
+      const conformBookingNonAccount = await Axios.put(
+        `http://localhost:5050/reserve/acceptForNonAccount/${params.stadiumId}/${params.bookingId}`
       );
-      return conformBooking.data;
+      return conformBookingNonAccount.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }

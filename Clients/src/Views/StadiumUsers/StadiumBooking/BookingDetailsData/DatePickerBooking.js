@@ -1,15 +1,15 @@
 import React, { forwardRef } from "react";
 import { KeyboardDatePicker } from "@material-ui/pickers";
-import { onHandleSelectDate } from "../../../../../Slices/Features/Users/Booking/bookingDetailsSlice";
+import { onHandleSelectDateNonAccount } from "../../../../Slices/Features/StadiumUsers/BookingForNoAccount/bookingDetailsNonAccountSlice";
 import { useDispatch } from "react-redux";
-import { onFilterAvailableTimes } from "../../../../../Slices/Features/Users/Booking/getTimeSlice";
-import { useShallowEqualSelector } from "../../../../../Components/useShallowEqualSelector";
+import { onFilterAvailableTimesNonAccount } from "../../../../Slices/Features/StadiumUsers/BookingForNoAccount/getTimeNonAccountSlice";
+import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 import moment from "moment";
 
 const DatePickerBooking = forwardRef(({ dateData }, ref) => {
   const dispatch = useDispatch();
-  const { stadiumsSelected } = useShallowEqualSelector(
-    (state) => state.getTimes
+  const { stadiumsSelectedNonAccount } = useShallowEqualSelector(
+    (state) => state.getTimesNonAccount
   );
   return (
     <div ref={ref}>
@@ -24,11 +24,11 @@ const DatePickerBooking = forwardRef(({ dateData }, ref) => {
         value={dateData}
         minDate={new Date()}
         onChange={(date) => {
-          dispatch(onHandleSelectDate(moment(date).format("YYYY-MM-DD")));
+          dispatch(onHandleSelectDateNonAccount(moment(date).format("YYYY-MM-DD")));
           dispatch(
-            onFilterAvailableTimes({
+            onFilterAvailableTimesNonAccount({
               dateData: moment(date).format("YYYY-MM-DD"),
-              stadiumId: stadiumsSelected,
+              stadiumId: stadiumsSelectedNonAccount,
             })
           );
         }}

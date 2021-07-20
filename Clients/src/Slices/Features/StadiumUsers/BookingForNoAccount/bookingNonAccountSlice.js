@@ -1,33 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAddBooking } from "../../../../middlewares/user/fetchBooking/fetchBooking";
+import { fetchAddBookingNonAccount } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
 
 const initialState = {
-  bookingLoading: false,
-  bookingSuccess: null,
-  bookingData: [],
-  bookingError: null,
-  bookingRequestId: undefined,
+  bookingNonAccountLoading: false,
+  bookingNonAccountSuccess: null,
+  bookingNonAccountData: [],
+  bookingNonAccountError: null,
+  bookingAccountRequestId: undefined,
 };
 
-const bookingSlice = createSlice({
-  name: "booking",
+const bookingNonAccountSlice = createSlice({
+  name: "bookingNonAccount",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchAddBooking.pending, (state, action) => {
-      state.bookingLoading = true;
+    builder.addCase(fetchAddBookingNonAccount.pending, (state, action) => {
+      state.bookingNonAccountLoading = true;
     });
-    builder.addCase(fetchAddBooking.fulfilled, (state, action) => {
-      state.bookingSuccess = true;
-      state.bookingLoading = false;
-      state.bookingData = [];
-      state.bookingData = action.payload;
+    builder.addCase(fetchAddBookingNonAccount.fulfilled, (state, action) => {
+      state.bookingNonAccountSuccess = true;
+      state.bookingNonAccountLoading = false;
+      state.bookingNonAccountData = [];
+      state.bookingNonAccountData = action.payload;
     });
-    builder.addCase(fetchAddBooking.rejected, (state, action) => {
-      state.bookingLoading = false;
-      state.bookingError = action.payload;
+    builder.addCase(fetchAddBookingNonAccount.rejected, (state, action) => {
+      state.bookingNonAccountLoading = false;
+      state.bookingNonAccountError = action.payload;
     });
   },
 });
 
-export default bookingSlice.reducer;
+export default bookingNonAccountSlice.reducer;

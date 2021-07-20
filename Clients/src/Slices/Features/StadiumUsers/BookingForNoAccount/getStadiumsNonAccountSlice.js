@@ -1,55 +1,55 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchGetStadiumsToBooking } from "../../../../middlewares/user/fetchBooking/fetchBooking";
+import { fetchGetStadiumsToBookingNonAccount } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
 
 const initialState = {
-  bookingStadiumsLoading: false,
-  bookingStadiumsData: [],
-  bookingStadiumsSuccess: null,
-  bookingStadiumsError: null,
-  bookingStadiumsRequestId: undefined,
+  bookingStadiumsNonAccountLoading: false,
+  bookingStadiumsNonAccountData: [],
+  bookingStadiumsNonAccountSuccess: null,
+  bookingStadiumsNonAccountError: null,
+  bookingStadiumsNonAccountRequestId: undefined,
 };
 
-const getStadiumsSlice = createSlice({
-  name: "getStadiumsToBooking",
+const getStadiumsSliceNonAccount = createSlice({
+  name: "getStadiumsToBookingNonAccount",
   initialState,
   reducers: {
-    onClearStadiums: (state) => {
-      state.bookingStadiumsData = [];
+    onClearStadiumsNonAccount: (state) => {
+      state.bookingStadiumsNonAccountData = [];
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchGetStadiumsToBooking.pending, (state, action) => {
-      state.bookingStadiumsLoading = true;
-      if (state.bookingStadiumsLoading === true) {
-        state.bookingStadiumsRequestId = action.meta.requestId;
+    builder.addCase(fetchGetStadiumsToBookingNonAccount.pending, (state, action) => {
+      state.bookingStadiumsNonAccountLoading = true;
+      if (state.bookingStadiumsNonAccountLoading === true) {
+        state.bookingStadiumsNonAccountRequestId = action.meta.requestId;
       }
     });
-    builder.addCase(fetchGetStadiumsToBooking.fulfilled, (state, action) => {
+    builder.addCase(fetchGetStadiumsToBookingNonAccount.fulfilled, (state, action) => {
       if (
-        state.bookingStadiumsLoading === true &&
-        state.bookingStadiumsRequestId === action.meta.requestId
+        state.bookingStadiumsNonAccountLoading === true &&
+        state.bookingStadiumsNonAccountRequestId === action.meta.requestId
       ) {
-        state.bookingStadiumsLoading = false;
-        state.bookingStadiumsRequestId = undefined;
-        state.bookingStadiumsSuccess = true;
-        state.bookingStadiumsData = [];
-        state.bookingStadiumsData = action.payload;
+        state.bookingStadiumsNonAccountLoading = false;
+        state.bookingStadiumsNonAccountRequestId = undefined;
+        state.bookingStadiumsNonAccountSuccess = true;
+        state.bookingStadiumsNonAccountData = [];
+        state.bookingStadiumsNonAccountData = action.payload;
       }
     });
-    builder.addCase(fetchGetStadiumsToBooking.rejected, (state, action) => {
+    builder.addCase(fetchGetStadiumsToBookingNonAccount.rejected, (state, action) => {
       if (
-        state.bookingStadiumsLoading === true &&
-        state.bookingStadiumsRequestId === action.meta.requestId
+        state.bookingStadiumsNonAccountLoading === true &&
+        state.bookingStadiumsNonAccountRequestId === action.meta.requestId
       ) {
-        state.bookingStadiumsLoading = false;
-        state.bookingStadiumsRequestId = undefined;
-        state.bookingStadiumsSuccess = false;
-        state.bookingStadiumsError = action.payload;
-        state.bookingStadiumsData = [];
+        state.bookingStadiumsNonAccountLoading = false;
+        state.bookingStadiumsNonAccountRequestId = undefined;
+        state.bookingStadiumsNonAccountSuccess = false;
+        state.bookingStadiumsNonAccountError = action.payload;
+        state.bookingStadiumsNonAccountData = [];
       }
     });
   },
 });
 
-export const { onClearStadiums } = getStadiumsSlice.actions;
-export default getStadiumsSlice.reducer;
+export const { onClearStadiumsNonAccount } = getStadiumsSliceNonAccount.actions;
+export default getStadiumsSliceNonAccount.reducer;

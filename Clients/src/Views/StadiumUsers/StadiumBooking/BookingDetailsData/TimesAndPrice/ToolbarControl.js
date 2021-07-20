@@ -11,10 +11,10 @@ import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import moment from "moment";
 import { useParams } from "react-router-dom";
-import { onClearSelect } from "../../../../../../Slices/Features/Users/Booking/bookingDetailsSlice";
-import { fetchGetBookingDetailsUnCheckout } from "../../../../../../middlewares/user/fetchBooking/fetchBooking";
-import { onFilterAvailableTimes } from "../../../../../../Slices/Features/Users/Booking/getTimeSlice";
-import { useShallowEqualSelector } from "../../../../../../Components/useShallowEqualSelector";
+import { onClearSelectNonAccount } from "../../../../../Slices/Features/StadiumUsers/BookingForNoAccount/bookingDetailsNonAccountSlice";
+import { fetchGetBookingDetailsUnCheckoutNonAccount } from "../../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
+import { onFilterAvailableTimesNonAccount } from "../../../../../Slices/Features/StadiumUsers/BookingForNoAccount/getTimeNonAccountSlice";
+import { useShallowEqualSelector } from "../../../../../Components/useShallowEqualSelector";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,17 +39,16 @@ const useStyles = makeStyles((theme) => ({
 const ToolbarControl = React.memo((props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { stadiumId } = useParams();
-  const { stadiumsSelected, filterByDateData } = useShallowEqualSelector(
-    (state) => state.getTimes
-  );
+  const { stadiumId_Admin } = useParams();
+  const { stadiumsSelectedNonAccount, filterByDateDataNonAccount } =
+    useShallowEqualSelector((state) => state.getTimesNonAccount);
   const { numSelected } = props;
 
   const filterByDate = useCallback(
     async (date, stadium) => {
       try {
         const fetchUnBooking = await dispatch(
-          fetchGetBookingDetailsUnCheckout(stadiumId)
+          fetchGetBookingDetailsUnCheckoutNonAccount(stadiumId_Admin)
         );
         const getData = unwrapResult(fetchUnBooking);
         const filterRequest = {
@@ -57,12 +56,12 @@ const ToolbarControl = React.memo((props) => {
           stadiumId: stadium,
           unBookingData: getData,
         };
-        dispatch(onFilterAvailableTimes(filterRequest));
+        dispatch(onFilterAvailableTimesNonAccount(filterRequest));
       } catch (err) {
         console.log(err);
       }
     },
-    [dispatch, stadiumId]
+    [dispatch, stadiumId_Admin]
   );
 
   return (
@@ -88,7 +87,7 @@ const ToolbarControl = React.memo((props) => {
           component="div"
           color="textSecondary"
         >
-          ເວລາທີ່ຍັງວ່າງ
+          ເລືອກໄລຍະເວລາເຕະ
         </Typography>
       )}
 
@@ -96,7 +95,7 @@ const ToolbarControl = React.memo((props) => {
         <Tooltip title="Delete">
           <IconButton
             aria-label="delete"
-            onClick={() => dispatch(onClearSelect())}
+            onClick={() => dispatch(onClearSelectNonAccount())}
           >
             <Cancel />
           </IconButton>
@@ -105,7 +104,12 @@ const ToolbarControl = React.memo((props) => {
         <Tooltip title="Refresh">
           <IconButton
             aria-label="filter list"
-            onClick={() => filterByDate(filterByDateData, stadiumsSelected)}
+            onClick={() =>
+              filterByDate(
+                filterByDateDataNonAccount,
+                stadiumsSelectedNonAccount
+              )
+            }
           >
             <Refresh />
           </IconButton>

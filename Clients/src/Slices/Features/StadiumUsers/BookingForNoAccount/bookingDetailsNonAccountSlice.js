@@ -1,116 +1,100 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  fetchAddBookingFields,
-  fetchGetBookingDetailsUnCheckout,
-} from "../../../../middlewares/user/fetchBooking/fetchBooking";
+import { fetchAddBookingFieldsNonAccount } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
+import moment from "moment";
 
 const initialState = {
-  bookingDetailsLoading: false,
-  bookingDetailsSuccess: null,
-  bookingDetailsData: [],
-  timeAndPriceSelected: [],
-  bookingDetailsSelected: [],
-  bookingDetailsError: null,
-  bookingDetailsRequestId: undefined,
+  bookingDetailsNonAccountLoading: false,
+  bookingDetailsNonAccountSuccess: null,
+  bookingDetailsNonAccountData: [],
+  dateSelectedNonAccount: moment(Date.now()).format("YYYY-MM-DD"),
+  timeAndPriceSelectedNonAccount: [],
+  bookingDetailsSelectedNonAccount: [],
+  bookingDetailsNonAccountError: null,
+  bookingDetailsNonAccountRequestId: undefined,
 };
 
-const bookingDetailsSlice = createSlice({
-  name: "bookingDetails",
+const bookingDetailsNonAccountSlice = createSlice({
+  name: "bookingDetailsNonAccount",
   initialState,
   reducers: {
-    onHandleSelect: (state, { payload }) => {
-      const selectedIndex = state.timeAndPriceSelected.findIndex(
-        (items) => items.td_id === payload.td_id && items.std_id === payload.std_id
+    onHandleSelectDateNonAccount: (state, { payload }) => {
+      state.dateSelectedNonAccount = payload;
+    },
+    onHandleSelectNonAccount: (state, { payload }) => {
+      const selectedIndex = state.timeAndPriceSelectedNonAccount.findIndex(
+        (items) =>
+          items.td_id === payload.td_id && items.std_id === payload.std_id
       );
       let newSelected = [];
-  
+
       if (selectedIndex === -1) {
-        newSelected = newSelected.concat(state.timeAndPriceSelected, payload);
+        newSelected = newSelected.concat(
+          state.timeAndPriceSelectedNonAccount,
+          payload
+        );
       } else if (selectedIndex === 0) {
-        newSelected = newSelected.concat(state.timeAndPriceSelected.slice(1));
-      } else if (selectedIndex === state.timeAndPriceSelected.length - 1) {
-        newSelected = newSelected.concat(state.timeAndPriceSelected.slice(0, -1));
+        newSelected = newSelected.concat(
+          state.timeAndPriceSelectedNonAccount.slice(1)
+        );
+      } else if (
+        selectedIndex ===
+        state.timeAndPriceSelectedNonAccount.length - 1
+      ) {
+        newSelected = newSelected.concat(
+          state.timeAndPriceSelectedNonAccount.slice(0, -1)
+        );
       } else if (selectedIndex > 0) {
         newSelected = newSelected.concat(
-          state.timeAndPriceSelected.slice(0, selectedIndex),
-          state.timeAndPriceSelected.slice(selectedIndex + 1)
+          state.timeAndPriceSelectedNonAccount.slice(0, selectedIndex),
+          state.timeAndPriceSelectedNonAccount.slice(selectedIndex + 1)
         );
       }
-      state.timeAndPriceSelected = newSelected;
+      state.timeAndPriceSelectedNonAccount = newSelected;
     },
-    onHandleSelectAll: (state, { payload }) => {
+    onHandleSelectAllNonAccount: (state, { payload }) => {
       const newSelecteds = payload.map((n) => n);
-      state.timeAndPriceSelected = newSelecteds;
+      state.timeAndPriceSelectedNonAccount = newSelecteds;
     },
-    onClearSelect: (state) => {
-      state.timeAndPriceSelected = [];
+    onClearSelectNonAccount: (state) => {
+      state.timeAndPriceSelectedNonAccount = [];
     },
-    onSaveSelectedData: (state, { payload }) => {
-      state.bookingDetailsSelected = payload;
+    onSaveSelectedDataNonAccount: (state, { payload }) => {
+      state.bookingDetailsSelectedNonAccount = payload;
     },
-    onDeleteSelectedData: (State, { payload }) => {
-
-    }
+    onDeleteSelectedDataNonAccount: (State, { payload }) => {},
   },
   extraReducers: (builder) => {
-    //ການສົ່ງ request ໃນການເອົາຂໍ້ມູນການຈອງທີ່ຍັງບໍ່ໄດ້ຈ່າຍ, ແຕ່ຈອງແລ້ວ
-    builder.addCase(
-      fetchGetBookingDetailsUnCheckout.pending,
-      (state, action) => {
-        state.bookingDetailsLoading = true;
-        if (state.bookingDetailsLoading === true) {
-          state.bookingDetailsRequestId = action.meta.requestId;
-        }
-      }
-    );
-    builder.addCase(
-      fetchGetBookingDetailsUnCheckout.fulfilled,
-      (state, action) => {
-        const { requestId } = action.meta;
-        if (
-          state.bookingDetailsLoading === true &&
-          state.bookingDetailsRequestId === requestId
-        ) {
-          state.bookingDetailsSuccess = true;
-          state.bookingDetailsLoading = false;
-          state.bookingDetailsRequestId = undefined;
-          state.bookingDetailsData = [];
-          state.bookingDetailsData = action.payload;
-        }
-      }
-    );
-    builder.addCase(
-      fetchGetBookingDetailsUnCheckout.rejected,
-      (state, action) => {
-        const { requestId } = action.meta;
-        if (
-          state.bookingDetailsLoading === true &&
-          state.bookingDetailsRequestId === requestId
-        ) {
-          state.bookingDetailsLoading = false;
-          state.bookingDetailsSuccess = false;
-          state.bookingDetailsRequestId = undefined;
-          state.bookingDetailsError = action.payload;
-        }
-      }
-    );
-
     //ການສົ່ງ request ໃນການເພີ່ມລາຍລະອຽດການຈອງເດີ່ນ
-    builder.addCase(fetchAddBookingFields.pending, (state, action) => {
-      state.bookingDetailsLoading = true;
-    });
-    builder.addCase(fetchAddBookingFields.fulfilled, (state, action) => {
-      state.bookingDetailsSuccess = true;
-      state.bookingDetailsLoading = false;
-    });
-    builder.addCase(fetchAddBookingFields.rejected, (state, action) => {
-      state.bookingDetailsLoading = false;
-      state.bookingDetailsSuccess = false;
-      state.bookingDetailsError = action.payload;
-    });
+    builder.addCase(
+      fetchAddBookingFieldsNonAccount.pending,
+      (state, action) => {
+        state.bookingDetailsNonAccountLoading = true;
+      }
+    );
+    builder.addCase(
+      fetchAddBookingFieldsNonAccount.fulfilled,
+      (state, action) => {
+        state.bookingDetailsNonAccountSuccess = true;
+        state.bookingDetailsNonAccountLoading = false;
+      }
+    );
+    builder.addCase(
+      fetchAddBookingFieldsNonAccount.rejected,
+      (state, action) => {
+        state.bookingDetailsNonAccountLoading = false;
+        state.bookingDetailsNonAccountSuccess = false;
+        state.bookingDetailsNonAccountError = action.payload;
+      }
+    );
   },
 });
 
-export const { onHandleSelect, onHandleSelectAll, onClearSelect, onSaveSelectedData, onDeleteSelectedData } =
-  bookingDetailsSlice.actions;
-export default bookingDetailsSlice.reducer;
+export const {
+  onHandleSelectDateNonAccount,
+  onHandleSelectNonAccount,
+  onHandleSelectAllNonAccount,
+  onClearSelectNonAccount,
+  onSaveSelectedDataNonAccount,
+  onDeleteSelectedDataNonAccount,
+} = bookingDetailsNonAccountSlice.actions;
+export default bookingDetailsNonAccountSlice.reducer;
