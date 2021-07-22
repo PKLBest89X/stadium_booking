@@ -1,38 +1,29 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import ChildPageLayout from "../../../../../Components/ChildPageLayout";
 import { fetchCheckStadium } from "../../../../../middlewares/fetchCheckValidData/fetchCheckValidData";
 import { fetchCheckBooking } from "../../../../../middlewares/fetchCheckValidData/fetchCheckValidBooking";
-import { useHistory, useParams, useRouteMatch } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../../Components/useShallowEqualSelector";
 import { fetchAuthUser } from "../../../../../middlewares/fetchAuth/fetchUser";
 import { userNow } from "../../../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
-import { Button, Typography } from "@material-ui/core";
 
-const useStyles = makeStyles(() => ({
-  pageContainer: {
-    padding: "2rem",
-  },
-  emptyView: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "10rem",
-    boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, .5)",
-  },
-}));
+import { fetchGetCurrentBooking } from "../../../../../middlewares/user/fetchBooking/fetchBooking";
 
-const MyBooking = () => {
-  const classes = useStyles();
+import AlreadyBooking from "./AlreadyBooking";
+import PreBooking from "./PreBooking";
+
+const MyBooking = React.memo(() => {
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
   const { checkBookingResult } = useShallowEqualSelector(
     (state) => state.validBookingData
   );
+  const { bookingData } = useShallowEqualSelector((state) => state.booking);
+  const stateRef = useRef(bookingData);
   const { stadiumId, bookingId } = useParams();
-  const { url } = useRouteMatch();
   const history = useHistory();
   const dispatch = useDispatch();
+  
 
   useEffect(() => {
     let userToken = JSON.parse(localStorage.getItem("accessUserToken"));
@@ -55,7 +46,7 @@ const MyBooking = () => {
     }
   }, [history, checkResult]);
 
-//ການຍິງ request ໃນການກວດສອບວ່າມີເລກບິນການຈອງເດີ່ນນີ້ແທ້ ຫຼື ບໍ?
+  //ການຍິງ request ໃນການກວດສອບວ່າມີເລກບິນການຈອງເດີ່ນນີ້ແທ້ ຫຼື ບໍ?
   useEffect(() => {
     dispatch(fetchCheckBooking(bookingId));
   }, [dispatch, bookingId]);
@@ -66,25 +57,29 @@ const MyBooking = () => {
     }
   }, [history, checkBookingResult]);
 
-  const ShowEmptyBooking = () => (
-    <div className={classes.emptyView}>
-      <Typography variant="h3" color="textSecondary">
-        ບໍ່ມີຂໍ້ມູນລການຈອງເດີ່ນຂອງທ່ານ
-      </Typography>
-    </div>
+  useEffect(() => {
+    const customerToken = JSON.parse(localStorage.getItem("accessUserToken"));
+    if (customerToken && customerToken.token) {
+      const requestCurrentBooking = {
+        bookingId,
+        token: customerToken.token,
+      };
+      dispatch(fetchGetCurrentBooking(requestCurrentBooking));
+    }
+  }, [dispatch, bookingId]);
+
+  useMemo(
+    () => bookingData.forEach((items) => (stateRef.current = items)),
+    [bookingData]
   );
 
   return (
     <ChildPageLayout title="Stadium Booking">
-      <Button
-        onClick={() => history.push(`${url}/manage`)}
-        color="primary"
-        variant="contained"
-      >
-        ເພີ່ມການຈອງ
-      </Button>
-      <ShowEmptyBooking />
+      {stateRef.current.booking_status === "ຍັງບໍ່ຈອງ" &&
+        stateRef.current.paid_status === "ຍັງບໍ່ຈ່າຍ" && <PreBooking />}
+      {stateRef.current.booking_status === "ຈອງແລ້ວ" &&
+        stateRef.current.paid_status === "ຍັງບໍ່ຈ່າຍ" && <AlreadyBooking />}
     </ChildPageLayout>
   );
-};
+});
 export default MyBooking;

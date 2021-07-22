@@ -48,13 +48,39 @@ export const fetchGetBookingDetailsUnCheckout = createAsyncThunk(
     try {
       const { bookingUnCheckoutLoading, bookingUnCheckoutRequestId } =
         getState().getTimes;
-      if (bookingUnCheckoutLoading !== true || requestId !== bookingUnCheckoutRequestId) {
+      if (
+        bookingUnCheckoutLoading !== true ||
+        requestId !== bookingUnCheckoutRequestId
+      ) {
         return;
       }
       const getBookingDetailsUnCheckout = await Axios.get(
         `http://localhost:5050/reserve_cus/getBookingDetailsUnCheckout/${params}`
       );
       return getBookingDetailsUnCheckout.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const fetchGetCurrentBooking = createAsyncThunk(
+  "booking/getCurrentBooking",
+  async (data, { rejectWithValue, getState, requestId }) => {
+    try {
+      const { bookingLoading, bookingRequestId } = getState().booking;
+      if (bookingLoading !== true || requestId !== bookingRequestId) {
+        return;
+      }
+      const getCurrentBooking = await Axios.get(
+        `http://localhost:5050/reserve_cus/getCurrentBooking/${data.bookingId}`,
+        {
+          headers: {
+            authorization: `Bearer ${data.token}`,
+          },
+        }
+      );
+      return getCurrentBooking.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }

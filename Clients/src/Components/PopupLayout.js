@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { onPopupClose } from "../Slices/Features/Popup/popupSlice";
@@ -89,15 +89,22 @@ const useStyles = makeStyles((theme) => ({
 
 const PopupLayout = forwardRef(({ children, title, ...rest }, ref) => {
   const classes = useStyles();
+  const modalRef = useRef();
   const dispatch = useDispatch();
 
   useEffect(() => {
     return () => dispatch(onPopupClose());
   }, [dispatch]);
 
+  const outsideCloseModal = (event) => {
+    if (modalRef.current === event.target) {
+      dispatch(onPopupClose());
+    }
+  };
+
   return (
-    <div ref={ref} className={classes.root} {...rest}>
-      <div className={classes.formLayout}>
+    <div className={classes.root} {...rest} ref={modalRef} onClick={outsideCloseModal}>
+      <div className={classes.formLayout} ref={ref}>
         <AppBar className={classes.appbarTop}>
           <div className={classes.toolbar}>
             <IconButton

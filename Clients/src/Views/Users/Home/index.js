@@ -30,6 +30,7 @@ const Home = ({ ...rest }) => {
   const { feedPostData } = useShallowEqualSelector((state) => state.feedPost);
   const dispatch = useDispatch();
 
+
   useEffect(() => {
     dispatch(fetchFeedPost());
   }, [dispatch])

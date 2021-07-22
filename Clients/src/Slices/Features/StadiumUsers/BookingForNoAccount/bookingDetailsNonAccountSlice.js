@@ -8,6 +8,8 @@ const initialState = {
   bookingDetailsNonAccountData: [],
   dateSelectedNonAccount: moment(Date.now()).format("YYYY-MM-DD"),
   timeAndPriceSelectedNonAccount: [],
+  alertSelectedNonAccount: [],
+  selectedStateNonAccount: null,
   bookingDetailsSelectedNonAccount: [],
   bookingDetailsNonAccountError: null,
   bookingDetailsNonAccountRequestId: undefined,
@@ -58,8 +60,21 @@ const bookingDetailsNonAccountSlice = createSlice({
     onClearSelectNonAccount: (state) => {
       state.timeAndPriceSelectedNonAccount = [];
     },
+    onLoadCurrentSaveSelectedDataNonAccount: (state) => {
+      if (state.bookingDetailsSelectedNonAccount.length > 0) {
+        state.selectedStateNonAccount = true
+        return
+      }
+      state.selectedStateNonAccount = false;
+    },
+    onShowAlertSameDataNonAccount: (state, { payload }) => {
+      state.alertSelectedNonAccount = payload;
+    },
     onSaveSelectedDataNonAccount: (state, { payload }) => {
-      state.bookingDetailsSelectedNonAccount = payload;
+      state.selectedStateNonAccount = true;
+      let newSelected = [];
+      newSelected = newSelected.concat(state.bookingDetailsSelectedNonAccount, payload);
+      state.bookingDetailsSelectedNonAccount = newSelected;
     },
     onDeleteSelectedDataNonAccount: (State, { payload }) => {},
   },
@@ -94,6 +109,8 @@ export const {
   onHandleSelectNonAccount,
   onHandleSelectAllNonAccount,
   onClearSelectNonAccount,
+  onShowAlertSameDataNonAccount,
+  onLoadCurrentSaveSelectedDataNonAccount,
   onSaveSelectedDataNonAccount,
   onDeleteSelectedDataNonAccount,
 } = bookingDetailsNonAccountSlice.actions;

@@ -8,6 +8,8 @@ const initialState = {
   bookingDetailsData: [],
   dateSelected: moment(Date.now()).format("YYYY-MM-DD"),
   timeAndPriceSelected: [],
+  selectedState: null,
+  alertSelected: [],
   bookingDetailsSelected: [],
   bookingDetailsError: null,
   bookingDetailsRequestId: undefined,
@@ -50,10 +52,21 @@ const bookingDetailsSlice = createSlice({
     onClearSelect: (state) => {
       state.timeAndPriceSelected = [];
     },
+    onLoadCurrentSaveSelectedData: (state) => {
+      if (state.bookingDetailsSelected.length > 0) {
+        state.selectedState = true;
+        return;
+      }
+      state.selectedState = false;
+    },
+    onShowAlertSameData: (state, { payload }) => {
+      state.alertSelected = payload;
+    },
     onSaveSelectedData: (state, { payload }) => {
-      state.bookingDetailsSelected = state.bookingDetailsSelected.map(
-        (items) => ({ ...items })
-      );
+      state.selectedState = true;
+      let newSelected = [];
+      newSelected = newSelected.concat(state.bookingDetailsSelected, payload);
+      state.bookingDetailsSelected = newSelected;
     },
     onDeleteSelectedData: (state, { payload }) => {
       return state.bookingDetailsSelected.filter(
@@ -84,6 +97,8 @@ export const {
   onHandleSelect,
   onHandleSelectAll,
   onClearSelect,
+  onShowAlertSameData,
+  onLoadCurrentSaveSelectedData,
   onSaveSelectedData,
   onDeleteSelectedData,
 } = bookingDetailsSlice.actions;

@@ -1,4 +1,4 @@
-import React, { createRef, useEffect } from "react";
+import React, { createRef, useEffect, useCallback } from "react";
 import PageLayout from "../../../../Components/PageLayout";
 import { fetchCheckBooking } from "../../../../middlewares/fetchCheckValidData/fetchCheckValidBooking";
 import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUsers";
@@ -10,7 +10,7 @@ import { useParams, useHistory } from "react-router-dom";
 import DateFnsUtils from "@date-io/date-fns";
 import "date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { Box, Button } from "@material-ui/core";
+import { Box, Button, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { fetchGetStadiumsToBookingNonAccount } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
@@ -23,7 +23,13 @@ import {
 } from "../../../../Slices/Features/StadiumUsers/BookingForNoAccount/getTimeNonAccountSlice";
 import moment from "moment";
 
-import { onSaveSelectedDataNonAccount } from "../../../../Slices/Features/StadiumUsers/BookingForNoAccount/bookingDetailsNonAccountSlice";
+import {
+  onSaveSelectedDataNonAccount,
+  onShowAlertSameDataNonAccount,
+} from "../../../../Slices/Features/StadiumUsers/BookingForNoAccount/bookingDetailsNonAccountSlice";
+import { onPopupOpen } from "../../../../Slices/Features/Popup/popupSlice";
+import NotificationAlert from "../../../../Components/NotificationAlert";
+
 import DatePickerBooking from "./DatePickerBooking";
 import StadiumsToPick from "./StadiumsToPick";
 import TimesAndPrice from "./TimesAndPrice";
@@ -42,6 +48,8 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
     (state) => state.validBookingData
   );
 
+  const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
+
   //ຂໍ້ມູນສະໜາມຈາກການ request
   const { bookingStadiumsNonAccountData, bookingStadiumsNonAccountSuccess } =
     useShallowEqualSelector((state) => state.getStadiumsNonAccount);
@@ -58,7 +66,7 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
   } = useShallowEqualSelector((state) => state.getTimesNonAccount);
 
   //ຂໍ້ມູນລາຄາ, ເວລາເດີ່ນ, ເດີ່ນຫຼັງຈາກການເລືອກ
-  const { dateSelectedNonAccount, timeAndPriceSelectedNonAccount } =
+  const { dateSelectedNonAccount, timeAndPriceSelectedNonAccount, bookingDetailsSelectedNonAccount, alertSelectedNonAccount } =
     useShallowEqualSelector((state) => state.bookingDetailsNonAccount);
   const dispatch = useDispatch();
   const datePickerRef = createRef();
@@ -115,47 +123,112 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
     filterByDate();
   }, [dispatch, stadiumId_Admin]);
 
-  const onAddBookingDetails = (event) => {
-    event.preventDefault();
-    dispatch(onSaveSelectedDataNonAccount(timeAndPriceSelectedNonAccount));
-  };
+  const onAddBookingDetails = useCallback(
+    async (event) => {
+      event.preventDefault();
+      if (timeAndPriceSelectedNonAccount.length === 0) {
+        dispatch(onPopupOpen("emptyBookingAddListNonAccount"));
+        return;
+      }
+      let foundPreviousData = [];
+      foundPreviousData = bookingDetailsSelectedNonAccount.filter((items1) =>
+        timeAndPriceSelectedNonAccount.some(
+          (items2) =>
+            items1.std_id === items2.std_id &&
+            items1.td_id === items2.td_id &&
+            items1.kickoff_date === items2.kickoff_date
+        )
+      );
+      if (foundPreviousData.length > 0) {
+        await dispatch(onShowAlertSameDataNonAccount(foundPreviousData));
+        await dispatch(onPopupOpen("sameBookingAddListNonAccount"));
+      } else {
+        await dispatch(onSaveSelectedDataNonAccount(timeAndPriceSelectedNonAccount));
+        history.goBack();
+      }
+    },
+    [dispatch, history, timeAndPriceSelectedNonAccount, bookingDetailsSelectedNonAccount]
+  );
+
+  let alertNonAccount = null;
+  let alertSameDataFromSelectedNonAccount = null;
+  if (popupName === "emptyBookingAddListNonAccount" && isOpen === true) {
+    alertNonAccount = (
+      <NotificationAlert notiTitle="ຄຳເຕືອນ">
+        <Box display="flex" alignItems="center">
+          <Typography variant="h4" color="textSecondary">
+            ກະລຸນາເລືອກສະໜາມກ່ອນການເພີ່ມ!
+          </Typography>
+        </Box>
+      </NotificationAlert>
+    );
+  }
+
+  if (popupName === "sameBookingAddListNonAccount" && isOpen === true) {
+    alertSameDataFromSelectedNonAccount = (
+      <NotificationAlert notiTitle="ມີຂໍ້ມູນນີ້ໃນ list ແລ້ວ">
+        {alertSelectedNonAccount.map((items, index) => {
+          return (
+            <Box key={index} display="flex" alignItems="center">
+              <ul>
+                <li>
+                  <Typography variant="h5" color="textSecondary">
+                    {`${items.std_name}, ເວລາ: ${items.td_start} ໂມງ - ${items.td_end} ໂມງ`}
+                  </Typography>
+                </li>
+              </ul>
+            </Box>
+          );
+        })}
+      </NotificationAlert>
+    );
+  }
 
   return (
-    <PageLayout title="Information" {...rest}>
-      <div className={classes.pageContainer}>
-        <form onSubmit={onAddBookingDetails}>
-          {bookingStadiumsNonAccountSuccess === true && (
-            <StadiumsToPick stadiums={bookingStadiumsNonAccountData} />
-          )}
+    <>
+    {alertNonAccount}
+    {alertSameDataFromSelectedNonAccount}
+      <PageLayout title="Information" {...rest}>
+        <div className={classes.pageContainer}>
+          <form onSubmit={onAddBookingDetails}>
+            {bookingStadiumsNonAccountSuccess === true && (
+              <StadiumsToPick stadiums={bookingStadiumsNonAccountData} />
+            )}
 
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <DatePickerBooking
-              dateData={dateSelectedNonAccount}
-              ref={datePickerRef}
-            />
-          </MuiPickersUtilsProvider>
-          {bookingTimesNonAccountSuccess === true && (
-            <TimesAndPrice
-              times={
-                foundUnCheckoutNonAccount.length > 0
-                  ? stadiumsSelectedNonAccount !== ""
-                    ? filterResultByStadiumsNonAccount
-                    : filterResultNonAccount
-                  : stadiumsSelectedNonAccount !== ""
-                  ? allTimesByStadiumsNonAccount
-                  : bookingTimesNonAccountData
-              }
-            />
-          )}
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DatePickerBooking
+                dateData={dateSelectedNonAccount}
+                ref={datePickerRef}
+              />
+            </MuiPickersUtilsProvider>
+            {bookingTimesNonAccountSuccess === true && (
+              <TimesAndPrice
+                times={
+                  foundUnCheckoutNonAccount.length > 0
+                    ? stadiumsSelectedNonAccount !== ""
+                      ? filterResultByStadiumsNonAccount
+                      : filterResultNonAccount
+                    : stadiumsSelectedNonAccount !== ""
+                    ? allTimesByStadiumsNonAccount
+                    : bookingTimesNonAccountData
+                }
+              />
+            )}
 
-          <Box mt={3}>
-            <Button type="submit" fullWidth color="primary" variant="contained">
-              ເພີ່ມ
-            </Button>
-          </Box>
-        </form>
-      </div>
-    </PageLayout>
+            <Box mt={3}>
+              <Button
+                type="submit"
+                fullWidth
+                color="primary"
+                variant="contained"
+              >
+                ເພີ່ມ
+              </Button>
+            </Box>
+          </form>
+        </div>
+      </PageLayout>
+    </>
   );
 });
 

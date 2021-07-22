@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -68,14 +68,16 @@ const TimesAndPrice = React.memo(({ times }) => {
   const { timeAndPriceSelected } = useShallowEqualSelector(
     (state) => state.bookingDetails
   );
+  const { filterByDateData } = useShallowEqualSelector(
+    (state) => state.getTimes
+  );
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("td_start");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-
   const stableSort = (array, comparator) => {
-   const stabilizedThis = array.map((el, index) => [el, index]);
+    const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
       const order = comparator(a[0], b[0]);
       if (order !== 0) return order;
@@ -95,6 +97,7 @@ const TimesAndPrice = React.memo(({ times }) => {
       let requestBookingDetails = times.map((items) => ({
         ...items,
         b_id: bookingId,
+        kickoff_date: filterByDateData,
       }));
       dispatch(onHandleSelectAll(requestBookingDetails));
       return;
@@ -103,7 +106,11 @@ const TimesAndPrice = React.memo(({ times }) => {
   };
 
   const handleClick = (event, name) => {
-    let selectedData = { ...name, b_id: bookingId };
+    let selectedData = {
+      ...name,
+      b_id: bookingId,
+      kickoff_date: filterByDateData,
+    };
     dispatch(onHandleSelect(selectedData));
   };
 
@@ -144,10 +151,7 @@ const TimesAndPrice = React.memo(({ times }) => {
               rowCount={times.length}
             />
             <TableBody>
-              {stableSort(
-                times,
-                getComparator(order, orderBy)
-              )
+              {stableSort(times, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row);

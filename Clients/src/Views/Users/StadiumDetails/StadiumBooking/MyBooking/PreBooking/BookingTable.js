@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Delete from "@material-ui/icons/Delete";
-import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
+import { useShallowEqualSelector } from "../../../../../../Components/useShallowEqualSelector";
 import { useDispatch } from "react-redux";
 
 import BookingTabControl from "./BookingTabControl";

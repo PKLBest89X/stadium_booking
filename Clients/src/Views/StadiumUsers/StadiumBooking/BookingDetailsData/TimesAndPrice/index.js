@@ -68,11 +68,13 @@ const TimesAndPrice = React.memo(({ times }) => {
   const { timeAndPriceSelectedNonAccount } = useShallowEqualSelector(
     (state) => state.bookingDetailsNonAccount
   );
+  const { filterByDateDataNonAccount } = useShallowEqualSelector(
+    (state) => state.getTimesNonAccount
+  );
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("td_start");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
 
   const stableSort = (array, comparator) => {
     const stabilizedThis = array.map((el, index) => [el, index]);
@@ -95,6 +97,7 @@ const TimesAndPrice = React.memo(({ times }) => {
       let requestBookingDetails = times.map((items) => ({
         ...items,
         b_id: bookingId,
+        kickoff_date: filterByDateDataNonAccount,
       }));
       dispatch(onHandleSelectAllNonAccount(requestBookingDetails));
       return;
@@ -103,7 +106,11 @@ const TimesAndPrice = React.memo(({ times }) => {
   };
 
   const handleClick = (event, name) => {
-    let selectedData = { ...name, b_id: bookingId };
+    let selectedData = {
+      ...name,
+      b_id: bookingId,
+      kickoff_date: filterByDateDataNonAccount,
+    };
     dispatch(onHandleSelectNonAccount(selectedData));
   };
 
@@ -144,10 +151,7 @@ const TimesAndPrice = React.memo(({ times }) => {
               rowCount={times.length}
             />
             <TableBody>
-              {stableSort(
-                times,
-                getComparator(order, orderBy)
-              )
+              {stableSort(times, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row);

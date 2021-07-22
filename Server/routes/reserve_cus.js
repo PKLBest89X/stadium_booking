@@ -110,6 +110,28 @@ router.get('/getBookingDetailsUnCheckout/:stadiumId', async function(req, res, n
     })
 }) // ສະແດງລາຍການຈອງລູກຄ້າທີ່ມີບັນຊີ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
+router.get('/getCurrentBooking/:bookingId', verifyToken, async function(req, res, next) {
+    jwt.verify(req.token, "secret", async (err, authData) => {
+        if (err) {
+            return res.sendStatus(403);
+        }
+        const customerId = authData.data;
+        const bookingId = req.params.bookingId;
+        await db.query("call reserve_cus_getCurrentReserve(?, ?)", [bookingId, customerId], (err, result) => {
+            if (err) {
+                console.log(err);
+                return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+            }
+    
+            if (result.length > 0) {
+                return res.send(result[0])
+            } else {
+                return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+            }
+        })
+    })
+}) // ສະແດງການຈອງລ້າສຸດຂອງລູກຄ້າທີ່ມີບັນຊີ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
 router.post('/booking', verifyToken, async (req,res) => {
     jwt.verify(req.token, "secret", async (err, authData) => {
         if (err) {

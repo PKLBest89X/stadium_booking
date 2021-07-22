@@ -1,4 +1,4 @@
-import React, { createRef, useEffect } from "react";
+import React, { createRef, useCallback, useEffect } from "react";
 import ChildPageLayout from "../../../../../Components/ChildPageLayout";
 import { fetchCheckBooking } from "../../../../../middlewares/fetchCheckValidData/fetchCheckValidBooking";
 import { fetchAuthUser } from "../../../../../middlewares/fetchAuth/fetchUser";
@@ -10,7 +10,7 @@ import { useParams, useHistory } from "react-router-dom";
 import DateFnsUtils from "@date-io/date-fns";
 import "date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { Box, Button } from "@material-ui/core";
+import { Box, Button, Typography } from "@material-ui/core";
 
 import { fetchGetTimesToBooking } from "../../../../../middlewares/user/fetchBooking/fetchBooking";
 import { onClearStadiums } from "../../../../../Slices/Features/Users/Booking/getStadiumsSlice";
@@ -22,10 +22,15 @@ import {
 } from "../../../../../Slices/Features/Users/Booking/getTimeSlice";
 import moment from "moment";
 
-import { onSaveSelectedData } from "../../../../../Slices/Features/Users/Booking/bookingDetailsSlice";
+import {
+  onSaveSelectedData,
+  onShowAlertSameData,
+} from "../../../../../Slices/Features/Users/Booking/bookingDetailsSlice";
 import DatePickerBooking from "./DatePickerBooking";
 import StadiumsToPick from "./StadiumsToPick";
 import TimesAndPrice from "./TimesAndPrice";
+import NotificationAlert from "../../../../../Components/NotificationAlert";
+import { onPopupOpen } from "../../../../../Slices/Features/Popup/popupSlice";
 
 const Booking = React.memo(() => {
   const { bookingId, stadiumId } = useParams();
@@ -51,9 +56,16 @@ const Booking = React.memo(() => {
   } = useShallowEqualSelector((state) => state.getTimes);
 
   //ຂໍ້ມູນລາຄາ, ເວລາເດີ່ນ, ເດີ່ນຫຼັງຈາກການເລືອກ
-  const { dateSelected, timeAndPriceSelected } = useShallowEqualSelector(
-    (state) => state.bookingDetails
-  );
+  const {
+    dateSelected,
+    timeAndPriceSelected,
+    alertSelected,
+    bookingDetailsSelected,
+  } = useShallowEqualSelector((state) => state.bookingDetails);
+
+  //ຂໍ້ມູນສະຖານະຂອງ popup
+  const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
+
   const dispatch = useDispatch();
   const datePickerRef = createRef();
 
@@ -111,42 +123,102 @@ const Booking = React.memo(() => {
     filterByDate();
   }, [dispatch, stadiumId]);
 
-  const onAddBookingDetails = (event) => {
-    event.preventDefault();
-    dispatch(onSaveSelectedData(timeAndPriceSelected));
-  };
+  const onAddBookingDetails = useCallback(
+    async (event) => {
+      event.preventDefault();
+      if (timeAndPriceSelected.length === 0) {
+        dispatch(onPopupOpen("emptyBookingAddList"));
+        return;
+      }
+      let foundPreviousData = [];
+      foundPreviousData = bookingDetailsSelected.filter((items1) =>
+        timeAndPriceSelected.some(
+          (items2) =>
+            items1.std_id === items2.std_id &&
+            items1.td_id === items2.td_id &&
+            items1.kickoff_date === items2.kickoff_date
+        )
+      );
+      if (foundPreviousData.length > 0) {
+        await dispatch(onShowAlertSameData(foundPreviousData));
+        await dispatch(onPopupOpen("sameBookingAddList"));
+      } else {
+        await dispatch(onSaveSelectedData(timeAndPriceSelected));
+        history.goBack();
+      }
+    },
+    [dispatch, history, timeAndPriceSelected, bookingDetailsSelected]
+  );
+
+  let alert = null;
+  let alertSameDataFromSelected = null;
+  if (popupName === "emptyBookingAddList" && isOpen === true) {
+    alert = (
+      <NotificationAlert notiTitle="ຄຳເຕືອນ">
+        <Box display="flex" alignItems="center">
+          <Typography variant="h4" color="textSecondary">
+            ກະລຸນາເລືອກສະໜາມກ່ອນການເພີ່ມ!
+          </Typography>
+        </Box>
+      </NotificationAlert>
+    );
+  }
+
+  if (popupName === "sameBookingAddList" && isOpen === true) {
+    alertSameDataFromSelected = (
+      <NotificationAlert notiTitle="ມີຂໍ້ມູນນີ້ໃນ list ແລ້ວ">
+        {alertSelected.map((items, index) => {
+          return (
+            <Box key={index} display="flex" alignItems="center">
+              <ul>
+                <li>
+                  <Typography variant="h5" color="textSecondary">
+                    {`${items.std_name}, ເວລາ: ${items.td_start} ໂມງ - ${items.td_end} ໂມງ`}
+                  </Typography>
+                </li>
+              </ul>
+            </Box>
+          );
+        })}
+      </NotificationAlert>
+    );
+  }
 
   return (
-    <ChildPageLayout title="Booking">
-      <form onSubmit={onAddBookingDetails}>
-        {bookingStadiumsSuccess === true && (
-          <StadiumsToPick stadiums={bookingStadiumsData} />
-        )}
+    <>
+      {alert}
+      {alertSameDataFromSelected}
+      <ChildPageLayout title="Booking">
+        <form onSubmit={onAddBookingDetails}>
+          {bookingStadiumsSuccess === true && (
+            <StadiumsToPick stadiums={bookingStadiumsData} />
+          )}
 
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <DatePickerBooking dateData={dateSelected} ref={datePickerRef} />
-        </MuiPickersUtilsProvider>
-        {bookingTimesSuccess === true && (
-          <TimesAndPrice
-            times={
-              foundUnCheckout.length > 0
-                ? stadiumsSelected !== ""
-                  ? filterResultByStadiums
-                  : filterResult
-                : stadiumsSelected !== ""
-                ? allTimesByStadiums
-                : bookingTimesData
-            }
-          />
-        )}
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <DatePickerBooking dateData={dateSelected} ref={datePickerRef} />
+          </MuiPickersUtilsProvider>
+          {bookingTimesSuccess === true && (
+            <TimesAndPrice
+              times={
+                foundUnCheckout.length > 0
+                  ? stadiumsSelected !== ""
+                    ? filterResultByStadiums
+                    : filterResult
+                  : stadiumsSelected !== ""
+                  ? allTimesByStadiums
+                  : bookingTimesData
+              }
+            />
+          )}
 
-        <Box mt={3}>
-          <Button type="submit" fullWidth color="primary" variant="contained">
-            ເພີ່ມ
-          </Button>
-        </Box>
-      </form>
-    </ChildPageLayout>
+          <Box mt={3}>
+            <Button type="submit" fullWidth color="primary" variant="contained">
+              ເພີ່ມ
+            </Button>
+          </Box>
+        </form>
+      </ChildPageLayout>
+    </>
   );
 });
 

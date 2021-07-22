@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAddBooking } from "../../../../middlewares/user/fetchBooking/fetchBooking";
+import { fetchAddBooking, fetchGetCurrentBooking } from "../../../../middlewares/user/fetchBooking/fetchBooking";
 
 const initialState = {
   bookingLoading: false,
@@ -14,6 +14,38 @@ const bookingSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+
+    builder.addCase(fetchGetCurrentBooking.pending, (state, action) => {
+      state.bookingLoading = true;
+      if (state.bookingLoading === true) {
+        state.bookingRequestId = action.meta.requestId;
+      }
+    });
+    builder.addCase(fetchGetCurrentBooking.fulfilled, (state, action) => {
+      if (
+        state.bookingLoading === true &&
+        state.bookingRequestId === action.meta.requestId
+      ) {
+        state.bookingLoading = false;
+        state.bookingRequestId = undefined;
+        state.bookingSuccess = true;
+        state.bookingData = [];
+        state.bookingData = action.payload;
+      }
+    });
+    builder.addCase(fetchGetCurrentBooking.rejected, (state, action) => {
+      if (
+        state.bookingLoading === true &&
+        state.bookingRequestId === action.meta.requestId
+      ) {
+        state.bookingLoading = false;
+        state.bookingRequestId = undefined;
+        state.bookingSuccess = false;
+        state.bookingError = action.payload;
+        state.bookingData = [];
+      }
+    });
+
     builder.addCase(fetchAddBooking.pending, (state, action) => {
       state.bookingLoading = true;
     });
