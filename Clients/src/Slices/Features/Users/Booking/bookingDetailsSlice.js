@@ -11,6 +11,7 @@ const initialState = {
   selectedState: null,
   alertSelected: [],
   bookingDetailsSelected: [],
+  totalPrice: 0,
   bookingDetailsError: null,
   bookingDetailsRequestId: undefined,
 };
@@ -53,7 +54,7 @@ const bookingDetailsSlice = createSlice({
       state.timeAndPriceSelected = [];
     },
     onLoadCurrentSaveSelectedData: (state) => {
-      if (state.bookingDetailsSelected.length > 0) {
+      if (state.bookingDetailsData.length > 0) {
         state.selectedState = true;
         return;
       }
@@ -65,14 +66,65 @@ const bookingDetailsSlice = createSlice({
     onSaveSelectedData: (state, { payload }) => {
       state.selectedState = true;
       let newSelected = [];
-      newSelected = newSelected.concat(state.bookingDetailsSelected, payload);
+      newSelected = newSelected.concat(state.bookingDetailsData, payload);
+      state.bookingDetailsData = newSelected;
+      state.totalPrice = state.bookingDetailsData.reduce((sum, items) => sum + items.sp_price, 0);
+    },
+    onSelectedBookingDetails: (state, { payload }) => {
+      const selectedIndex = state.bookingDetailsSelected.findIndex(
+        (items) =>
+          items.td_id === payload.td_id && items.std_id === payload.std_id
+      );
+      let newSelected = [];
+
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(state.bookingDetailsSelected, payload);
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(state.bookingDetailsSelected.slice(1));
+      } else if (selectedIndex === state.bookingDetailsSelected.length - 1) {
+        newSelected = newSelected.concat(
+          state.bookingDetailsSelected.slice(0, -1)
+        );
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          state.bookingDetailsSelected.slice(0, selectedIndex),
+          state.bookingDetailsSelected.slice(selectedIndex + 1)
+        );
+      }
       state.bookingDetailsSelected = newSelected;
     },
+    onSelectedAllBookingDetails: (state, { payload }) => {
+      const newSelecteds = payload.map((n) => n);
+      state.bookingDetailsSelected = newSelecteds;
+    },
+    onClearBookingDetails: (state) => {
+      state.bookingDetailsSelected = [];
+    },
     onDeleteSelectedData: (state, { payload }) => {
-      return state.bookingDetailsSelected.filter(
-        (items) =>
-          items.std_id !== payload.std_id && items.td_id !== payload.td_id
+      state.bookingDetailsData = state.bookingDetailsData.filter(
+        (items1) =>
+          !payload.some(
+            (items2) =>
+              items1.std_id === items2.std_id &&
+              items1.td_id === items2.td_id &&
+              items1.kickoff_date === items2.kickoff_date
+          )
       );
+      state.timeAndPriceSelected = state.timeAndPriceSelected.filter(
+        (items1) =>
+          !payload.some(
+            (items2) =>
+              items1.std_id === items2.std_id &&
+              items1.td_id === items2.td_id &&
+              items1.kickoff_date === items2.kickoff_date
+          )
+      );
+      state.totalPrice = state.bookingDetailsData.reduce((sum, items) => sum + items.sp_price, 0);
+      state.bookingDetailsSelected = [];
+      if (state.bookingDetailsData.length === 0) {
+        state.selectedState = false;
+        state.totalPrice = 0;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -100,6 +152,9 @@ export const {
   onShowAlertSameData,
   onLoadCurrentSaveSelectedData,
   onSaveSelectedData,
+  onSelectedBookingDetails,
+  onSelectedAllBookingDetails,
+  onClearBookingDetails,
   onDeleteSelectedData,
 } = bookingDetailsSlice.actions;
 export default bookingDetailsSlice.reducer;

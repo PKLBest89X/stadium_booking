@@ -9,6 +9,7 @@ const initialState = {
   drinkLoading: false,
   drinksData: [],
   drinksDataById: [],
+  drinksDataSortByDate: [],
   drinkError: null,
   drinkSuccess: null,
   drinkRequestId: undefined,
@@ -45,6 +46,11 @@ const stadiumDrinkSlice = createSlice({
         state.drinkSuccess = true;
         state.drinksData = [];
         state.drinksData = action.payload;
+        let slicePayload = action.payload.slice(0, 6);
+        let newSort = slicePayload.sort(
+          (a, b) => (new Date(a["stw_date"]) - new Date(b["stw_date"])) * -1
+        );
+        state.drinksDataSortByDate = newSort;
       }
     });
     builder.addCase(fetchGetStadiumDrink.rejected, (state, action) => {
@@ -67,6 +73,12 @@ const stadiumDrinkSlice = createSlice({
       state.drinkSuccess = true;
       state.drinksData = [];
       state.drinksData = action.payload;
+      state.drinksDataSortByDate = [];
+      let slicePayload = action.payload.slice(0, 6);
+      let newSort = slicePayload.sort(
+        (a, b) => (new Date(a["stw_date"]) - new Date(b["stw_date"])) * -1
+      );
+      state.drinksDataSortByDate = newSort;
     });
     builder.addCase(fetchAddStadiumDrink.rejected, (state, action) => {
       state.drinkLoading = false;
@@ -80,6 +92,12 @@ const stadiumDrinkSlice = createSlice({
       state.drinkSuccess = true;
       state.drinksData = [];
       state.drinksData = action.payload;
+      state.drinksDataSortByDate = [];
+      let slicePayload = action.payload.slice(0, 6);
+      let newSort = slicePayload.sort(
+        (a, b) => (new Date(a["stw_date"]) - new Date(b["stw_date"])) * -1
+      );
+      state.drinksDataSortByDate = newSort;
     });
     builder.addCase(fetchUpdateStadiumDrink.rejected, (state, action) => {
       state.drinkLoading = false;

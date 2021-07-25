@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Toolbar = ({ className, ...rest }) => {
+const ToolbarControl = ({ className, ...rest }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   return (
@@ -93,8 +93,8 @@ const Toolbar = ({ className, ...rest }) => {
   );
 };
 
-Toolbar.propTypes = {
+ToolbarControl.propTypes = {
   className: PropTypes.string,
 };
 
-export default Toolbar;
+export default ToolbarControl;

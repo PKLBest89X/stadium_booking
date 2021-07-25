@@ -10,6 +10,7 @@ const initialState = {
   postLoading: false,
   postsData: [],
   postsDataById: [],
+  postsDataSortByDate: [],
   postSuccess: null,
   postRequestId: undefined,
   postError: null,
@@ -32,6 +33,7 @@ const postSlice = createSlice({
         state.postSuccess = true;
       } else {
         state.postsData = [];
+        state.postsDataSortByDate = [];
         state.postSuccess = false;
       }
     },
@@ -53,6 +55,11 @@ const postSlice = createSlice({
         state.postSuccess = true;
         state.postsData = [];
         state.postsData = action.payload;
+        let slicePayload = action.payload.slice(0, 6);
+        let newSort = slicePayload.sort(
+          (a, b) => (new Date(a["post_date"]) - new Date(b["post_date"])) * -1
+        );
+        state.postsDataSortByDate = newSort;
       }
     });
     builder.addCase(fetchGetPost.rejected, (state, action) => {
@@ -74,6 +81,12 @@ const postSlice = createSlice({
       state.postLoading = false;
       state.postsData = [];
       state.postsData = action.payload;
+      state.postsDataSortByDate = [];
+      let slicePayload = action.payload.slice(0, 6);
+      let newSort = slicePayload.sort(
+        (a, b) => (new Date(a["post_date"]) - new Date(b["post_date"])) * -1
+      );
+      state.postsDataSortByDate = newSort;
     });
     builder.addCase(fetchAddPost.rejected, (state, action) => {
       state.postLoading = false;
@@ -86,6 +99,12 @@ const postSlice = createSlice({
       state.postLoading = false;
       state.postsData = [];
       state.postsData = action.payload;
+      state.postsDataSortByDate = [];
+      let slicePayload = action.payload.slice(0, 6);
+      let newSort = slicePayload.sort(
+        (a, b) => (new Date(a["post_date"]) - new Date(b["post_date"])) * -1
+      );
+      state.postsDataSortByDate = newSort;
     });
     builder.addCase(fetchUpdatePost.rejected, (state, action) => {
       state.postLoading = false;

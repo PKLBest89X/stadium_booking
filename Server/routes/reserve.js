@@ -147,9 +147,10 @@ router.post('/bookingForNonAccount', verifyToken, async (req,res) => {
 router.post("/addNonAccountData/:bookingId", async (req, res) => {
     const book_id = req.params.bookingId;
     const name = req.body.name;
+    const surname = req.body.surname;
     const team = req.body.team;
     const tel = req.body.tel;
-    db.query("call reserve_nou_add(?,?,?,?)", [book_id,name,team,tel], (err1, result) => {
+    db.query("call reserve_nou_add(?,?,?,?)", [book_id,name,surname,team,tel], (err1, result) => {
         if(err1){
             res.status(400)
             console.log(err1);

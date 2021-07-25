@@ -6,6 +6,8 @@ import { fetchDeleteStadiumPrice } from "../../../../middlewares/stadiumUser/fet
 import { onDeleteStadiumPrice } from "../../../../Slices/Features/StadiumUsers/crudStadiumPrice/stadiumPriceSlice";
 import { useDispatch } from "react-redux";
 
+import NumberFormat from "react-number-format";
+
 import TabControl from "./TabControl";
 import {
   IconButton,
@@ -112,7 +114,14 @@ const StadiumPriceTable = React.memo(() => {
                   <Typography variant="h5">{`${row.td_start} ໂມງ - ${row.td_end} ໂມງ`}</Typography>
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
-                  <Typography variant="h5">{`${row.sp_price} ກີບ`}</Typography>
+                  <Typography variant="h5">
+                    <NumberFormat
+                      value={row.sp_price}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      suffix={" ກີບ"}
+                    />
+                  </Typography>
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
                   <div className={classes.btnAction}>

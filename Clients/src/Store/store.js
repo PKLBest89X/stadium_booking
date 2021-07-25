@@ -3,6 +3,7 @@ import registerUserSlice from "../Slices/Authentication/registerUserSlice";
 import authSlice from "../Slices/Authentication/authSlice";
 import toggleSlice from "../Slices/Features/ToggleDrawer/toggleSlice";
 import popupSlice from "../Slices/Features/Popup/popupSlice";
+import notificationSlice from "../Slices/Features/Notification/NotificationSlice";
 import validDataSlice from "../Slices/Features/CheckValidData/checkValidDataSlice";
 import validBookingDataSlice from "../Slices/Features/CheckValidData/checkValidBookingSlice";
 import validPaymentDataSlice from "../Slices/Features/CheckValidData/checkValidPaymentSlice";
@@ -36,6 +37,7 @@ const store = configureStore({
     auth: authSlice,
     toggle: toggleSlice,
     popup: popupSlice,
+    notification: notificationSlice,
     stadium: crudStadiumSlice,
     stadiumDetails: stadiumDetailsSlice,
     validData: validDataSlice,

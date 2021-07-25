@@ -7,7 +7,11 @@ import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { fetchUpdatePost } from "../../../../middlewares/stadiumUser/fetchPost/fetchPost";
-import { onPopupClose } from "../../../../Slices/Features/Popup/popupSlice";
+import {
+  onPopupClose,
+  onPopupOpen,
+} from "../../../../Slices/Features/Popup/popupSlice";
+import { onNotiOpen } from "../../../../Slices/Features/Notification/NotificationSlice";
 import {
   Container,
   Typography,
@@ -67,7 +71,6 @@ const EditPost = React.memo(({ ...rest }) => {
 
   const history = useHistory();
   const dispatch = useDispatch();
-
 
   useEffect(() => {
     postsDataById.forEach((items) => {
@@ -131,7 +134,10 @@ const EditPost = React.memo(({ ...rest }) => {
     formData.append("post_description", postState.post_details);
     formData.append("sampleFile", postState.stadium_postImage);
     formData.append("statdium_postImageName", postState.stadium_postImageName);
-    dispatch(fetchUpdatePost(formData)).then(() => dispatch(onPopupClose()));
+    dispatch(fetchUpdatePost(formData)).then(() => {
+      dispatch(onPopupClose());
+      dispatch(onNotiOpen("successUpdated"));
+    });
   };
 
   return (

@@ -27,7 +27,7 @@ import {
   onSaveSelectedDataNonAccount,
   onShowAlertSameDataNonAccount,
 } from "../../../../Slices/Features/StadiumUsers/BookingForNoAccount/bookingDetailsNonAccountSlice";
-import { onPopupOpen } from "../../../../Slices/Features/Popup/popupSlice";
+import { onNotiOpen } from "../../../../Slices/Features/Notification/NotificationSlice";
 import NotificationAlert from "../../../../Components/NotificationAlert";
 
 import DatePickerBooking from "./DatePickerBooking";
@@ -48,7 +48,9 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
     (state) => state.validBookingData
   );
 
-  const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
+  const { notiName, notiState } = useShallowEqualSelector(
+    (state) => state.notification
+  );
 
   //ຂໍ້ມູນສະໜາມຈາກການ request
   const { bookingStadiumsNonAccountData, bookingStadiumsNonAccountSuccess } =
@@ -66,8 +68,12 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
   } = useShallowEqualSelector((state) => state.getTimesNonAccount);
 
   //ຂໍ້ມູນລາຄາ, ເວລາເດີ່ນ, ເດີ່ນຫຼັງຈາກການເລືອກ
-  const { dateSelectedNonAccount, timeAndPriceSelectedNonAccount, bookingDetailsSelectedNonAccount, alertSelectedNonAccount } =
-    useShallowEqualSelector((state) => state.bookingDetailsNonAccount);
+  const {
+    dateSelectedNonAccount,
+    timeAndPriceSelectedNonAccount,
+    bookingDetailsNonAccountData,
+    alertSelectedNonAccount,
+  } = useShallowEqualSelector((state) => state.bookingDetailsNonAccount);
   const dispatch = useDispatch();
   const datePickerRef = createRef();
 
@@ -127,11 +133,11 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
     async (event) => {
       event.preventDefault();
       if (timeAndPriceSelectedNonAccount.length === 0) {
-        dispatch(onPopupOpen("emptyBookingAddListNonAccount"));
+        dispatch(onNotiOpen("emptyBookingAddListNonAccount"));
         return;
       }
       let foundPreviousData = [];
-      foundPreviousData = bookingDetailsSelectedNonAccount.filter((items1) =>
+      foundPreviousData = bookingDetailsNonAccountData.filter((items1) =>
         timeAndPriceSelectedNonAccount.some(
           (items2) =>
             items1.std_id === items2.std_id &&
@@ -141,18 +147,25 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
       );
       if (foundPreviousData.length > 0) {
         await dispatch(onShowAlertSameDataNonAccount(foundPreviousData));
-        await dispatch(onPopupOpen("sameBookingAddListNonAccount"));
+        await dispatch(onNotiOpen("sameBookingAddListNonAccount"));
       } else {
-        await dispatch(onSaveSelectedDataNonAccount(timeAndPriceSelectedNonAccount));
+        await dispatch(
+          onSaveSelectedDataNonAccount(timeAndPriceSelectedNonAccount)
+        );
         history.goBack();
       }
     },
-    [dispatch, history, timeAndPriceSelectedNonAccount, bookingDetailsSelectedNonAccount]
+    [
+      dispatch,
+      history,
+      timeAndPriceSelectedNonAccount,
+      bookingDetailsNonAccountData,
+    ]
   );
 
   let alertNonAccount = null;
   let alertSameDataFromSelectedNonAccount = null;
-  if (popupName === "emptyBookingAddListNonAccount" && isOpen === true) {
+  if (notiName === "emptyBookingAddListNonAccount" && notiState === true) {
     alertNonAccount = (
       <NotificationAlert notiTitle="ຄຳເຕືອນ">
         <Box display="flex" alignItems="center">
@@ -164,7 +177,7 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
     );
   }
 
-  if (popupName === "sameBookingAddListNonAccount" && isOpen === true) {
+  if (notiName === "sameBookingAddListNonAccount" && notiState === true) {
     alertSameDataFromSelectedNonAccount = (
       <NotificationAlert notiTitle="ມີຂໍ້ມູນນີ້ໃນ list ແລ້ວ">
         {alertSelectedNonAccount.map((items, index) => {
@@ -186,8 +199,8 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
 
   return (
     <>
-    {alertNonAccount}
-    {alertSameDataFromSelectedNonAccount}
+      {alertNonAccount}
+      {alertSameDataFromSelectedNonAccount}
       <PageLayout title="Information" {...rest}>
         <div className={classes.pageContainer}>
           <form onSubmit={onAddBookingDetails}>

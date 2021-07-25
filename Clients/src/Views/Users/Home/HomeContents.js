@@ -21,7 +21,6 @@ const useStyles = makeStyles(() => ({
     cursor: "pointer",
   },
   ItemsContainer: {
-    boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, .5)",
     transition: "200ms ease-in-out",
     "&:hover": {
       transform: "scale(1.02)",
@@ -60,7 +59,7 @@ const HomeContents = ({ getitems }) => {
   const history = useHistory();
   return (
     <div className={classes.ItemsContainer}>
-      <Card className={classes.root}>
+      <Card className={classes.root} elevation={10}>
         <CardHeader
           avatar={
             <Avatar

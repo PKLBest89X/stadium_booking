@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-import { onPopupClose } from "../Slices/Features/Popup/popupSlice";
+import { onNotiClose } from "../Slices/Features/Notification/NotificationSlice";
 import { useDispatch } from "react-redux";
 import { IconButton, AppBar } from "@material-ui/core";
 import Close from "@material-ui/icons/Close";
@@ -99,9 +99,9 @@ const NotificationAlert = forwardRef(
   ({ children, notiTitle, ...rest }, ref) => {
     const classes = useStyles();
     const modalRef = useRef();
-    const { isOpen } = useShallowEqualSelector((state) => state.popup);
+    const { notiState } = useShallowEqualSelector((state) => state.notification);
     const dispatch = useDispatch();
-    const transitions = useTransition(isOpen, {
+    const transitions = useTransition(notiState, {
       from: { opacity: 0, transform: `translateY(-100%)` },
       enter: { opacity: 1, transform: `translateY(0%)` },
       leave: { opacity: 0, transform: `translateY(-100%)` },
@@ -109,16 +109,16 @@ const NotificationAlert = forwardRef(
 
     useEffect(() => {
       let val;
-      val = setTimeout(() => dispatch(onPopupClose()), 3000);
+      val = setTimeout(() => dispatch(onNotiClose()), 3000);
       return () => {
-        dispatch(onPopupClose());
+        dispatch(onNotiClose());
         clearTimeout(val);
       };
     }, [dispatch]);
 
     const outsideCloseModal = (event) => {
       if (modalRef.current === event.target) {
-        dispatch(onPopupClose());
+        dispatch(onNotiClose());
       }
     };
 
@@ -146,7 +146,7 @@ const NotificationAlert = forwardRef(
                   </Box>
                   <IconButton
                     color="inherit"
-                    onClick={() => dispatch(onPopupClose())}
+                    onClick={() => dispatch(onNotiClose())}
                   >
                     <Close />
                   </IconButton>

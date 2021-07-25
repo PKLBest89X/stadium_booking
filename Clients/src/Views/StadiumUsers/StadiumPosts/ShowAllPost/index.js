@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PageLayout from "../../../../Components/PageLayout";
 import PopupLayout from "../../../../Components/PopupLayout";
 import AddPost from "../AddPost";
-import EditPost from '../EditPost'
+import EditPost from "../EditPost";
 import { fetchCheckStadium } from "../../../../middlewares/fetchCheckValidData/fetchCheckValidData";
 import { useHistory, useParams } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
@@ -13,11 +13,26 @@ import { useDispatch } from "react-redux";
 import PostTable from "./PostTable";
 import PostToolbar from "./PostToolbar";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography, Box, Divider } from "@material-ui/core";
+import { Typography, Box, Divider, Toolbar, Paper } from "@material-ui/core";
+import NotificationAlert from "../../../../Components/NotificationAlert";
 
-const useStyles = makeStyles(() => ({
+import PostCard from "./PostCard";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper.min.css";
+import "swiper/components/pagination/pagination.min.css";
+import "swiper/components/navigation/navigation.min.css";
+import SwiperCore, { Keyboard, Navigation, Pagination } from "swiper/core";
+// Import Swiper styles
+import "swiper/swiper.scss";
+import "./swiper.css";
+
+const useStyles = makeStyles((theme) => ({
   pageContainer: {
     padding: "2rem",
+  },
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
   },
   emptyView: {
     display: "flex",
@@ -30,9 +45,15 @@ const useStyles = makeStyles(() => ({
 
 const StadiumPosts = React.memo(({ ...rest }) => {
   const classes = useStyles();
+  SwiperCore.use([Keyboard, Navigation, Pagination]);
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
   const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
-  const { postSuccess } = useShallowEqualSelector((state) => state.posts);
+  const { notiName, notiState } = useShallowEqualSelector(
+    (state) => state.notification
+  );
+  const { postSuccess, postsDataSortByDate } = useShallowEqualSelector(
+    (state) => state.posts
+  );
   const { stadiumId_Admin } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -83,10 +104,25 @@ const StadiumPosts = React.memo(({ ...rest }) => {
     );
   }
 
+  let sucessDated = null;
+  if (notiName === "successUpdated" && notiState === true) {
+    sucessDated = (
+      <NotificationAlert notiTitle="ສຳເລັດ">
+        <Box display="flex" alignItems="center">
+          <Typography variant="h4" color="textSecondary">
+            ແກ້ໄຂຂໍ້ມູນສຳເລັດ!
+          </Typography>
+        </Box>
+      </NotificationAlert>
+    );
+  }
+
   return (
     <>
-    {AddPostForm}
-    {EditPostForm}
+      {sucessDated}
+      {AddPostForm}
+      {EditPostForm}
+
       <PageLayout title="Stadium Post" {...rest}>
         <div className={classes.pageContainer}>
           <Box mb={3}>
@@ -95,6 +131,50 @@ const StadiumPosts = React.memo(({ ...rest }) => {
             </Typography>
           </Box>
           <Divider />
+          <Box mt={3}>
+            <Paper>
+              <Toolbar className={classes.root}>
+                <Typography
+                  className={classes.title}
+                  variant="h5"
+                  id="tableTitle"
+                  component="div"
+                  color="textSecondary"
+                >
+                  ລາຍການທີ່ເພີ່ມລ້າສຸດ
+                </Typography>
+              </Toolbar>
+              <Divider />
+              <Swiper
+                spaceBetween={20}
+                observeParents={true}
+                simulateTouch={false}
+                observer={true}
+                slidesPerView={1}
+                navigation={true}
+                keyboard={{ enabled: true }}
+                pagination={{
+                  clickable: true,
+                }}
+                breakpoints={{
+                  600: {
+                    slidesPerView: 2,
+                  },
+                  960: {
+                    slidesPerView: 3,
+                  },
+                }}
+              >
+                {postsDataSortByDate.map((items, index) => {
+                  return (
+                    <SwiperSlide key={index}>
+                      <PostCard getitems={items} />
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </Paper>
+          </Box>
           <Box mt={3}>
             <PostToolbar />
             {postSuccess === true && <PostTable />}

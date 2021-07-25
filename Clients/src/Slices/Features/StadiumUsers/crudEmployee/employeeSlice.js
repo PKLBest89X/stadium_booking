@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { history } from "../../../../Components/history";
 import {
   fetchGetEmployee,
   fetchAddEmployee,
@@ -10,6 +9,7 @@ const initialState = {
   employeeLoading: false,
   employeeFetchSuccess: null,
   employeesData: [],
+  employeeDataSortByDate: [],
   employeeError: null,
   employeeRequestId: undefined,
 };
@@ -37,6 +37,11 @@ const employeeSlice = createSlice({
         state.employeeFetchSuccess = true;
         state.employeesData = [];
         state.employeesData = action.payload;
+        let slicePayload = action.payload.slice(0, 6);
+        let newSort = slicePayload.sort(
+          (a, b) => (new Date(a["regis_date"]) - new Date(b["regis_date"])) * -1
+        );
+        state.employeeDataSortByDate = newSort;
       }
     });
     builder.addCase(fetchGetEmployee.rejected, (state, action) => {
@@ -58,6 +63,12 @@ const employeeSlice = createSlice({
       state.employeeLoading = false;
       state.employeesData = [];
       state.employeesData = action.payload;
+      state.employeeDataSortByDate = [];
+      let slicePayload = action.payload.slice(0, 6);
+      let newSort = slicePayload.sort(
+        (a, b) => (new Date(a["regis_date"]) - new Date(b["regis_date"])) * -1
+      );
+      state.stadiumsDataSortByDate = newSort;
     });
     builder.addCase(fetchAddEmployee.rejected, (state, action) => {
       state.employeeLoading = false;

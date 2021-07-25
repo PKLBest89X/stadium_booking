@@ -8,6 +8,7 @@ import {
 const initialState = {
   stadiumsLoading: false,
   stadiumsData: [],
+  stadiumsDataSortByDate: [],
   stadiumsDataById: [],
   stadiumsSuccess: null,
   stadiumsRequestId: undefined,
@@ -45,6 +46,11 @@ const stadiumDetailsSlice = createSlice({
         state.stadiumsSuccess = true;
         state.stadiumsData = [];
         state.stadiumsData = action.payload;
+        let slicePayload = action.payload.slice(0, 6);
+        let newSort = slicePayload.sort(
+          (a, b) => (new Date(a["regisDate"]) - new Date(b["regisDate"])) * -1
+        );
+        state.stadiumsDataSortByDate = newSort;
       }
     });
     builder.addCase(fetchGetStadiumDetails.rejected, (state, action) => {
@@ -67,6 +73,12 @@ const stadiumDetailsSlice = createSlice({
       state.stadiumsSuccess = true;
       state.stadiumsData = [];
       state.stadiumsData = action.payload;
+      state.stadiumsDataSortByDate = [];
+      let slicePayload = action.payload.slice(0, 6);
+      let newSort = slicePayload.sort(
+        (a, b) => (new Date(a["regisDate"]) - new Date(b["regisDate"])) * -1
+      );
+      state.stadiumsDataSortByDate = newSort;
     });
     builder.addCase(fetchAddStadiumDetails.rejected, (state, action) => {
       state.stadiumsLoading = false;
@@ -79,6 +91,12 @@ const stadiumDetailsSlice = createSlice({
       state.stadiumsLoading = false;
       state.stadiumsData = [];
       state.stadiumsData = action.payload;
+      state.stadiumsDataSortByDate = [];
+      let slicePayload = action.payload.slice(0, 6);
+      let newSort = slicePayload.sort(
+        (a, b) => (new Date(a["regisDate"]) - new Date(b["regisDate"])) * -1
+      );
+      state.stadiumsDataSortByDate = newSort;
     });
     builder.addCase(fetchUpdateStadiumDetails.rejected, (state, action) => {
       state.stadiumsLoading = false;

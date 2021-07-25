@@ -9,15 +9,29 @@ import PageLayout from "../../../../Components/PageLayout";
 import PopupLayout from "../../../../Components/PopupLayout";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, Typography, Divider } from "@material-ui/core";
+import { Box, Typography, Divider, Toolbar, Paper } from "@material-ui/core";
 import StadiumDrinkTable from "./StadiumDrinkTable";
 import AddStadiumDrink from "../AddStadiumDrink";
 import EditStadiumDrink from "../EditStadiumDrink";
-import Toolbar from "./Toobar";
+import ToolbarControl from "./Toobar";
 
-const useStyles = makeStyles(() => ({
+import DrinkCard from "./DrinkCard";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper.min.css";
+import "swiper/components/pagination/pagination.min.css";
+import "swiper/components/navigation/navigation.min.css";
+import SwiperCore, { Keyboard, Navigation, Pagination } from "swiper/core";
+// Import Swiper styles
+import "swiper/swiper.scss";
+import "./swiper.css";
+
+const useStyles = makeStyles((theme) => ({
   pageContainer: {
     padding: "2rem",
+  },
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
   },
   emptyView: {
     display: "flex",
@@ -28,11 +42,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const StadiumDrink = ({ ...rest }) => {
+const StadiumDrink = React.memo(({ ...rest }) => {
   const classes = useStyles();
+  SwiperCore.use([Keyboard, Navigation, Pagination]);
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
   const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
-  const { drinkSuccess } = useShallowEqualSelector(
+  const { drinkSuccess, drinksDataSortByDate } = useShallowEqualSelector(
     (state) => state.stadiumDrink
   );
   const { stadiumId_Admin } = useParams();
@@ -100,7 +115,51 @@ const StadiumDrink = ({ ...rest }) => {
           </Box>
           <Divider />
           <Box mt={3}>
-            <Toolbar />
+            <Paper>
+              <Toolbar className={classes.root}>
+                <Typography
+                  className={classes.title}
+                  variant="h5"
+                  id="tableTitle"
+                  component="div"
+                  color="textSecondary"
+                >
+                  ລາຍການທີ່ເພີ່ມລ້າສຸດ
+                </Typography>
+              </Toolbar>
+              <Divider />
+              <Swiper
+                spaceBetween={20}
+                observeParents={true}
+                simulateTouch={false}
+                observer={true}
+                slidesPerView={1}
+                navigation={true}
+                keyboard={{ enabled: true }}
+                pagination={{
+                  clickable: true,
+                }}
+                breakpoints={{
+                  600: {
+                    slidesPerView: 2,
+                  },
+                  960: {
+                    slidesPerView: 3,
+                  },
+                }}
+              >
+                {drinksDataSortByDate.map((items, index) => {
+                  return (
+                    <SwiperSlide key={index}>
+                      <DrinkCard getitems={items} />
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </Paper>
+          </Box>
+          <Box mt={3}>
+            <ToolbarControl />
             {drinkSuccess === true && <StadiumDrinkTable />}
             {drinkSuccess === false && <ShowEmptyStadiumDrink />}
           </Box>
@@ -108,6 +167,6 @@ const StadiumDrink = ({ ...rest }) => {
       </PageLayout>
     </>
   );
-};
+});
 
 export default StadiumDrink;

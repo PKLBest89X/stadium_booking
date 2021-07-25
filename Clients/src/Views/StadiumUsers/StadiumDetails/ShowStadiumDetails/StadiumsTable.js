@@ -31,6 +31,19 @@ const useStyles = makeStyles({
     minWidth: 90,
     "& > IconButton": {},
   },
+  customScrollbar: {
+    "&::-webkit-scrollbar": {
+      height: "0.4em",
+    },
+    "&::-webkit-scrollbar-track": {
+      boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+      webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(0,0,0,.4)",
+      outline: "0px solid slategrey",
+    },
+  },
 });
 
 const StadiumsTable = React.memo(() => {
@@ -56,7 +69,7 @@ const StadiumsTable = React.memo(() => {
 
   return (
     <Card elevation={10}>
-      <TableContainer>
+      <TableContainer className={classes.customScrollbar}>
         <Table className={classes.table} aria-label="custom pagination table">
           <TableHead>
             <TableRow>
@@ -140,6 +153,7 @@ const StadiumsTable = React.memo(() => {
         </Table>
       </TableContainer>
       <TablePagination
+        className={classes.customScrollbar}
         component="div"
         rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
         colSpan={3}

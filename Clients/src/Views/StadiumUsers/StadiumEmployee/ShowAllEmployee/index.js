@@ -12,11 +12,25 @@ import EmployeeTable from "./EmployeeTable";
 import EmployeeToolbar from "./EmployeeToolbar";
 import AddEmployee from '../AddEmployee';
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography, Box, Divider } from "@material-ui/core";
+import { Typography, Box, Divider, Paper, Toolbar } from "@material-ui/core";
 
-const useStyles = makeStyles(() => ({
+import EmployeeCard from "./EmployeeCard";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper.min.css";
+import "swiper/components/pagination/pagination.min.css";
+import "swiper/components/navigation/navigation.min.css";
+import SwiperCore, { Keyboard, Navigation, Pagination } from "swiper/core";
+// Import Swiper styles
+import "swiper/swiper.scss";
+import "./swiper.css";
+
+const useStyles = makeStyles((theme) => ({
   pageContainer: {
     padding: "2rem",
+  },
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
   },
   emptyView: {
     display: "flex",
@@ -27,11 +41,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const StadiumEmployee = ({ ...rest }) => {
+const StadiumEmployee = React.memo(({ ...rest }) => {
   const classes = useStyles();
+  SwiperCore.use([Keyboard, Navigation, Pagination]);
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
   const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
-  const { employeeFetchSuccess } = useShallowEqualSelector(
+  const { employeeFetchSuccess, employeeDataSortByDate } = useShallowEqualSelector(
     (state) => state.employees
   );
   const { stadiumId_Admin } = useParams();
@@ -95,6 +110,51 @@ const StadiumEmployee = ({ ...rest }) => {
             </Typography>
           </Box>
           <Divider />
+          <Divider />
+          <Box mt={3}>
+            <Paper>
+              <Toolbar className={classes.root}>
+                <Typography
+                  className={classes.title}
+                  variant="h5"
+                  id="tableTitle"
+                  component="div"
+                  color="textSecondary"
+                >
+                  ລາຍການທີ່ເພີ່ມລ້າສຸດ
+                </Typography>
+              </Toolbar>
+              <Divider />
+              <Swiper
+                spaceBetween={20}
+                observeParents={true}
+                simulateTouch={false}
+                observer={true}
+                slidesPerView={1}
+                navigation={true}
+                keyboard={{ enabled: true }}
+                pagination={{
+                  clickable: true,
+                }}
+                breakpoints={{
+                  600: {
+                    slidesPerView: 2,
+                  },
+                  960: {
+                    slidesPerView: 3,
+                  },
+                }}
+              >
+                {employeeDataSortByDate.map((items, index) => {
+                  return (
+                    <SwiperSlide key={index}>
+                      <EmployeeCard getitems={items} />
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </Paper>
+          </Box>
           <Box mt={3}>
             <EmployeeToolbar />
             {employeeFetchSuccess === true && <EmployeeTable />}
@@ -104,6 +164,6 @@ const StadiumEmployee = ({ ...rest }) => {
       </PageLayout>
     </>
   );
-};
+});
 
 export default StadiumEmployee;

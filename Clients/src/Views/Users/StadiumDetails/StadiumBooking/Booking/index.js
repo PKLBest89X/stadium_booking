@@ -30,7 +30,7 @@ import DatePickerBooking from "./DatePickerBooking";
 import StadiumsToPick from "./StadiumsToPick";
 import TimesAndPrice from "./TimesAndPrice";
 import NotificationAlert from "../../../../../Components/NotificationAlert";
-import { onPopupOpen } from "../../../../../Slices/Features/Popup/popupSlice";
+import { onNotiOpen } from "../../../../../Slices/Features/Notification/NotificationSlice";
 
 const Booking = React.memo(() => {
   const { bookingId, stadiumId } = useParams();
@@ -60,11 +60,13 @@ const Booking = React.memo(() => {
     dateSelected,
     timeAndPriceSelected,
     alertSelected,
-    bookingDetailsSelected,
+    bookingDetailsData,
   } = useShallowEqualSelector((state) => state.bookingDetails);
 
   //ຂໍ້ມູນສະຖານະຂອງ popup
-  const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
+  const { notiName, notiState } = useShallowEqualSelector(
+    (state) => state.notification
+  );
 
   const dispatch = useDispatch();
   const datePickerRef = createRef();
@@ -127,11 +129,11 @@ const Booking = React.memo(() => {
     async (event) => {
       event.preventDefault();
       if (timeAndPriceSelected.length === 0) {
-        dispatch(onPopupOpen("emptyBookingAddList"));
+        dispatch(onNotiOpen("emptyBookingAddList"));
         return;
       }
       let foundPreviousData = [];
-      foundPreviousData = bookingDetailsSelected.filter((items1) =>
+      foundPreviousData = bookingDetailsData.filter((items1) =>
         timeAndPriceSelected.some(
           (items2) =>
             items1.std_id === items2.std_id &&
@@ -141,18 +143,18 @@ const Booking = React.memo(() => {
       );
       if (foundPreviousData.length > 0) {
         await dispatch(onShowAlertSameData(foundPreviousData));
-        await dispatch(onPopupOpen("sameBookingAddList"));
+        await dispatch(onNotiOpen("sameBookingAddList"));
       } else {
         await dispatch(onSaveSelectedData(timeAndPriceSelected));
         history.goBack();
       }
     },
-    [dispatch, history, timeAndPriceSelected, bookingDetailsSelected]
+    [dispatch, history, timeAndPriceSelected, bookingDetailsData]
   );
 
   let alert = null;
   let alertSameDataFromSelected = null;
-  if (popupName === "emptyBookingAddList" && isOpen === true) {
+  if (notiName === "emptyBookingAddList" && notiState === true) {
     alert = (
       <NotificationAlert notiTitle="ຄຳເຕືອນ">
         <Box display="flex" alignItems="center">
@@ -164,7 +166,7 @@ const Booking = React.memo(() => {
     );
   }
 
-  if (popupName === "sameBookingAddList" && isOpen === true) {
+  if (notiName === "sameBookingAddList" && notiState === true) {
     alertSameDataFromSelected = (
       <NotificationAlert notiTitle="ມີຂໍ້ມູນນີ້ໃນ list ແລ້ວ">
         {alertSelected.map((items, index) => {

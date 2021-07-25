@@ -11,6 +11,7 @@ const initialState = {
   alertSelectedNonAccount: [],
   selectedStateNonAccount: null,
   bookingDetailsSelectedNonAccount: [],
+  totalPriceNonAccount: 0,
   bookingDetailsNonAccountError: null,
   bookingDetailsNonAccountRequestId: undefined,
 };
@@ -61,7 +62,7 @@ const bookingDetailsNonAccountSlice = createSlice({
       state.timeAndPriceSelectedNonAccount = [];
     },
     onLoadCurrentSaveSelectedDataNonAccount: (state) => {
-      if (state.bookingDetailsSelectedNonAccount.length > 0) {
+      if (state.bookingDetailsNonAccountData.length > 0) {
         state.selectedStateNonAccount = true
         return
       }
@@ -73,10 +74,74 @@ const bookingDetailsNonAccountSlice = createSlice({
     onSaveSelectedDataNonAccount: (state, { payload }) => {
       state.selectedStateNonAccount = true;
       let newSelected = [];
-      newSelected = newSelected.concat(state.bookingDetailsSelectedNonAccount, payload);
+      newSelected = newSelected.concat(state.bookingDetailsNonAccountData, payload);
+      state.bookingDetailsNonAccountData = newSelected;
+      state.totalPriceNonAccount = state.bookingDetailsNonAccountData.reduce((sum, items) => sum + items.sp_price, 0);
+    },
+    onSelectedBookingDetailsNonAccount: (state, { payload }) => {
+      const selectedIndex = state.bookingDetailsSelectedNonAccount.findIndex(
+        (items) =>
+          items.td_id === payload.td_id && items.std_id === payload.std_id
+      );
+      let newSelected = [];
+
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(
+          state.bookingDetailsSelectedNonAccount,
+          payload
+        );
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(
+          state.bookingDetailsSelectedNonAccount.slice(1)
+        );
+      } else if (
+        selectedIndex ===
+        state.bookingDetailsSelectedNonAccount.length - 1
+      ) {
+        newSelected = newSelected.concat(
+          state.bookingDetailsSelectedNonAccount.slice(0, -1)
+        );
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          state.bookingDetailsSelectedNonAccount.slice(0, selectedIndex),
+          state.bookingDetailsSelectedNonAccount.slice(selectedIndex + 1)
+        );
+      }
       state.bookingDetailsSelectedNonAccount = newSelected;
     },
-    onDeleteSelectedDataNonAccount: (State, { payload }) => {},
+    onSelectedAllBookingDetailsNonAccount: (state, { payload }) => {
+      const newSelecteds = payload.map((n) => n);
+      state.bookingDetailsSelectedNonAccount = newSelecteds;
+    },
+    onClearBookingDetailsNonAccount: (state) => {
+      state.bookingDetailsSelectedNonAccount = [];
+    },
+    onDeleteSelectedDataNonAccount: (state, { payload }) => {
+      state.bookingDetailsNonAccountData = state.bookingDetailsNonAccountData.filter(
+        (items1) =>
+          !payload.some(
+            (items2) =>
+              items1.std_id === items2.std_id &&
+              items1.td_id === items2.td_id &&
+              items1.kickoff_date === items2.kickoff_date
+          )
+      );
+      state.timeAndPriceSelectedNonAccount = state.timeAndPriceSelectedNonAccount.filter(
+        (items1) =>
+          !payload.some(
+            (items2) =>
+              items1.std_id === items2.std_id &&
+              items1.td_id === items2.td_id &&
+              items1.kickoff_date === items2.kickoff_date
+          )
+      );
+      state.totalPriceNonAccount = state.bookingDetailsNonAccountData.reduce((sum, items) => sum + items.sp_price, 0);
+      state.bookingDetailsSelectedNonAccount = [];
+      if (state.bookingDetailsNonAccountData.length === 0) {
+        state.selectedStateNonAccount = false;
+        state.totalPriceNonAccount = 0;
+      }
+    },
   },
   extraReducers: (builder) => {
     //ການສົ່ງ request ໃນການເພີ່ມລາຍລະອຽດການຈອງເດີ່ນ
@@ -112,6 +177,9 @@ export const {
   onShowAlertSameDataNonAccount,
   onLoadCurrentSaveSelectedDataNonAccount,
   onSaveSelectedDataNonAccount,
+  onSelectedBookingDetailsNonAccount,
+  onSelectedAllBookingDetailsNonAccount,
+  onClearBookingDetailsNonAccount,
   onDeleteSelectedDataNonAccount,
 } = bookingDetailsNonAccountSlice.actions;
 export default bookingDetailsNonAccountSlice.reducer;

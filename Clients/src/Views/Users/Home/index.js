@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Home = ({ ...rest }) => {
+const Home = React.memo(({ ...rest }) => {
   const classes = useStyles();
   const { feedPostData } = useShallowEqualSelector((state) => state.feedPost);
   const dispatch = useDispatch();
@@ -58,6 +58,6 @@ const Home = ({ ...rest }) => {
       </div>
     </PageLayout>
   );
-};
+});
 
 export default Home;
