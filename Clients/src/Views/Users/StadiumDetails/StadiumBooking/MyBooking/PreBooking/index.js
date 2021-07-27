@@ -4,7 +4,10 @@ import { useDispatch } from "react-redux";
 import { Typography, Paper, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { onLoadCurrentSaveSelectedData, onShowAlertCompareTime } from "../../../../../../Slices/Features/Users/Booking/bookingDetailsSlice";
+import {
+  onLoadCurrentSaveSelectedData,
+  onShowAlertCompareTime,
+} from "../../../../../../Slices/Features/Users/Booking/bookingDetailsSlice";
 import { onPopupOpen } from "../../../../../../Slices/Features/Popup/popupSlice";
 import { onNotiOpen } from "../../../../../../Slices/Features/Notification/NotificationSlice";
 
@@ -22,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     paddingTop: "10rem",
-    paddingBottom: '10rem',
+    paddingBottom: "10rem",
   },
 }));
 
@@ -58,23 +61,27 @@ const PreBooking = React.memo(() => {
   const compareWithCurrentTime = (KickoffTime) => {
     let timeFixed = parseInt(KickoffTime.slice(0, 2)) - 1;
     let realTime = `${timeFixed}:00:00`;
-    let time3 = moment(Date.now()).format("YYYY-MM-DD")
-    let time4 = new Date(`${time3} ${realTime}`)
-    let time5 = new Date()
-    let compareGG = (time4 - time5);
+    let time3 = moment(Date.now()).format("YYYY-MM-DD");
+    let time4 = new Date(`${time3} ${realTime}`);
+    let time5 = new Date();
+    let compareGG = time4 - time5;
 
     if (compareGG < 0) {
       return -1;
     }
     return 1;
-  } 
-
+  };
 
   const onConfirmBooking = (event) => {
     event.preventDefault();
     if (bookingDetailsData.length > 0) {
       let compareTime = [];
-      compareTime = bookingDetailsData.filter((items) => compareWithCurrentTime(items.td_start) < 0);
+      let dateNow = moment(Date.now()).format("YYYY-MM-DD");
+      compareTime = bookingDetailsData.filter(
+        (items) =>
+          compareWithCurrentTime(items.td_start) < 0 &&
+          items.kickoff_date === dateNow
+      );
       if (compareTime.length > 0) {
         dispatch(onShowAlertCompareTime(compareTime));
         dispatch(onNotiOpen("compareWithCurrentTime"));

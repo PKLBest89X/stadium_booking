@@ -106,7 +106,7 @@ const MyBooking = React.memo(() => {
   let compareBookingTime = null;
   if (notiName === "compareWithCurrentTime" && notiState === true) {
     compareBookingTime = (
-      <NotificationAlert notiTitle="ຕ້ອງຈອງກ່ອນເຕະ 1 ຊົ່ວໂມງ!">
+      <NotificationAlert notiTitle="ຕ້ອງຈອງກ່ອນເຕະ 1 ຊົ່ວໂມງ, ເບິ່ງແດ່ເວລາຫັ້ນ!">
         {alertCompareTime.map((items, index) => {
           return (
             <Box key={index} display="flex" alignItems="center">

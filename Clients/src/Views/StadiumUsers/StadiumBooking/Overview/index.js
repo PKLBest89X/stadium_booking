@@ -13,8 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { fetchAddBookingNonAccount } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
 
 import NotificationAlert from "../../../../Components/NotificationAlert";
-
-import ShowAllBooking from './ShowAllBooking'
+import ShowBookingCalendar from "./ShowBookingCalendar";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
@@ -103,6 +102,7 @@ const OverviewBooking = React.memo(({ ...rest }) => {
             ການຈອງຂອງລູກຄ້າທົ່ວໄປ
           </Button>
         </div>
+        <ShowBookingCalendar />
       </PageLayout>
     </>
   );

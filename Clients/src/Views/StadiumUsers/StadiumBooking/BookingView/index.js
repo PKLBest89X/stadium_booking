@@ -11,7 +11,10 @@ import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Typography, Divider, Box } from "@material-ui/core";
 
-import { onLoadCurrentSaveSelectedDataNonAccount, onShowAlertCompareTimeNonAccount } from "../../../../Slices/Features/StadiumUsers/BookingForNoAccount/bookingDetailsNonAccountSlice";
+import {
+  onLoadCurrentSaveSelectedDataNonAccount,
+  onShowAlertCompareTimeNonAccount,
+} from "../../../../Slices/Features/StadiumUsers/BookingForNoAccount/bookingDetailsNonAccountSlice";
 import PopupLayout from "../../../../Components/PopupLayout";
 import NotificationAlert from "../../../../Components/NotificationAlert";
 import { onPopupOpen } from "../../../../Slices/Features/Popup/popupSlice";
@@ -163,22 +166,27 @@ const BookingView = React.memo(({ ...rest }) => {
   const compareWithCurrentTime = (KickoffTime) => {
     let timeFixed = parseInt(KickoffTime.slice(0, 2)) - 1;
     let realTime = `${timeFixed}:00:00`;
-    let time3 = moment(Date.now()).format("YYYY-MM-DD")
-    let time4 = new Date(`${time3} ${realTime}`)
-    let time5 = new Date()
-    let compareGG = (time4 - time5);
+    let time3 = moment(Date.now()).format("YYYY-MM-DD");
+    let time4 = new Date(`${time3} ${realTime}`);
+    let time5 = new Date();
+    let compareGG = time4 - time5;
 
     if (compareGG < 0) {
       return -1;
     }
     return 1;
-  } 
+  };
 
   const onConfirmBooking = (event) => {
     event.preventDefault();
     if (bookingDetailsNonAccountData.length > 0) {
       let compareTime = [];
-      compareTime = bookingDetailsNonAccountData.filter((items) => compareWithCurrentTime(items.td_start) < 0);
+      let dateNow = moment(Date.now()).format("YYYY-MM-DD");
+      compareTime = bookingDetailsNonAccountData.filter(
+        (items) =>
+          compareWithCurrentTime(items.td_start) < 0 &&
+          items.kickoff_date === dateNow
+      );
       if (compareTime.length > 0) {
         dispatch(onShowAlertCompareTimeNonAccount(compareTime));
         dispatch(onNotiOpen("compareWithCurrentTimeNonAccount"));
