@@ -39,11 +39,13 @@ const getTimesSliceNonAccount = createSlice({
       if (state.stadiumsSelectedNonAccount !== payload.stadiumId) {
         state.stadiumsSelectedNonAccount = payload.stadiumId;
       }
-      state.foundUnCheckoutNonAccount = state.bookingUnCheckoutNonAccountData.filter(
-        (items) =>
-          moment(items.kickoff_date).format("YYYY-MM-DD") ===
-          state.filterByDateDataNonAccount
-      );
+      state.foundUnCheckoutNonAccount =
+        state.bookingUnCheckoutNonAccountData.filter(
+          (items) =>
+            moment(items.kickoff_date).format("YYYY-MM-DD") ===
+            state.filterByDateDataNonAccount
+        );
+
       if (state.foundUnCheckoutNonAccount.length > 0) {
         state.filterResultNonAccount = state.bookingTimesNonAccountData.filter(
           (items1) =>
@@ -53,15 +55,17 @@ const getTimesSliceNonAccount = createSlice({
             )
         );
         if (state.stadiumsSelectedNonAccount !== "") {
-          state.filterResultByStadiumsNonAccount = state.filterResultNonAccount.filter(
-            (items) => items.std_id === state.stadiumsSelectedNonAccount
-          );
+          state.filterResultByStadiumsNonAccount =
+            state.filterResultNonAccount.filter(
+              (items) => items.std_id === state.stadiumsSelectedNonAccount
+            );
         }
       } else {
         if (state.stadiumsSelectedNonAccount !== "") {
-          state.allTimesByStadiumsNonAccount = state.bookingTimesNonAccountData.filter(
-            (items) => items.std_id === state.stadiumsSelectedNonAccount
-          );
+          state.allTimesByStadiumsNonAccount =
+            state.bookingTimesNonAccountData.filter(
+              (items) => items.std_id === state.stadiumsSelectedNonAccount
+            );
         }
       }
     },
@@ -151,5 +155,6 @@ const getTimesSliceNonAccount = createSlice({
   },
 });
 
-export const { onClearTimesNonAccount, onFilterAvailableTimesNonAccount } = getTimesSliceNonAccount.actions;
+export const { onClearTimesNonAccount, onFilterAvailableTimesNonAccount } =
+  getTimesSliceNonAccount.actions;
 export default getTimesSliceNonAccount.reducer;

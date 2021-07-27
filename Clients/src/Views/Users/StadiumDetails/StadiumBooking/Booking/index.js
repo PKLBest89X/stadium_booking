@@ -168,7 +168,7 @@ const Booking = React.memo(() => {
 
   if (notiName === "sameBookingAddList" && notiState === true) {
     alertSameDataFromSelected = (
-      <NotificationAlert notiTitle="ມີຂໍ້ມູນນີ້ໃນ list ແລ້ວ">
+      <NotificationAlert notiTitle="ມີຂໍ້ມູນນີ້ໃນ list ແລ້ວ" >
         {alertSelected.map((items, index) => {
           return (
             <Box key={index} display="flex" alignItems="center">

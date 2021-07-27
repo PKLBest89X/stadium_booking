@@ -5,7 +5,7 @@ import { onNotiClose } from "../Slices/Features/Notification/NotificationSlice";
 import { useDispatch } from "react-redux";
 import { IconButton, AppBar } from "@material-ui/core";
 import Close from "@material-ui/icons/Close";
-import { useSpring, animated, useTransition, config } from "react-spring";
+import { animated, useTransition } from "react-spring";
 import { useShallowEqualSelector } from "./useShallowEqualSelector";
 import Error from "@material-ui/icons/Error";
 import { Box, Typography } from "@material-ui/core";
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
   errorIcon: {
     marginLeft: "1rem",
-    marginRight: '1rem'
+    marginRight: "1rem",
   },
 
   formLayout: {
@@ -96,10 +96,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NotificationAlert = forwardRef(
-  ({ children, notiTitle, ...rest }, ref) => {
+  ({ children, notiTitle, intervalTimeout = 0, ...rest }, ref) => {
     const classes = useStyles();
     const modalRef = useRef();
-    const { notiState } = useShallowEqualSelector((state) => state.notification);
+    const { notiState } = useShallowEqualSelector(
+      (state) => state.notification
+    );
     const dispatch = useDispatch();
     const transitions = useTransition(notiState, {
       from: { opacity: 0, transform: `translateY(-100%)` },
@@ -109,19 +111,22 @@ const NotificationAlert = forwardRef(
 
     useEffect(() => {
       let val;
-      val = setTimeout(() => dispatch(onNotiClose()), 3000);
+      if (intervalTimeout > 0) {
+        val = setTimeout(() => dispatch(onNotiClose()), intervalTimeout);
+      } else {
+        val = setTimeout(() => dispatch(onNotiClose()), 3000);
+      }
       return () => {
         dispatch(onNotiClose());
         clearTimeout(val);
       };
-    }, [dispatch]);
+    }, [dispatch, intervalTimeout]);
 
     const outsideCloseModal = (event) => {
       if (modalRef.current === event.target) {
         dispatch(onNotiClose());
       }
     };
-
     return transitions(
       (styles, item) =>
         item && (

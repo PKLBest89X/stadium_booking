@@ -1,21 +1,28 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import PageLayout from "../../../../Components/PageLayout";
 import { fetchCheckStadium } from "../../../../middlewares/fetchCheckValidData/fetchCheckValidData";
 import { fetchCheckBooking } from "../../../../middlewares/fetchCheckValidData/fetchCheckValidBooking";
 import { useHistory, useParams } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUsers";
+import { fetchGetStadium } from "../../../../middlewares/stadiumUser/fetchCRUDStadium/fetchCRUDStadium";
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Paper, Typography, Divider } from "@material-ui/core";
+import { Paper, Typography, Divider, Box } from "@material-ui/core";
 
-import { onLoadCurrentSaveSelectedDataNonAccount } from "../../../../Slices/Features/StadiumUsers/BookingForNoAccount/bookingDetailsNonAccountSlice";
+import { onLoadCurrentSaveSelectedDataNonAccount, onShowAlertCompareTimeNonAccount } from "../../../../Slices/Features/StadiumUsers/BookingForNoAccount/bookingDetailsNonAccountSlice";
+import PopupLayout from "../../../../Components/PopupLayout";
+import NotificationAlert from "../../../../Components/NotificationAlert";
+import { onPopupOpen } from "../../../../Slices/Features/Popup/popupSlice";
+import { onNotiOpen } from "../../../../Slices/Features/Notification/NotificationSlice";
 
 import BookingTable from "./BookingTable";
 import BookingToolbar from "./BookingToolbar";
 import UserNonAccount from "./UserNonAccount";
 import TotalBookingPrice from "./TotalBookingPrice";
+import ConfirmBooking from "./ConfirmBooking";
+import moment from "moment";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
@@ -25,19 +32,26 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: "10rem",
+    paddingTop: "10rem",
+    paddingBottom: "10rem",
   },
 }));
 
 const BookingView = React.memo(({ ...rest }) => {
   const classes = useStyles();
+  const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
+  const { notiName, notiState } = useShallowEqualSelector(
+    (state) => state.notification
+  );
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
+  const { stadiumData } = useShallowEqualSelector((state) => state.stadium);
   const { checkBookingResult } = useShallowEqualSelector(
     (state) => state.validBookingData
   );
   const { stadiumId_Admin, bookingId } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
+  const stateRef = useRef(stadiumData);
   const userNonAccountRef = useRef();
   const totalBookingPriceRef = useRef();
 
@@ -45,6 +59,9 @@ const BookingView = React.memo(({ ...rest }) => {
     selectedStateNonAccount,
     bookingDetailsNonAccountData,
     bookingDetailsSelectedNonAccount,
+    totalPriceNonAccount,
+    alertCompareTimeNonAccount,
+    userNonAccount,
   } = useShallowEqualSelector((state) => state.bookingDetailsNonAccount);
 
   useEffect(
@@ -71,6 +88,16 @@ const BookingView = React.memo(({ ...rest }) => {
     }
   }, [history, checkResult]);
 
+  //ການເອົາຂໍ້ມູນເດີ່ນ
+  useEffect(() => {
+    dispatch(fetchGetStadium(stadiumId_Admin));
+  }, [dispatch, stadiumId_Admin]);
+
+  useMemo(
+    () => stadiumData.forEach((items) => (stateRef.current = items)),
+    [stadiumData]
+  );
+
   //ການຍິງ request ໃນການກວດສອບວ່າມີເລກບິນການຈອງເດີ່ນນີ້ແທ້ ຫຼື ບໍ?
   useEffect(() => {
     dispatch(fetchCheckBooking(bookingId));
@@ -90,36 +117,113 @@ const BookingView = React.memo(({ ...rest }) => {
     </div>
   );
 
-  const onConfirmBooking = (event) => {
-    event.preventDefault();
+  let conformBookingForm = null;
+  if (popupName === "confirmBookingNonAccount" && isOpen === true) {
+    conformBookingForm = (
+      <PopupLayout customHeight={true}>
+        <ConfirmBooking userNonAccount={userNonAccount} />
+      </PopupLayout>
+    );
   }
 
+  let alertNonAccount = null;
+  if (notiName === "emptyBookingNonAccount" && notiState === true) {
+    alertNonAccount = (
+      <NotificationAlert notiTitle="ຄຳເຕືອນ">
+        <Box display="flex" alignItems="center">
+          <Typography variant="h4" color="textSecondary">
+            ກະລຸນາເລືອກສະໜາມກ່ອນການຈອງ!
+          </Typography>
+        </Box>
+      </NotificationAlert>
+    );
+  }
+
+  let compareBookingTime = null;
+  if (notiName === "compareWithCurrentTimeNonAccount" && notiState === true) {
+    compareBookingTime = (
+      <NotificationAlert notiTitle="ຕ້ອງຈອງກ່ອນເຕະ 1 ຊົ່ວໂມງ!">
+        {alertCompareTimeNonAccount.map((items, index) => {
+          return (
+            <Box key={index} display="flex" alignItems="center">
+              <ul>
+                <li>
+                  <Typography variant="h5" color="textSecondary">
+                    {`${items.std_name}, ເວລາ: ${items.td_start} ໂມງ - ${items.td_end} ໂມງ`}
+                  </Typography>
+                </li>
+              </ul>
+            </Box>
+          );
+        })}
+      </NotificationAlert>
+    );
+  }
+
+  const compareWithCurrentTime = (KickoffTime) => {
+    let timeFixed = parseInt(KickoffTime.slice(0, 2)) - 1;
+    let realTime = `${timeFixed}:00:00`;
+    let time3 = moment(Date.now()).format("YYYY-MM-DD")
+    let time4 = new Date(`${time3} ${realTime}`)
+    let time5 = new Date()
+    let compareGG = (time4 - time5);
+
+    if (compareGG < 0) {
+      return -1;
+    }
+    return 1;
+  } 
+
+  const onConfirmBooking = (event) => {
+    event.preventDefault();
+    if (bookingDetailsNonAccountData.length > 0) {
+      let compareTime = [];
+      compareTime = bookingDetailsNonAccountData.filter((items) => compareWithCurrentTime(items.td_start) < 0);
+      if (compareTime.length > 0) {
+        dispatch(onShowAlertCompareTimeNonAccount(compareTime));
+        dispatch(onNotiOpen("compareWithCurrentTimeNonAccount"));
+        return;
+      }
+      dispatch(onPopupOpen("confirmBookingNonAccount"));
+    } else {
+      dispatch(onNotiOpen("emptyBookingNonAccount"));
+    }
+  };
   return (
-    <PageLayout title="Booking Form" {...rest}>
-      <div className={classes.pageContainer}>
-        <div className={classes.root}>
-          <form onSubmit={onConfirmBooking}>
-            <Paper className={classes.paper}>
-              <UserNonAccount ref={userNonAccountRef} />
-            </Paper>
-            <Paper className={classes.paper}>
-              <BookingToolbar
-                numSelected={bookingDetailsSelectedNonAccount.length}
-                dataForDelete={bookingDetailsSelectedNonAccount}
-              />
-              <Divider />
-              {selectedStateNonAccount === true && (
-                <BookingTable bookingDetails={bookingDetailsNonAccountData} />
-              )}
-              {selectedStateNonAccount === false && <ShowEmptyBooking />}
-            </Paper>
-            <Paper className={classes.paper}>
-              <TotalBookingPrice ref={totalBookingPriceRef} />
-            </Paper>
-          </form>
+    <>
+      {alertNonAccount}
+      {conformBookingForm}
+      {compareBookingTime}
+      <PageLayout title="Booking Form" {...rest}>
+        <div className={classes.pageContainer}>
+          <div className={classes.root}>
+            <form onSubmit={onConfirmBooking}>
+              <Paper className={classes.paper}>
+                <UserNonAccount bookingId={bookingId} ref={userNonAccountRef} />
+              </Paper>
+              <Paper className={classes.paper}>
+                <BookingToolbar
+                  numSelected={bookingDetailsSelectedNonAccount.length}
+                  dataForDelete={bookingDetailsSelectedNonAccount}
+                />
+                <Divider />
+                {selectedStateNonAccount === true && (
+                  <BookingTable bookingDetails={bookingDetailsNonAccountData} />
+                )}
+                {selectedStateNonAccount === false && <ShowEmptyBooking />}
+              </Paper>
+              <Paper className={classes.paper}>
+                <TotalBookingPrice
+                  timeCancel={stateRef.current.time_cancelbooking}
+                  totalBookingPrice={totalPriceNonAccount}
+                  ref={totalBookingPriceRef}
+                />
+              </Paper>
+            </form>
+          </div>
         </div>
-      </div>
-    </PageLayout>
+      </PageLayout>
+    </>
   );
 });
 export default BookingView;

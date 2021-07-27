@@ -5,8 +5,10 @@ export const fetchGetStadiumsToBookingNonAccount = createAsyncThunk(
   "bookingNonAccount/getStadiumsToBookingNonAccount",
   async (params, { rejectWithValue, getState, requestId }) => {
     try {
-      const { bookingStadiumsNonAccountLoading, bookingStadiumsNonAccountRequestId } =
-        getState().getStadiumsNonAccount;
+      const {
+        bookingStadiumsNonAccountLoading,
+        bookingStadiumsNonAccountRequestId,
+      } = getState().getStadiumsNonAccount;
       if (
         bookingStadiumsNonAccountLoading !== true ||
         requestId !== bookingStadiumsNonAccountRequestId
@@ -29,7 +31,10 @@ export const fetchGetTimesToBookingNonAccount = createAsyncThunk(
     try {
       const { bookingTimesNonAccountLoading, bookingTimesNonAccountRequestId } =
         getState().getTimesNonAccount;
-      if (bookingTimesNonAccountLoading !== true || requestId !== bookingTimesNonAccountRequestId) {
+      if (
+        bookingTimesNonAccountLoading !== true ||
+        requestId !== bookingTimesNonAccountRequestId
+      ) {
         return;
       }
       const getTimesToBookingNonAccount = await Axios.get(
@@ -46,9 +51,14 @@ export const fetchGetBookingDetailsUnCheckoutNonAccount = createAsyncThunk(
   "bookingNonAccount/getBookingDetailsUnCheckoutNonAccount",
   async (params, { rejectWithValue, getState, requestId }) => {
     try {
-      const { bookingUnCheckoutNonAccountLoading, bookingUnCheckoutNonAccountRequestId } =
-        getState().getTimesNonAccount;
-      if (bookingUnCheckoutNonAccountLoading !== true || requestId !== bookingUnCheckoutNonAccountRequestId) {
+      const {
+        bookingUnCheckoutNonAccountLoading,
+        bookingUnCheckoutNonAccountRequestId,
+      } = getState().getTimesNonAccount;
+      if (
+        bookingUnCheckoutNonAccountLoading !== true ||
+        requestId !== bookingUnCheckoutNonAccountRequestId
+      ) {
         return;
       }
       const getBookingDetailsUnCheckoutNonAccount = await Axios.get(
@@ -98,7 +108,27 @@ export const fetchAddBookingFieldsNonAccount = createAsyncThunk(
   }
 );
 
-export const fetchConfirmBooking = createAsyncThunk(
+export const fetchAddUserNonAccount = createAsyncThunk(
+  "bookingNonAccount/addUserNonAccount",
+  async (nonAccount, { rejectWithValue }) => {
+    try {
+      const addUserNonAccount = await Axios.post(
+        `http://localhost:5050/reserve/addNonAccountData/${nonAccount.bookingId}`,
+        {
+          name: nonAccount.firstName,
+          surname: nonAccount.lastName,
+          team: nonAccount.team,
+          tel: nonAccount.tel
+        }
+      );
+      return addUserNonAccount.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const fetchConfirmBookingNonAccount = createAsyncThunk(
   "bookingNonAccount/conformBookingNonAccount",
   async (params, { rejectWithValue }) => {
     try {

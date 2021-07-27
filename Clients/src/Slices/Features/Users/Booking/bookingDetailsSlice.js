@@ -10,6 +10,7 @@ const initialState = {
   timeAndPriceSelected: [],
   selectedState: null,
   alertSelected: [],
+  alertCompareTime: [],
   bookingDetailsSelected: [],
   totalPrice: 0,
   bookingDetailsError: null,
@@ -21,6 +22,22 @@ const bookingDetailsSlice = createSlice({
   initialState,
   reducers: {
     onHandleSelectDate: (state, { payload }) => {
+      if (state.dateSelected !== payload) {
+        let changeDate = [];
+        changeDate = state.timeAndPriceSelected.filter(
+          (items1) =>
+            !state.bookingDetailsData.some(
+              (items2) =>
+                items1.std_id === items2.std_id &&
+                items1.td_id === items2.td_id &&
+                items1.kickoff_date === items2.kickoff_date
+            )
+        );
+        state.timeAndPriceSelected = changeDate.map((items) => ({
+          ...items,
+          kickoff_date: payload,
+        }));
+      }
       state.dateSelected = payload;
     },
     onHandleSelect: (state, { payload }) => {
@@ -62,6 +79,9 @@ const bookingDetailsSlice = createSlice({
     },
     onShowAlertSameData: (state, { payload }) => {
       state.alertSelected = payload;
+    },
+    onShowAlertCompareTime: (state, { payload }) => {
+      state.alertCompareTime = payload;
     },
     onSaveSelectedData: (state, { payload }) => {
       state.selectedState = true;
@@ -150,6 +170,7 @@ export const {
   onHandleSelectAll,
   onClearSelect,
   onShowAlertSameData,
+  onShowAlertCompareTime,
   onLoadCurrentSaveSelectedData,
   onSaveSelectedData,
   onSelectedBookingDetails,

@@ -19,8 +19,6 @@ const TableHeaderControl = (props) => {
   } = props;
   const createSortHandler = (event, property) => {
     onRequestSort(event, property);
-    console.log(event)
-    console.log(property)
   };
 
   const headCells = [

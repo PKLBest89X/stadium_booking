@@ -5,6 +5,7 @@ import { onPopupClose } from "../Slices/Features/Popup/popupSlice";
 import { useDispatch } from "react-redux";
 import { IconButton, AppBar } from "@material-ui/core";
 import Close from "@material-ui/icons/Close";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,10 +25,15 @@ const useStyles = makeStyles((theme) => ({
     flex: "1 1 auto",
     maxWidth: "600px",
     position: "relative",
-    height: "70%",
     margin: "1rem",
     overflow: "hidden",
     borderRadius: "8px",
+  },
+  heightFromProps: {
+    height: "auto",
+  },
+  defaultHeight: {
+    height: "70%",
   },
   appbarTop: {
     zIndex: 11,
@@ -87,43 +93,55 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PopupLayout = forwardRef(({ children, title, ...rest }, ref) => {
-  const classes = useStyles();
-  const modalRef = useRef();
-  const dispatch = useDispatch();
+const PopupLayout = forwardRef(
+  ({ children, title, customHeight = false, ...rest }, ref) => {
+    const classes = useStyles();
+    const modalRef = useRef();
+    const dispatch = useDispatch();
+    useEffect(() => {
+      return () => dispatch(onPopupClose());
+    }, [dispatch]);
 
-  useEffect(() => {
-    return () => dispatch(onPopupClose());
-  }, [dispatch]);
+    const outsideCloseModal = (event) => {
+      if (modalRef.current === event.target) {
+        dispatch(onPopupClose());
+      }
+    };
 
-  const outsideCloseModal = (event) => {
-    if (modalRef.current === event.target) {
-      dispatch(onPopupClose());
-    }
-  };
-
-  return (
-    <div className={classes.root} {...rest} ref={modalRef} onClick={outsideCloseModal}>
-      <div className={classes.formLayout} ref={ref}>
-        <AppBar className={classes.appbarTop}>
-          <div className={classes.toolbar}>
-            <IconButton
-              color="inherit"
-              onClick={() => dispatch(onPopupClose())}
-            >
-              <Close />
-            </IconButton>
-          </div>
-        </AppBar>
-        <div className={classes.formWrapper}>
-          <div className={classes.contentContainer}>
-            <div className={classes.content}>{children}</div>
+    return (
+      <div
+        className={classes.root}
+        {...rest}
+        ref={modalRef}
+        onClick={outsideCloseModal}
+      >
+        <div
+          className={clsx(classes.formLayout, {
+            [classes.heightFromProps]: customHeight === true,
+            [classes.defaultHeight]: customHeight === false
+          })}
+          ref={ref}
+        >
+          <AppBar className={classes.appbarTop}>
+            <div className={classes.toolbar}>
+              <IconButton
+                color="inherit"
+                onClick={() => dispatch(onPopupClose())}
+              >
+                <Close />
+              </IconButton>
+            </div>
+          </AppBar>
+          <div className={classes.formWrapper}>
+            <div className={classes.contentContainer}>
+              <div className={classes.content}>{children}</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 PopupLayout.propTypes = {
   children: PropTypes.node.isRequired,

@@ -6,6 +6,8 @@ import { useShallowEqualSelector } from "../../../Components/useShallowEqualSele
 import { fetchAuthAdmin } from "../../../middlewares/fetchAuth/fetchStadiumUsers";
 import { userNow } from "../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
+import { Button } from "@material-ui/core";
+import moment from "moment";
 
 const StadiumPayment = ({ ...rest }) => {
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
@@ -30,9 +32,27 @@ const StadiumPayment = ({ ...rest }) => {
       history.replace('/404')
     }
   }, [history, checkResult]);
+
+  const compareTime = () => {
+    let time1 = '15:00:00';
+    let timeFixed = parseInt(time1.slice(0, 2)) - 1;
+    let realTime = `${timeFixed}:00:00`;
+    let time3 = moment(Date.now()).format("YYYY-MM-DD")
+    let time4 = new Date(`${time3} ${realTime}`)
+    let time5 = new Date()
+    let compareGG = (time4 - time5);
+
+    if (compareGG < 0) {
+      return console.log("ກາຍໂມງແລ້ວເດີ!!");
+    }
+    return console.log(time5);
+  }
   return (
     <PageLayout title="Stadium Payment" {...rest}>
       <h1>ຈັດການການຊຳລະເງິນໃຫ້ແກ່ລູກຄ້າ</h1>
+      <Button color="primary" variant="contained" onClick={compareTime}>
+        ທຽບເວລາກັບປັດຈຸບັນ
+      </Button>
     </PageLayout>
   );
 };

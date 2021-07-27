@@ -150,13 +150,13 @@ router.post("/addNonAccountData/:bookingId", async (req, res) => {
     const surname = req.body.surname;
     const team = req.body.team;
     const tel = req.body.tel;
-    db.query("call reserve_nou_add(?,?,?,?)", [book_id,name,surname,team,tel], (err1, result) => {
+    db.query("call reserve_nou_add(?,?,?,?,?)", [book_id,name,surname,team,tel], (err1, result) => {
         if(err1){
             res.status(400)
             console.log(err1);
         }
         else{
-            res.send(200);
+            res.sendStatus(200);
         }
     }) // ເພີ່ມຂໍ້ມູນຜູ້ໃຊ້ທີ່ບໍ່ມີບັນຊີ
 })
@@ -193,9 +193,9 @@ router.post('/bookingfield', async (req,res) => {
 }) // ເພີ່ມເດີ່ນທີ່ຈອງ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
-router.put('/acceptForNonAccount', async (req,res) => {
-    const stadium_id = req.body.st_id;
-    const book_id = req.body.b_id;
+router.put('/acceptForNonAccount/:stadiumId/:bookingId', async (req,res) => {
+    const stadium_id = req.params.stadiumId;
+    const book_id = req.params.bookingId;
     
     db.query("select time_cancelbooking from tbstadium where st_id=?", [stadium_id], async (err,resu) => {
         const timecancel = resu[0].time_cancelbooking;

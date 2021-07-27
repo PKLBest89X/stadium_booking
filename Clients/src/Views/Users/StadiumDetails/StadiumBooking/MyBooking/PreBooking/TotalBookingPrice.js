@@ -11,6 +11,8 @@ import {
   Button,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import moment from "moment";
+import NumberFormat from "react-number-format";
 
 const useStyles = makeStyles((theme) => ({
   confirmBooking: {
@@ -24,84 +26,94 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TotalBookingPrice = forwardRef((props, ref) => {
-  const classes = useStyles();
-  return (
-    <div ref={ref}>
-      <Box mt={3}>
-        <Card>
-          <CardHeader
-            title={
-              <Typography variant="h4" color="textSecondary">
-                ລາຄາ ແລະ ເງື່ອນໄຂຂອງການຈອງເດີ່ນ
-              </Typography>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <Box
-              display="block"
-              justifyContent="center"
-              alignItems="center"
-              padding="1rem"
-            >
+const TotalBookingPrice = forwardRef(
+  ({ timeCancel, totalBookingPrice }, ref) => {
+    const classes = useStyles();
+    return (
+      <div ref={ref}>
+        <Box mt={3}>
+          <Card>
+            <CardHeader
+              title={
+                <Typography variant="h4" color="textSecondary">
+                  ລາຄາ ແລະ ເງື່ອນໄຂຂອງການຈອງເດີ່ນ
+                </Typography>
+              }
+            />
+            <Divider />
+            <CardContent>
               <Box
-                display="flex"
-                justifyContent="space-between"
-                height="100%"
-                width="100%"
-                mb={2}
-                mt={2}
+                display="block"
+                justifyContent="center"
+                alignItems="center"
+                padding="1rem"
               >
-                <Typography variant="h4" color="textSecondary">
-                  ລາຄາກ່ອນຈ່າຍ:{" "}
-                </Typography>
-                <Typography variant="h4" color="textSecondary">
-                  200.000 ກີບ
-                </Typography>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  height="100%"
+                  width="100%"
+                  mb={2}
+                  mt={2}
+                >
+                  <Typography variant="h4" color="textSecondary">
+                    ລາຄາກ່ອນຈ່າຍ:{" "}
+                  </Typography>
+                  <NumberFormat
+                    value={totalBookingPrice}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    suffix={" ກີບ"}
+                    renderText={(value) => (
+                      <Typography variant="h4" color="textSecondary">
+                        {value}
+                      </Typography>
+                    )}
+                  />
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  height="100%"
+                  width="100%"
+                  mb={2}
+                  mt={2}
+                >
+                  <Typography variant="h4" color="textSecondary">
+                    ມື້ຈອງເດີ່ນ:{" "}
+                  </Typography>
+                  <Typography variant="h4" color="textSecondary">
+                    {moment(Date.now()).format("DD/MM/YYYY")}
+                  </Typography>
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  height="100%"
+                  width="100%"
+                  mb={2}
+                  mt={2}
+                >
+                  <Typography variant="h4" color="textSecondary">
+                    ຍົກເລີກຈອງໄດ້:{" "}
+                  </Typography>
+                  <Typography variant="h4" color="textSecondary">
+                    {`${timeCancel} ຊົ່ວໂມງ`}
+                  </Typography>
+                </Box>
               </Box>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                height="100%"
-                width="100%"
-                mb={2}
-                mt={2}
-              >
-                <Typography variant="h4" color="textSecondary">
-                  ມື້ຈອງເດີ່ນ:{" "}
-                </Typography>
-                <Typography variant="h4" color="textSecondary">
-                  12/8/2021
-                </Typography>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                height="100%"
-                width="100%"
-                mb={2}
-                mt={2}
-              >
-                <Typography variant="h4" color="textSecondary">
-                  ຍົກເລີກຈອງໄດ້:{" "}
-                </Typography>
-                <Typography variant="h4" color="textSecondary">
-                  24 ຊົ່ວໂມງ
-                </Typography>
-              </Box>
+            </CardContent>
+            <Divider />
+            <Box display="flex" justifyContent="flex-end" p={2}>
+              <Button type="submit" color="primary" variant="contained">
+                ຢືນຢັນຈອງເດີ່ນ
+              </Button>
             </Box>
-          </CardContent>
-          <Divider />
-          <Box display="flex" justifyContent="flex-end" p={2}>
-            <Button type="submit" color="primary" variant="contained">
-              ຢືນຢັນຈອງເດີ່ນ
-            </Button>
-          </Box>
-        </Card>
-      </Box>
-    </div>
-  );
-});
+          </Card>
+        </Box>
+      </div>
+    );
+  }
+);
 
 export default TotalBookingPrice;

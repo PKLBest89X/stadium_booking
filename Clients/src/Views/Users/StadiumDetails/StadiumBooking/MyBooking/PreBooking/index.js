@@ -1,14 +1,17 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { useShallowEqualSelector } from "../../../../../../Components/useShallowEqualSelector";
 import { useDispatch } from "react-redux";
 import { Typography, Paper, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { onLoadCurrentSaveSelectedData } from "../../../../../../Slices/Features/Users/Booking/bookingDetailsSlice";
+import { onLoadCurrentSaveSelectedData, onShowAlertCompareTime } from "../../../../../../Slices/Features/Users/Booking/bookingDetailsSlice";
+import { onPopupOpen } from "../../../../../../Slices/Features/Popup/popupSlice";
+import { onNotiOpen } from "../../../../../../Slices/Features/Notification/NotificationSlice";
 
 import BookingTable from "./BookingTable";
 import BookingToolbar from "./BookingToolbar";
 import TotalBookingPrice from "./TotalBookingPrice";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,7 +21,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: "10rem",
+    paddingTop: "10rem",
+    paddingBottom: '10rem',
   },
 }));
 
@@ -26,8 +30,20 @@ const PreBooking = React.memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const totalBookingPriceRef = useRef();
-  const { selectedState, bookingDetailsData, bookingDetailsSelected } =
-    useShallowEqualSelector((state) => state.bookingDetails);
+  const {
+    selectedState,
+    bookingDetailsData,
+    bookingDetailsSelected,
+    totalPrice,
+  } = useShallowEqualSelector((state) => state.bookingDetails);
+  const { feedStadiumData } = useShallowEqualSelector(
+    (state) => state.feedStadium
+  );
+  const stateRef = useRef(feedStadiumData);
+  useMemo(
+    () => feedStadiumData.forEach((items) => (stateRef.current = items)),
+    [feedStadiumData]
+  );
 
   useEffect(() => dispatch(onLoadCurrentSaveSelectedData()), [dispatch]);
 
@@ -39,15 +55,45 @@ const PreBooking = React.memo(() => {
     </div>
   );
 
+  const compareWithCurrentTime = (KickoffTime) => {
+    let timeFixed = parseInt(KickoffTime.slice(0, 2)) - 1;
+    let realTime = `${timeFixed}:00:00`;
+    let time3 = moment(Date.now()).format("YYYY-MM-DD")
+    let time4 = new Date(`${time3} ${realTime}`)
+    let time5 = new Date()
+    let compareGG = (time4 - time5);
+
+    if (compareGG < 0) {
+      return -1;
+    }
+    return 1;
+  } 
+
+
   const onConfirmBooking = (event) => {
     event.preventDefault();
+    if (bookingDetailsData.length > 0) {
+      let compareTime = [];
+      compareTime = bookingDetailsData.filter((items) => compareWithCurrentTime(items.td_start) < 0);
+      if (compareTime.length > 0) {
+        dispatch(onShowAlertCompareTime(compareTime));
+        dispatch(onNotiOpen("compareWithCurrentTime"));
+        return;
+      }
+      dispatch(onPopupOpen("confirmBooking"));
+    } else {
+      dispatch(onNotiOpen("emptyBooking"));
+    }
   };
 
   return (
     <div className={classes.root}>
       <form onSubmit={onConfirmBooking}>
         <Paper className={classes.paper}>
-          <BookingToolbar numSelected={bookingDetailsSelected.length} dataForDelete={bookingDetailsSelected} />
+          <BookingToolbar
+            numSelected={bookingDetailsSelected.length}
+            dataForDelete={bookingDetailsSelected}
+          />
           <Divider />
           {selectedState === true && (
             <BookingTable bookingDetails={bookingDetailsData} />
@@ -55,7 +101,11 @@ const PreBooking = React.memo(() => {
           {selectedState === false && <ShowEmptyBooking />}
         </Paper>
         <Paper className={classes.paper}>
-          <TotalBookingPrice ref={totalBookingPriceRef} />
+          <TotalBookingPrice
+            timeCancel={stateRef.current.time_cancelbooking}
+            totalBookingPrice={totalPrice}
+            ref={totalBookingPriceRef}
+          />
         </Paper>
       </form>
     </div>

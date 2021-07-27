@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAddBookingFieldsNonAccount } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
+import {
+  fetchAddBookingFieldsNonAccount,
+  fetchAddUserNonAccount,
+  fetchConfirmBookingNonAccount,
+} from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
 import moment from "moment";
 
 const initialState = {
@@ -9,11 +13,19 @@ const initialState = {
   dateSelectedNonAccount: moment(Date.now()).format("YYYY-MM-DD"),
   timeAndPriceSelectedNonAccount: [],
   alertSelectedNonAccount: [],
+  alertCompareTimeNonAccount: [],
   selectedStateNonAccount: null,
   bookingDetailsSelectedNonAccount: [],
   totalPriceNonAccount: 0,
   bookingDetailsNonAccountError: null,
   bookingDetailsNonAccountRequestId: undefined,
+  userNonAccount: {
+    bookingId: "",
+    firstName: "",
+    lastName: "",
+    team: "",
+    tel: "",
+  },
 };
 
 const bookingDetailsNonAccountSlice = createSlice({
@@ -21,6 +33,22 @@ const bookingDetailsNonAccountSlice = createSlice({
   initialState,
   reducers: {
     onHandleSelectDateNonAccount: (state, { payload }) => {
+      if (state.dateSelectedNonAccount !== payload) {
+        let changeDate = [];
+        changeDate = state.timeAndPriceSelectedNonAccount.filter(
+          (items1) =>
+            !state.bookingDetailsNonAccountData.some(
+              (items2) =>
+                items1.std_id === items2.std_id &&
+                items1.td_id === items2.td_id &&
+                items1.kickoff_date === items2.kickoff_date
+            )
+        );
+        state.timeAndPriceSelectedNonAccount = changeDate.map((items) => ({
+          ...items,
+          kickoff_date: payload,
+        }));
+      }
       state.dateSelectedNonAccount = payload;
     },
     onHandleSelectNonAccount: (state, { payload }) => {
@@ -63,20 +91,29 @@ const bookingDetailsNonAccountSlice = createSlice({
     },
     onLoadCurrentSaveSelectedDataNonAccount: (state) => {
       if (state.bookingDetailsNonAccountData.length > 0) {
-        state.selectedStateNonAccount = true
-        return
+        state.selectedStateNonAccount = true;
+        return;
       }
       state.selectedStateNonAccount = false;
     },
     onShowAlertSameDataNonAccount: (state, { payload }) => {
       state.alertSelectedNonAccount = payload;
     },
+    onShowAlertCompareTimeNonAccount: (state, { payload }) => {
+      state.alertCompareTimeNonAccount = payload;
+    },
     onSaveSelectedDataNonAccount: (state, { payload }) => {
       state.selectedStateNonAccount = true;
       let newSelected = [];
-      newSelected = newSelected.concat(state.bookingDetailsNonAccountData, payload);
+      newSelected = newSelected.concat(
+        state.bookingDetailsNonAccountData,
+        payload
+      );
       state.bookingDetailsNonAccountData = newSelected;
-      state.totalPriceNonAccount = state.bookingDetailsNonAccountData.reduce((sum, items) => sum + items.sp_price, 0);
+      state.totalPriceNonAccount = state.bookingDetailsNonAccountData.reduce(
+        (sum, items) => sum + items.sp_price,
+        0
+      );
     },
     onSelectedBookingDetailsNonAccount: (state, { payload }) => {
       const selectedIndex = state.bookingDetailsSelectedNonAccount.findIndex(
@@ -117,30 +154,42 @@ const bookingDetailsNonAccountSlice = createSlice({
       state.bookingDetailsSelectedNonAccount = [];
     },
     onDeleteSelectedDataNonAccount: (state, { payload }) => {
-      state.bookingDetailsNonAccountData = state.bookingDetailsNonAccountData.filter(
-        (items1) =>
-          !payload.some(
-            (items2) =>
-              items1.std_id === items2.std_id &&
-              items1.td_id === items2.td_id &&
-              items1.kickoff_date === items2.kickoff_date
-          )
+      state.bookingDetailsNonAccountData =
+        state.bookingDetailsNonAccountData.filter(
+          (items1) =>
+            !payload.some(
+              (items2) =>
+                items1.std_id === items2.std_id &&
+                items1.td_id === items2.td_id &&
+                items1.kickoff_date === items2.kickoff_date
+            )
+        );
+      state.timeAndPriceSelectedNonAccount =
+        state.timeAndPriceSelectedNonAccount.filter(
+          (items1) =>
+            !payload.some(
+              (items2) =>
+                items1.std_id === items2.std_id &&
+                items1.td_id === items2.td_id &&
+                items1.kickoff_date === items2.kickoff_date
+            )
+        );
+      state.totalPriceNonAccount = state.bookingDetailsNonAccountData.reduce(
+        (sum, items) => sum + items.sp_price,
+        0
       );
-      state.timeAndPriceSelectedNonAccount = state.timeAndPriceSelectedNonAccount.filter(
-        (items1) =>
-          !payload.some(
-            (items2) =>
-              items1.std_id === items2.std_id &&
-              items1.td_id === items2.td_id &&
-              items1.kickoff_date === items2.kickoff_date
-          )
-      );
-      state.totalPriceNonAccount = state.bookingDetailsNonAccountData.reduce((sum, items) => sum + items.sp_price, 0);
       state.bookingDetailsSelectedNonAccount = [];
       if (state.bookingDetailsNonAccountData.length === 0) {
         state.selectedStateNonAccount = false;
         state.totalPriceNonAccount = 0;
       }
+    },
+    onUserNonAccountInputing: (state, { payload }) => {
+      state.userNonAccount = {
+        ...state.userNonAccount,
+        bookingId: payload.bookingId,
+        [payload.name]: payload.value,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -166,6 +215,43 @@ const bookingDetailsNonAccountSlice = createSlice({
         state.bookingDetailsNonAccountError = action.payload;
       }
     );
+
+    //ການສົ່ງ request ໃນການເພີ່ມຂໍ້ມູນຂອງລູກຄ້າບໍ່ມີບັນຊີ
+    builder.addCase(fetchAddUserNonAccount.pending, (state, action) => {
+      state.bookingDetailsNonAccountLoading = true;
+    });
+    builder.addCase(fetchAddUserNonAccount.fulfilled, (state, action) => {
+      state.bookingDetailsNonAccountSuccess = true;
+      state.bookingDetailsNonAccountLoading = false;
+    });
+    builder.addCase(fetchAddUserNonAccount.rejected, (state, action) => {
+      state.bookingDetailsNonAccountLoading = false;
+      state.bookingDetailsNonAccountSuccess = false;
+      state.bookingDetailsNonAccountError = action.payload;
+    });
+
+    //ການສົ່ງ request ໃນການເຢືນຢັນການຈອງເດີ່ນໃຫ້ລູກຄ້າບໍ່ມີບັນຊີ
+    builder.addCase(fetchConfirmBookingNonAccount.pending, (state, action) => {
+      state.bookingDetailsNonAccountLoading = true;
+    });
+    builder.addCase(
+      fetchConfirmBookingNonAccount.fulfilled,
+      (state, action) => {
+        state.bookingDetailsNonAccountSuccess = true;
+        state.bookingDetailsNonAccountLoading = false;
+        state.totalPriceNonAccount = 0;
+        state.bookingDetailsSelectedNonAccount = [];
+        state.bookingDetailsNonAccountData = [];
+        state.selectedStateNonAccount = false;
+        state.timeAndPriceSelectedNonAccount = [];
+        state.alertSelectedNonAccount = [];
+      }
+    );
+    builder.addCase(fetchConfirmBookingNonAccount.rejected, (state, action) => {
+      state.bookingDetailsNonAccountLoading = false;
+      state.bookingDetailsNonAccountSuccess = false;
+      state.bookingDetailsNonAccountError = action.payload;
+    });
   },
 });
 
@@ -175,11 +261,13 @@ export const {
   onHandleSelectAllNonAccount,
   onClearSelectNonAccount,
   onShowAlertSameDataNonAccount,
+  onShowAlertCompareTimeNonAccount,
   onLoadCurrentSaveSelectedDataNonAccount,
   onSaveSelectedDataNonAccount,
   onSelectedBookingDetailsNonAccount,
   onSelectedAllBookingDetailsNonAccount,
   onClearBookingDetailsNonAccount,
   onDeleteSelectedDataNonAccount,
+  onUserNonAccountInputing,
 } = bookingDetailsNonAccountSlice.actions;
 export default bookingDetailsNonAccountSlice.reducer;

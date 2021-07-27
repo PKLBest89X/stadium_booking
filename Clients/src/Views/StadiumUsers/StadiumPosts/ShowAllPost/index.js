@@ -38,7 +38,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: "10rem",
+    paddingTop: "10rem",
+    paddingBottom: '10rem',
     boxShadow: "1px 1px 3px 1px rgba(0, 0, 0, .5)",
   },
 }));

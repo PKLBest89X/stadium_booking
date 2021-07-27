@@ -7,10 +7,14 @@ import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUs
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button } from "@material-ui/core";
+import { Button, Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { fetchAddBookingNonAccount } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
+
+import NotificationAlert from "../../../../Components/NotificationAlert";
+
+import ShowAllBooking from './ShowAllBooking'
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
@@ -20,6 +24,9 @@ const useStyles = makeStyles(() => ({
 
 const OverviewBooking = React.memo(({ ...rest }) => {
   const classes = useStyles();
+  const { notiName, notiState } = useShallowEqualSelector(
+    (state) => state.notification
+  );
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
   const { bookingNonAccountData } = useShallowEqualSelector(
     (state) => state.bookingNonAccount
@@ -70,18 +77,34 @@ const OverviewBooking = React.memo(({ ...rest }) => {
     }
   }, [dispatch, history, url]);
 
+  let alertSuccessBookingNonAccount = null;
+  if (notiName === "successBookingNonAccount" && notiState === true) {
+    alertSuccessBookingNonAccount = (
+      <NotificationAlert notiTitle="ສຳເລັດ" intervalTimeout={10000}>
+        <Box display="flex" alignItems="center">
+          <Typography variant="h4" color="textSecondary">
+            ການຈອງຂອງທ່ານສຳເລັດແລ້ວ!
+          </Typography>
+        </Box>
+      </NotificationAlert>
+    );
+  }
+
   return (
-    <PageLayout title="Stadium Booking" {...rest}>
-      <div className={classes.pageContainer}>
-        <Button
-          onClick={onGetCurrentBooking}
-          color="primary"
-          variant="contained"
-        >
-          ການຈອງຂອງລູກຄ້າທົ່ວໄປ
-        </Button>
-      </div>
-    </PageLayout>
+    <>
+      {alertSuccessBookingNonAccount}
+      <PageLayout title="Stadium Booking" {...rest}>
+        <div className={classes.pageContainer}>
+          <Button
+            onClick={onGetCurrentBooking}
+            color="primary"
+            variant="contained"
+          >
+            ການຈອງຂອງລູກຄ້າທົ່ວໄປ
+          </Button>
+        </div>
+      </PageLayout>
+    </>
   );
 });
 

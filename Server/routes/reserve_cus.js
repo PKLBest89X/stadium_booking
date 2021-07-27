@@ -182,7 +182,7 @@ router.post('/booking', verifyToken, async (req,res) => {
 }) // ເພີ່ມລາຍການຈອງ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
-router.post('/bookingfields', async (req,res) => {
+router.post('/booking/bookingfields', async (req,res) => {
     const data = req.body.data;
 
     for(let i=0; i < data.length; i++){
@@ -218,7 +218,7 @@ router.post('/bookingfields', async (req,res) => {
 }) // ເຮັດການຈອງໃຫ້ລູກຄ້າທີ່ມີບັນຊີ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
-router.put('/acceptBooking/:stadiumId/:bookingId', async (req,res) => {
+router.put('/booking/acceptBooking/:stadiumId/:bookingId', async (req,res) => {
     const book_id = req.params.bookingId;
     const stadium_id = req.params.stadiumId;
 
