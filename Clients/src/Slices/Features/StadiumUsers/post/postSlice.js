@@ -14,6 +14,7 @@ const initialState = {
   postSuccess: null,
   postRequestId: undefined,
   postError: null,
+  postAddError: null,
 };
 
 const postSlice = createSlice({
@@ -79,6 +80,7 @@ const postSlice = createSlice({
     });
     builder.addCase(fetchAddPost.fulfilled, (state, action) => {
       state.postLoading = false;
+      state.postSuccess = true;
       state.postsData = [];
       state.postsData = action.payload;
       state.postsDataSortByDate = [];
@@ -90,13 +92,14 @@ const postSlice = createSlice({
     });
     builder.addCase(fetchAddPost.rejected, (state, action) => {
       state.postLoading = false;
-      state.postError = action.payload;
+      state.postAddError = action.payload;
     });
     builder.addCase(fetchUpdatePost.pending, (state, action) => {
       state.postLoading = true;
     });
     builder.addCase(fetchUpdatePost.fulfilled, (state, action) => {
       state.postLoading = false;
+      state.postSuccess = true;
       state.postsData = [];
       state.postsData = action.payload;
       state.postsDataSortByDate = [];

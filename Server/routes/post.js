@@ -66,19 +66,8 @@ router.post("/addPost", (req, res) => {
   const image = null;
 
   if (!req.files) {
-    db.query("call post_add(?,?,?,?)", [stadium_id, title, description, image], (err, result) => {
-        if(err){
-          res.status(400).json({ error: err });
-        }else{
-          db.query("call get_post_byStadiumId(?)", [stadium_id], (err, result) => {
-            if (err) {
-              return res.status(400);
-            } 
-            return res.send(result[0]);
-          });
-        }
-      }
-    );
+    res.status(500)
+    res.send("Please choose field image to show");
   }else{
     let sampleFile = req.files.sampleFile;
     let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/postPics/${sampleFile.name}`;

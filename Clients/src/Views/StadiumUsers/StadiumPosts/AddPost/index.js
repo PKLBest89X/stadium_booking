@@ -59,6 +59,7 @@ const AddPost = React.memo(() => {
     "/assets/images/adminPics/postPics/addImage.jpg"
   );
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
+  const { postAddError } = useShallowEqualSelector((state) => state.posts);
   const { stadiumId_Admin } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -189,6 +190,7 @@ const AddPost = React.memo(() => {
             <Button type="submit" fullWidth color="primary" variant="contained">
               ສ້າງ Post
             </Button>
+            {postAddError ? <p>{postAddError}</p> : null}
           </Box>
         </form>
       </Container>

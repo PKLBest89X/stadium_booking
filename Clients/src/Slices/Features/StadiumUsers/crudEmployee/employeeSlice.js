@@ -61,6 +61,7 @@ const employeeSlice = createSlice({
     });
     builder.addCase(fetchAddEmployee.fulfilled, (state, action) => {
       state.employeeLoading = false;
+      state.employeeFetchSuccess = true;
       state.employeesData = [];
       state.employeesData = action.payload;
       state.employeeDataSortByDate = [];
@@ -68,7 +69,7 @@ const employeeSlice = createSlice({
       let newSort = slicePayload.sort(
         (a, b) => (new Date(a["regis_date"]) - new Date(b["regis_date"])) * -1
       );
-      state.stadiumsDataSortByDate = newSort;
+      state.employeeDataSortByDate = newSort;
     });
     builder.addCase(fetchAddEmployee.rejected, (state, action) => {
       state.employeeLoading = false;

@@ -83,7 +83,7 @@ const StadiumPosts = React.memo(({ ...rest }) => {
 
   const ShowEmptyPost = () => (
     <div className={classes.emptyView}>
-      <Typography variant="h3">ບໍ່ມີ Post ຂອງເດີ່ນ</Typography>
+      <Typography variant="h3" color="textSecondary">ບໍ່ມີ Post ຂອງເດີ່ນ</Typography>
     </div>
   );
 
