@@ -23,7 +23,6 @@ import {
   onClearTimesNonAccount,
   onFilterAvailableTimesNonAccount,
 } from "../../../../Slices/Features/StadiumUsers/BookingForNoAccount/getTimeNonAccountSlice";
-import moment from "moment";
 
 import {
   onSaveSelectedDataNonAccount,
@@ -62,6 +61,7 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
   const {
     bookingTimesNonAccountData,
     bookingTimesNonAccountSuccess,
+    filterByDateDataNonAccount,
     filterResultNonAccount,
     foundUnCheckoutNonAccount,
     stadiumsSelectedNonAccount,
@@ -119,7 +119,7 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
         );
         const getData = unwrapResult(fetchUnBooking);
         const filterRequest = {
-          dateData: moment(Date.now()).format("YYYY-MM-DD"),
+          dateData: filterByDateDataNonAccount,
           stadiumId: "",
           unBookingData: getData,
         };
@@ -129,7 +129,7 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
       }
     };
     filterByDate();
-  }, [dispatch, stadiumId_Admin]);
+  }, [dispatch, stadiumId_Admin, filterByDateDataNonAccount]);
 
   const onAddBookingDetails = useCallback(
     async (event) => {

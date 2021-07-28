@@ -20,7 +20,6 @@ import {
   onClearTimes,
   onFilterAvailableTimes,
 } from "../../../../../Slices/Features/Users/Booking/getTimeSlice";
-import moment from "moment";
 
 import {
   onSaveSelectedData,
@@ -47,6 +46,7 @@ const Booking = React.memo(() => {
   //ຂໍ້ມູນເວລາຈາກການ request
   const {
     bookingTimesData,
+    filterByDateData,
     filterResult,
     bookingTimesSuccess,
     foundUnCheckout,
@@ -113,7 +113,7 @@ const Booking = React.memo(() => {
         );
         const getData = unwrapResult(fetchUnBooking);
         const filterRequest = {
-          dateData: moment(Date.now()).format("YYYY-MM-DD"),
+          dateData: filterByDateData,
           stadiumId: "",
           unBookingData: getData,
         };
@@ -123,7 +123,7 @@ const Booking = React.memo(() => {
       }
     };
     filterByDate();
-  }, [dispatch, stadiumId]);
+  }, [dispatch, stadiumId, filterByDateData]);
 
   const onAddBookingDetails = useCallback(
     async (event) => {

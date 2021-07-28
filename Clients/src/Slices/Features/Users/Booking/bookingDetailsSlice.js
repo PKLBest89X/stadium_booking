@@ -23,6 +23,7 @@ const bookingDetailsSlice = createSlice({
   reducers: {
     onHandleSelectDate: (state, { payload }) => {
       if (state.dateSelected !== payload) {
+        state.dateSelected = payload;
         let changeDate = [];
         changeDate = state.timeAndPriceSelected.filter(
           (items1) =>

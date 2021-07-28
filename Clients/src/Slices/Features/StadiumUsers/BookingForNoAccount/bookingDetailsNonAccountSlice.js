@@ -34,6 +34,7 @@ const bookingDetailsNonAccountSlice = createSlice({
   reducers: {
     onHandleSelectDateNonAccount: (state, { payload }) => {
       if (state.dateSelectedNonAccount !== payload) {
+        state.dateSelectedNonAccount = payload;
         let changeDate = [];
         changeDate = state.timeAndPriceSelectedNonAccount.filter(
           (items1) =>
