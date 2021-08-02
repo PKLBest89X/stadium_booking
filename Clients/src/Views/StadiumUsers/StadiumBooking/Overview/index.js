@@ -7,18 +7,24 @@ import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUs
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Box, Typography } from "@material-ui/core";
+import { Box, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { fetchAddBookingNonAccount } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
 
 import NotificationAlert from "../../../../Components/NotificationAlert";
-import ShowBookingCalendar from "./ShowBookingCalendar";
+import ShowBookingCalendar from "./BookingCalendarTools";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
     padding: "2rem",
   },
+  floatingButton: {
+    position: 'fixed',
+    bottom: '20px',
+    right: '20px',
+    zIndex: 1
+  }
 }));
 
 const OverviewBooking = React.memo(({ ...rest }) => {
@@ -93,16 +99,10 @@ const OverviewBooking = React.memo(({ ...rest }) => {
     <>
       {alertSuccessBookingNonAccount}
       <PageLayout title="Stadium Booking" {...rest}>
-        <div className={classes.pageContainer}>
-          <Button
-            onClick={onGetCurrentBooking}
-            color="primary"
-            variant="contained"
-          >
-            ການຈອງຂອງລູກຄ້າທົ່ວໄປ
-          </Button>
-        </div>
-        <ShowBookingCalendar />
+        <ShowBookingCalendar currentBooking={onGetCurrentBooking} />
+        <Button color="primary" variant="contained" className={classes.floatingButton}>
+          ຈອງເດີ່ນ
+        </Button>
       </PageLayout>
     </>
   );

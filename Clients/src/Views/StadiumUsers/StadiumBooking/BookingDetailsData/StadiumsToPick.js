@@ -37,9 +37,9 @@ const useStyles = makeStyles((theme) => ({
     objectPosition: "center center",
     aspectRatio: "16/9",
     height: "calc(100vw / 10 - 1px)",
-    [theme.breakpoints.down('xs')]: {
-        height: "calc(100vw / 6 - 1px)",
-    }
+    [theme.breakpoints.down("xs")]: {
+      height: "calc(100vw / 6 - 1px)",
+    },
   },
 }));
 
@@ -59,13 +59,19 @@ const StadiumsToPick = React.memo(({ stadiums }) => {
     if (activeIndex === index && isActive === true) {
       setActiveToDo((prev) => ({ ...prev, isActive: false, activeIndex: -1 }));
       dispatch(
-        onFilterAvailableTimesNonAccount({ dateData: filterByDateDataNonAccount, stadiumId: "" })
+        onFilterAvailableTimesNonAccount({
+          dateData: filterByDateDataNonAccount,
+          stadiumId: "",
+        })
       );
       return;
     }
     setActiveToDo((prev) => ({ ...prev, isActive: true, activeIndex: index }));
     dispatch(
-      onFilterAvailableTimesNonAccount({ dateData: filterByDateDataNonAccount, stadiumId: payload })
+      onFilterAvailableTimesNonAccount({
+        dateData: filterByDateDataNonAccount,
+        stadiumId: payload,
+      })
     );
   };
 

@@ -10,6 +10,22 @@ router.use(express.json());
 const db = mysql.createConnection(dbconfig.db);
 
 
+
+router.get('/getWaterForPayment/:stadiumId', async function(req, res, next) {
+    const stadium_id = req.params.stadiumId;
+    await db.query("call payment_getWater(?)", [stadium_id],(err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+}) // ສະແດງລາຍຂໍ້ມູນດືີ່ມຂອງການຊຳລະ ||||||||||||||||||||||||||||||||||||||||||||||||||
 router.get('/', async function(req,res,next){
     const bid = req.body.bp_id;
 

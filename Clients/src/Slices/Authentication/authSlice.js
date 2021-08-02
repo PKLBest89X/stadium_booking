@@ -60,6 +60,7 @@ const authSlice = createSlice({
       const { requestId } = action.meta;
       if (state.loading === true && state.currentRequestId === requestId) {
         state.loading = false;
+        state.data = [];
         state.data.push(action.payload);
         state.currentRequestId = undefined;
       }
@@ -97,6 +98,7 @@ const authSlice = createSlice({
       const { requestId } = action.meta;
       if (state.loading === true && state.currentRequestId === requestId) {
         state.loading = false;
+        state.data = [];
         state.data.push(action.payload);
         state.currentRequestId = undefined;
       }

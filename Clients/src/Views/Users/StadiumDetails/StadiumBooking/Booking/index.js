@@ -10,7 +10,7 @@ import { useParams, useHistory } from "react-router-dom";
 import DateFnsUtils from "@date-io/date-fns";
 import "date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box, Button, Typography, Divider, Paper } from "@material-ui/core";
 
 import { fetchGetTimesToBooking } from "../../../../../middlewares/user/fetchBooking/fetchBooking";
 import { onClearStadiums } from "../../../../../Slices/Features/Users/Booking/getStadiumsSlice";
@@ -168,7 +168,7 @@ const Booking = React.memo(() => {
 
   if (notiName === "sameBookingAddList" && notiState === true) {
     alertSameDataFromSelected = (
-      <NotificationAlert notiTitle="ມີຂໍ້ມູນນີ້ໃນ list ແລ້ວ" >
+      <NotificationAlert notiTitle="ມີຂໍ້ມູນນີ້ໃນ list ແລ້ວ">
         {alertSelected.map((items, index) => {
           return (
             <Box key={index} display="flex" alignItems="center">
@@ -192,9 +192,21 @@ const Booking = React.memo(() => {
       {alertSameDataFromSelected}
       <ChildPageLayout title="Booking">
         <form onSubmit={onAddBookingDetails}>
-          {bookingStadiumsSuccess === true && (
-            <StadiumsToPick stadiums={bookingStadiumsData} />
-          )}
+          <Paper>
+            <Box padding="1rem">
+              <Box mb={2}>
+                <Typography variant="h4" color="textSecondary">
+                  ເລືອກຕາມສະໜາມ
+                </Typography>
+              </Box>
+              <Divider />
+              <Box mt={3}>
+                {bookingStadiumsSuccess === true && (
+                  <StadiumsToPick stadiums={bookingStadiumsData} />
+                )}
+              </Box>
+            </Box>
+          </Paper>
 
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <DatePickerBooking dateData={dateSelected} ref={datePickerRef} />

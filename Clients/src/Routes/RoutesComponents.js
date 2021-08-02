@@ -16,7 +16,9 @@ import StadiumEmployee from '../Views/StadiumUsers/StadiumEmployee/ShowAllEmploy
 import OverviewBooking from '../Views/StadiumUsers/StadiumBooking/Overview';
 import BookingView from "../Views/StadiumUsers/StadiumBooking/BookingView";
 import BookingDetailsData from '../Views/StadiumUsers/StadiumBooking/BookingDetailsData';
-import StadiumPayment from '../Views/StadiumUsers/StadiumPayment';
+import OverviewByBooking from '../Views/StadiumUsers/StadiumPayment/OverviewByBooking';
+import Payment from '../Views/StadiumUsers/StadiumPayment/Payment';
+
 import AdminBookingHistory from "../Views/StadiumUsers/AdminBookingHistory";
 import PaymentHistory from '../Views/StadiumUsers/PaymentHistory';
 import AdminAccountView from '../Views/StadiumUsers/Account/AccountView'
@@ -95,8 +97,12 @@ const RoutesComponents = ({ ...rest }) => {
           <BookingDetailsData {...rest} />
         </PrivateRoutesAdmin>
 
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-payment">
-          <StadiumPayment {...rest} />
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-payment" exact>
+          <OverviewByBooking {...rest} />
+        </PrivateRoutesAdmin>
+
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-payment/:paymentId">
+          <Payment {...rest} />
         </PrivateRoutesAdmin>
 
         <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/booking-history">

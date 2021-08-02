@@ -193,6 +193,11 @@ const EditStadiumDrink = React.memo(() => {
                       type="number"
                       margin="normal"
                       label="ລາຄາ - ເປັນກີບ"
+                      InputProps={{
+                        inputProps: {
+                          min: 0,
+                        },
+                      }}
                       name="drinkPrice"
                       value={drinkState.drinkPrice}
                       onChange={onDrinkPriceChange}

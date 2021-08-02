@@ -31,6 +31,11 @@ import bookingDetailsNonAccountSlice from '../Slices/Features/StadiumUsers/Booki
 import getStadiumsNonAccountSlice from '../Slices/Features/StadiumUsers/BookingForNoAccount/getStadiumsNonAccountSlice';
 import getTimesNonAccountSlice from '../Slices/Features/StadiumUsers/BookingForNoAccount/getTimeNonAccountSlice';
 
+import prePaymentSlice from '../Slices/Features/StadiumUsers/Payment/prePaymentSlice';
+import paymentSlice from '../Slices/Features/StadiumUsers/Payment/paymentSlice';
+import paymentDetailsSlice from '../Slices/Features/StadiumUsers/Payment/paymentDetailsSlice';
+import getDrinksSlice from '../Slices/Features/StadiumUsers/Payment/getDrinksSlice';
+
 const store = configureStore({
   reducer: {
     registerUser: registerUserSlice,
@@ -58,7 +63,11 @@ const store = configureStore({
     getStadiums: getStadiumsSlice,
     getStadiumsNonAccount: getStadiumsNonAccountSlice,
     getTimes: getTimesSlice,
-    getTimesNonAccount: getTimesNonAccountSlice
+    getTimesNonAccount: getTimesNonAccountSlice,
+    prePayment: prePaymentSlice,
+    payment: paymentSlice,
+    paymentDetails: paymentDetailsSlice,
+    getDrinks: getDrinksSlice,
   }, 
 });
 

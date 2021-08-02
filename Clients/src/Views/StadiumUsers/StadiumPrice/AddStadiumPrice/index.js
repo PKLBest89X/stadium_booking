@@ -19,6 +19,7 @@ import {
   Grid,
   Button,
   TextField,
+  Paper,
 } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 
@@ -133,7 +134,7 @@ const AddStadiumPrice = React.memo(() => {
     <div className={classes.pageContainer}>
       <Container maxwidth="false">
         <form onSubmit={addStadiumPrice}>
-          <Box mb={3}>
+          <Box mb={2}>
             <Typography color="textPrimary" variant="h2">
               ກຳນົດລາຄາເດີ່ນ
             </Typography>
@@ -141,11 +142,21 @@ const AddStadiumPrice = React.memo(() => {
           <Divider />
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-              <Box>
+              <Box mt={3}>
                 <div>
-                  <Box>
-                    <SelectStadiums selectedStadiums={onSelectedStadiums} />
-                  </Box>
+                  <Paper>
+                    <Box padding="1rem">
+                      <Box mb={2}>
+                        <Typography variant="h4" color="textSecondary">
+                          ເລືອກຕາມສະໜາມ
+                        </Typography>
+                      </Box>
+                      <Divider />
+                      <Box mt={3}>
+                        <SelectStadiums selectedStadiums={onSelectedStadiums} />
+                      </Box>
+                    </Box>
+                  </Paper>
 
                   <Box>
                     <TextField
@@ -154,6 +165,11 @@ const AddStadiumPrice = React.memo(() => {
                       margin="normal"
                       label="ລາຄາ - ເປັນກີບ"
                       name="stadiums_price"
+                      InputProps={{
+                        inputProps: {
+                          min: 0,
+                        },
+                      }}
                       value={priceState.stadiums_price}
                       onChange={onStadiumPriceChange}
                       variant="outlined"

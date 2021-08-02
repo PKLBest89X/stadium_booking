@@ -206,27 +206,40 @@ const BookingView = React.memo(({ ...rest }) => {
         <div className={classes.pageContainer}>
           <div className={classes.root}>
             <form onSubmit={onConfirmBooking}>
-              <Paper className={classes.paper}>
-                <UserNonAccount bookingId={bookingId} ref={userNonAccountRef} />
-              </Paper>
-              <Paper className={classes.paper}>
-                <BookingToolbar
-                  numSelected={bookingDetailsSelectedNonAccount.length}
-                  dataForDelete={bookingDetailsSelectedNonAccount}
-                />
-                <Divider />
-                {selectedStateNonAccount === true && (
-                  <BookingTable bookingDetails={bookingDetailsNonAccountData} />
-                )}
-                {selectedStateNonAccount === false && <ShowEmptyBooking />}
-              </Paper>
-              <Paper className={classes.paper}>
-                <TotalBookingPrice
-                  timeCancel={stateRef.current.time_cancelbooking}
-                  totalBookingPrice={totalPriceNonAccount}
-                  ref={totalBookingPriceRef}
-                />
-              </Paper>
+              <Box mb={3}>
+                <Typography color="textPrimary" variant="h2">
+                  ຈອງເດີ່ນເຕະບານ
+                </Typography>
+              </Box>
+              <Divider />
+              <Box mt={3}>
+                <Paper className={classes.paper}>
+                  <UserNonAccount
+                    bookingId={bookingId}
+                    ref={userNonAccountRef}
+                  />
+                </Paper>
+                <Paper className={classes.paper}>
+                  <BookingToolbar
+                    numSelected={bookingDetailsSelectedNonAccount.length}
+                    dataForDelete={bookingDetailsSelectedNonAccount}
+                  />
+                  <Divider />
+                  {selectedStateNonAccount === true && (
+                    <BookingTable
+                      bookingDetails={bookingDetailsNonAccountData}
+                    />
+                  )}
+                  {selectedStateNonAccount === false && <ShowEmptyBooking />}
+                </Paper>
+                <Paper className={classes.paper}>
+                  <TotalBookingPrice
+                    timeCancel={stateRef.current.time_cancelbooking}
+                    totalBookingPrice={totalPriceNonAccount}
+                    ref={totalBookingPriceRef}
+                  />
+                </Paper>
+              </Box>
             </form>
           </div>
         </div>

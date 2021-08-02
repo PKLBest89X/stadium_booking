@@ -12,7 +12,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import "date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box, Button, Typography, Paper, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { fetchGetStadiumsToBookingNonAccount } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
@@ -206,9 +206,21 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
       <PageLayout title="Information" {...rest}>
         <div className={classes.pageContainer}>
           <form onSubmit={onAddBookingDetails}>
-            {bookingStadiumsNonAccountSuccess === true && (
-              <StadiumsToPick stadiums={bookingStadiumsNonAccountData} />
-            )}
+            <Paper>
+              <Box padding="1rem">
+                <Box mb={2}>
+                  <Typography variant="h4" color="textSecondary">
+                    ເລືອກຕາມສະໜາມ
+                  </Typography>
+                </Box>
+                <Divider />
+                <Box mt={3}>
+                  {bookingStadiumsNonAccountSuccess === true && (
+                    <StadiumsToPick stadiums={bookingStadiumsNonAccountData} />
+                  )}
+                </Box>
+              </Box>
+            </Paper>
 
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <DatePickerBooking
