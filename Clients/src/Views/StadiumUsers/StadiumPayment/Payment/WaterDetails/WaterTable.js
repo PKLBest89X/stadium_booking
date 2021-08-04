@@ -5,7 +5,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TablePagination from "@material-ui/core/TablePagination";
-import { TableRow, Checkbox, IconButton } from "@material-ui/core";
+import { TableRow, Checkbox, IconButton, Typography } from "@material-ui/core";
 import WaterHeaderControl from "./WaterHeaderControl";
 import WaterTabControl from "./WaterTabControl";
 import moment from "moment";
@@ -19,6 +19,7 @@ import {
   onClearWaterDetails,
 } from "../../../../../Slices/Features/StadiumUsers/Payment/paymentDetailsSlice";
 import NumberFormat from "react-number-format";
+import { onPopupOpen } from "../../../../../Slices/Features/Popup/popupSlice";
 
 const descendingComparator = (a, b, orderBy) => {
   let valueA = a[orderBy];
@@ -118,9 +119,8 @@ const WaterTable = React.memo(({ waterDetails }) => {
   };
 
   const isSelected = (name) =>
-    waterDetailsSelected.findIndex(
-      (items) => items.td_id === name.td_id && items.std_id === name.std_id
-    ) !== -1;
+    waterDetailsSelected.findIndex((items) => items.stw_id === name.stw_id) !==
+    -1;
 
   const emptyRows =
     rowsPerPage -
@@ -174,17 +174,29 @@ const WaterTable = React.memo(({ waterDetails }) => {
                     >
                       {row.stw_name}
                     </TableCell>
-                    <TableCell align="right">{`${row.qty} ໂມງ`}</TableCell>
+                    <TableCell align="right">{`${row.qty}`}</TableCell>
                     <TableCell align="right">
                       <NumberFormat
-                        value={row.sp_price}
+                        value={row.stw_price}
                         displayType={"text"}
                         thousandSeparator={true}
                         suffix={" ກີບ"}
+                        renderText={(value) => (
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            component="p"
+                          >{`${value}`}</Typography>
+                        )}
                       />
                     </TableCell>
                     <TableCell align="right">
-                      <IconButton>
+                      <IconButton
+                        onClick={() => {
+                          dispatch(onClearWaterDetails());
+                          dispatch(onPopupOpen("editWaterPayment"));
+                        }}
+                      >
                         <EditIcon />
                       </IconButton>
                     </TableCell>

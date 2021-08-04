@@ -11,15 +11,16 @@ import {
   colors,
   makeStyles,
 } from "@material-ui/core";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
-import PeopleIcon from "@material-ui/icons/PeopleOutlined";
+import GroupIcon from '@material-ui/icons/Group';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
   },
   avatar: {
-    backgroundColor: colors.green[600],
+    backgroundColor: colors.red[600],
     height: 56,
     width: 56,
   },
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TotalFollowers = ({ className, ...rest }) => {
+const TotalEmployees = ({ className, ...rest }) => {
   const classes = useStyles();
 
   return (
@@ -41,17 +42,17 @@ const TotalFollowers = ({ className, ...rest }) => {
         <Grid container justify="space-between" spacing={3}>
           <Grid item>
             <Typography color="textSecondary" gutterBottom variant="h6">
-              ຍອດຜູ້ຕິດຕາມ
+              ພະນັກງານທັງໝົດ
             </Typography>
             <Box paddingTop="1rem">
               <Typography color="textSecondary" variant="h3">
-                2 ຄົນ
+                10 ຄົນ
               </Typography>
             </Box>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
-              <PeopleIcon />
+              <GroupIcon />
             </Avatar>
           </Grid>
         </Grid>
@@ -65,13 +66,13 @@ const TotalFollowers = ({ className, ...rest }) => {
             className={classes.differenceValue}
             variant="body2"
           >
-            1.000 ຄົນ
+            12 ຄົນ
           </Typography>
           <Typography
             color="textSecondary"
             variant="caption"
           >
-            ຕັ້ງແຕ່ 1 ເດືອນຜ່ານມາ
+            ຕັ້ງແຕ່ 2 ເດືອນຜ່ານມາ
           </Typography>
         </Box> */}
       </CardContent>
@@ -79,8 +80,8 @@ const TotalFollowers = ({ className, ...rest }) => {
   );
 };
 
-TotalFollowers.propTypes = {
+TotalEmployees.propTypes = {
   className: PropTypes.string,
 };
 
-export default TotalFollowers;
+export default TotalEmployees;

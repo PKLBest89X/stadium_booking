@@ -19,7 +19,7 @@ const StadiumBooking = ({ getTabChange, ...rest }) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  useEffect(() => getTabChange(3), [getTabChange]);
+  useEffect(() => getTabChange(2), [getTabChange]);
 
   useEffect(() => {
     let userToken = JSON.parse(localStorage.getItem("accessUserToken"));

@@ -12,12 +12,16 @@ const initialState = {
   selectedPaymentState: null,
   selectedWaterState: null,
   paymentDetailsSelected: [],
+  addQtyWater: 0,
+  updateQtyWater: 0,
+  waterSelecting: [],
   waterDetailsData: [],
   waterDetailsSelected: [],
   totalStadiumPrice: 0,
   totalWaterPrice: 0,
   total: 0,
   getMoney: 0,
+  thonMoney: 0,
   paymentDetailsError: null,
   paymentDetailsRequestId: undefined,
   onlyWater: null,
@@ -121,6 +125,40 @@ const paymentDetailsSlice = createSlice({
     },
 
     //ສຳລັບການຈັດການຂອງບິນນ້ຳ
+
+    onAddQtyWater: (state, { payload }) => {
+      state.addQtyWater = parseInt(payload);
+      if (state.waterSelecting.length > 0) {
+        state.waterSelecting = state.waterSelecting.map((items) => ({
+          ...items,
+          qty: state.addQtyWater,
+        }));
+      }
+    },
+
+    onUpdateQtyWater: (state, { payload }) => {},
+
+    onHandleClickWaters: (state, { payload }) => {
+      const selectedIndex = state.waterSelecting.findIndex(
+        (items) => items.stw_id === payload.stw_id
+      );
+      let newSelected = [];
+
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(state.waterSelecting, payload);
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(state.waterSelecting.slice(1));
+      } else if (selectedIndex === state.waterSelecting.length - 1) {
+        newSelected = newSelected.concat(state.waterSelecting.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          state.waterSelecting.slice(0, selectedIndex),
+          state.waterSelecting.slice(selectedIndex + 1)
+        );
+      }
+      state.waterSelecting = newSelected;
+    },
+
     onSelectedWaterDetails: (state, { payload }) => {
       const selectedIndex = state.waterDetailsSelected.findIndex(
         (items) => items.stw_id === payload.stw_id
@@ -149,15 +187,29 @@ const paymentDetailsSlice = createSlice({
     },
     onSaveSelectedWater: (state, { payload }) => {
       state.selectedWaterState = true;
-      state.waterDetailsData = state.waterDetailsData.map((items1) =>
-        payload.some((items2) =>
-          items1.stw_id === items2.stw_id
-            ? { ...items1, qty: items1.qty + items2.qty }
-            : items1
-        )
-      );
+      if (state.waterDetailsData.length > 0) {
+        //ການບວກຈຳນວນເຄື່ອງດື່ມທີ່ມີ id ຄືກັນຫຼາຍຕົວ
+        let combineArray = [];
+        combineArray = combineArray.concat(state.waterDetailsData, payload);
+        state.waterDetailsData = combineArray.reduce((acc, obj) => {
+          let foundItem = acc.find((items) => items.stw_id === obj.stw_id);
+          if (foundItem) {
+            foundItem.qty += obj.qty;
+            return acc;
+          }
+          acc.push(obj);
+          return acc;
+        }, []);
+        state.waterSelecting = [];
+      } else {
+        let addArray = [];
+        addArray = addArray.concat(state.waterDetailsData, payload);
+        state.waterDetailsData = addArray;
+        state.waterSelecting = [];
+      }
+
       state.totalWaterPrice = state.waterDetailsData.reduce(
-        (sum, items) => (sum + items.sp_price) * items.qty,
+        (sum, items) => items.stw_price * items.qty + sum,
         0
       );
       state.total = state.totalStadiumPrice + state.totalWaterPrice;
@@ -165,24 +217,25 @@ const paymentDetailsSlice = createSlice({
     onClearWaterDetails: (state) => {
       state.waterDetailsSelected = [];
     },
-    
+
     onUpdateSelectedWaterDetails: (state, { payload }) => {
       state.waterDetailsData = state.waterDetailsData.map((items) =>
         items.stw_id === payload.stw_id ? { ...items, qty: payload.qty } : items
       );
+
+      state.totalWaterPrice = state.waterDetailsData.reduce(
+        (sum, items) => sum + items.stw_price * items.qty,
+        0
+      );
+      state.total = state.totalStadiumPrice + state.totalWaterPrice;
+      state.waterDetailsSelected = [];
     },
     onDeleteSelectedWaterData: (state, { payload }) => {
       state.waterDetailsData = state.waterDetailsData.filter(
-        (items1) =>
-          !payload.some(
-            (items2) =>
-              items1.std_id === items2.std_id &&
-              items1.td_id === items2.td_id &&
-              items1.kickoff_date === items2.kickoff_date
-          )
+        (items1) => !payload.some((items2) => items1.stw_id === items2.stw_id)
       );
       state.totalWaterPrice = state.waterDetailsData.reduce(
-        (sum, items) => (sum + items.sp_price) * items.qty,
+        (sum, items) => sum + items.stw_price * items.qty,
         0
       );
       state.total = state.totalStadiumPrice + state.totalWaterPrice;
@@ -195,7 +248,10 @@ const paymentDetailsSlice = createSlice({
     },
     onSaveGetMoney: (state, { payload }) => {
       state.getMoney = parseInt(payload);
-    }
+      state.thonMoney =
+        parseInt(payload) -
+        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice));
+    },
   },
   extraReducers: (builder) => {
     //ການສົ່ງ request ໃນການເພີ່ມລາຍລະອຽດການຈອງເດີ່ນ
@@ -269,12 +325,15 @@ export const {
   onSelectedAllPaymentDetails,
   onClearPaymentDetails,
   onDeleteSelectedPaymentData,
+  onAddQtyWater,
+  onUpdateQtyWater,
+  onHandleClickWaters,
   onSelectedWaterDetails,
   onSelectedAllWaterDetails,
   onSaveSelectedWater,
   onClearWaterDetails,
   onUpdateSelectedWaterDetails,
   onDeleteSelectedWaterData,
-  onSaveGetMoney
+  onSaveGetMoney,
 } = paymentDetailsSlice.actions;
 export default paymentDetailsSlice.reducer;

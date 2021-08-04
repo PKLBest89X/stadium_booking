@@ -13,7 +13,7 @@ const StadiumInformation = ({ getTabChange, ...rest }) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  useEffect(() => getTabChange(2), [getTabChange]);
+  useEffect(() => getTabChange(0), [getTabChange]);
 
   useEffect(() => {
     let userToken = JSON.parse(localStorage.getItem('accessUserToken'))

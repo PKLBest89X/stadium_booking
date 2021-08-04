@@ -55,7 +55,7 @@ app.use('/price', price);
 app.use('/field',field);
 app.use('/cancel_res', cancel_res);
 app.use('/bill', bill);
-app.use('/water_bill', water_bill);
+app.use('/water_paid', water_bill);
 app.use('/field_bill', field_bill);
 app.use('/admin_ac', admin_ac);
 app.use('/post', post);

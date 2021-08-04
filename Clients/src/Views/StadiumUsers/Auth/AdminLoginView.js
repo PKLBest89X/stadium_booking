@@ -87,10 +87,10 @@ const AdminLoginView = () => {
           >
             <Box mb={3}>
               <Typography color="textPrimary" variant="h2">
-                Sign in
+                ເຂົ້າສູ່ລະບົບ
               </Typography>
               <Typography color="textSecondary" gutterBottom variant="body2">
-                Sign in on the internal platform
+                ປ້ອນຂໍ້ມູນເພື່ອເຂົ້າສູ່ເດີ່ນຂອງທ່ານ.
               </Typography>
             </Box>
             <TextField
@@ -121,7 +121,7 @@ const AdminLoginView = () => {
                 type="submit"
                 variant="contained"
               >
-                {loading === true ? "loading" : "Sign in now"}
+                {loading === true ? "loading" : "Login"}
               </Button>
               {error && <p>{error}</p>}
             </Box>

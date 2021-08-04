@@ -88,11 +88,10 @@ const StadiumDetails = React.memo(({ ...rest }) => {
   const tabChange = (payload) => setValue(payload);
 
   useEffect(() => {
-    const pathName = ["/", "/posts", "/information", "/stadium-booking"];
+    const pathName = ["/", "/posts", "/stadium-booking"];
     if (window.location.href.match(pathName[0])) setValue(0);
     if (window.location.href.match(pathName[1])) setValue(1);
     if (window.location.href.match(pathName[2])) setValue(2);
-    if (window.location.href.match(pathName[3])) setValue(3);
   }, []);
 
   useEffect(() => {

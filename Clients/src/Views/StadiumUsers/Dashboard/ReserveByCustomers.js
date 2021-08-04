@@ -30,13 +30,13 @@ const ReserveByCustomers = ({ className, ...rest }) => {
   const devices = [
     {
       title: "ຈອງຜ່ານເວັບໄຊ",
-      value: 63,
+      value: 2,
       icon: LaptopMacIcon,
       color: colors.indigo[500],
     },
     {
       title: "ໂທຈອງ",
-      value: 37,
+      value: 2,
       icon: TabletIcon,
       color: colors.red[600],
     },
@@ -91,8 +91,8 @@ const ReserveByCustomers = ({ className, ...rest }) => {
               <Typography color="textPrimary" variant="body1">
                 {title}
               </Typography>
-              <Typography style={{ color }} variant="h2">
-                {value}%
+              <Typography style={{ color }} variant="h3">
+                {value} ລາຍການ
               </Typography>
             </Box>
           ))}

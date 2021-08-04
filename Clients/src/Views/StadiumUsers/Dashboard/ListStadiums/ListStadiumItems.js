@@ -6,7 +6,8 @@ const useStyles = makeStyles(() => ({
   img: {
     display: "block",
     width: "100%",
-    height: "100%",
+    height: "calc(100vw / 3 - 1px)",
+    objectFit: "cover",
   },
 }));
 const ListStadiumItems = ({ items }) => {
@@ -14,7 +15,7 @@ const ListStadiumItems = ({ items }) => {
   return (
     <div>
       <Paper>
-        <img className={classes.img} src={items.imgPath} alt={items.label} />
+        <img className={classes.img} src={`/assets/images/adminPics/stadiumDetailsPics/${items.picture}`} alt={items.std_name} />
       </Paper>
     </div>
   );

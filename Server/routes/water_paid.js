@@ -1,11 +1,20 @@
-const bodyParser = require('body-parser');
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-const mysql = require('mysql');
-const dbconfig = require('../dbConnect/dbconnect');
+const mysql = require("mysql");
+const dbconfig = require("../dbConnect/dbconnect");
+
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
+
+
+router.use(express.static("public"));
+router.use(express.static("upload"));
 
 router.use(express.json());
+router.use(cookieParser());
+router.use(cors());
 
 const db = mysql.createConnection(dbconfig.db);
 

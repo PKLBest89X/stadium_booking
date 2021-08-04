@@ -67,10 +67,10 @@ const UserRegisterView = React.memo(() => {
           >
             <Box mb={3}>
               <Typography color="textPrimary" variant="h2">
-                Create new account
+                ລົງທະບຽນບັນຊີໃໝ່
               </Typography>
               <Typography color="textSecondary" gutterBottom variant="body2">
-                Use your email to create new account
+                ປ້ອນຂໍ້ມູນຂອງທ່ານເພື່ອລົງທະບຽນບັນຊີໃໝ່ຂອງທ່ານ.
               </Typography>
             </Box>
             <TextField
@@ -130,13 +130,13 @@ const UserRegisterView = React.memo(() => {
                 type="submit"
                 variant="contained"
               >
-                {loading === true ? 'Loading...' : 'Sign up now'}
+                {loading === true ? 'Loading...' : 'Sign up'}
               </Button>
             </Box>
             <Typography color="textSecondary" variant="body1">
-              Have an account?{" "}
+              ມີບັນຊີຢູ່ແລ້ວ?{" "}
               <Link to="/login" variant="h6">
-                Sign in
+                Login
               </Link>
             </Typography>
             {error && <p>{error}</p>}

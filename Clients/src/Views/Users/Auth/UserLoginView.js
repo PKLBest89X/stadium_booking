@@ -62,10 +62,10 @@ const AdminLoginView = React.memo(() => {
           >
             <Box mb={3}>
               <Typography color="textPrimary" variant="h2">
-                Sign in
+                ເຂົ້າສູ່ລະບົບຂອງຜູ້ໃຊ້
               </Typography>
               <Typography color="textSecondary" gutterBottom variant="body2">
-                Sign in on the internal platform
+                ປ້ອນຂໍ້ມູນເພື່ອເຂົ້າສູ່ລະບົບດ້ວຍບັນຊີຂອງທ່ານ.
               </Typography>
             </Box>
             <TextField
@@ -96,11 +96,11 @@ const AdminLoginView = React.memo(() => {
                 type="submit"
                 variant="contained"
               >
-                {loading === true ? "loading" : "Sign in now"}
+                {loading === true ? "loading" : "Login"}
               </Button>
             </Box>
             <Typography color="textSecondary" variant="body1">
-              Don&apos;t have an account? <Link to="/register">ລົງທະບຽນ</Link>
+              ທ່ານຍັງບໍ່ມີບັນຊີ? <Link to="/register">ລົງທະບຽນ</Link>
             </Typography>
             {error && <p>{error}</p>}
           </form>

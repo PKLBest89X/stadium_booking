@@ -75,18 +75,18 @@ router.post('/openPayment/:stadiumId', verifyToken, async (req,res) => {
         }
         const staff_id = authData.data;
         const stadiumId = req.params.stadiumId;
-        await db.query("select * from tbbooking_payment where su_id=?", [staff_id], async (err, result) => {
+        await db.query("select * from tbbooking_payment where su_id=? and st_id=?", [staff_id, stadiumId], async (err, result) => {
             if (err) {
                 return res.status(400).send("ເກີດຂໍ້ຜິດພາດ!!");
             }
             if (result.length > 0) {
-              await db.query("select bp_id,payment_status from tbbooking_payment where su_id=? ORDER BY bp_id DESC LIMIT 0, 1", [staff_id], async (err,resu) => {
+              await db.query("select bp_id,payment_status from tbbooking_payment where su_id=? and st_id=? ORDER BY bp_id DESC LIMIT 0, 1", [staff_id, stadiumId], async (err,resu) => {
                   if((resu[0].payment_status === "ຍັງບໍ່ຈ່າຍ")){
                       res.status(200).send(resu);
                   }else{
                     await db.query("select Max(bp_id) as mid from tbbooking_payment where st_id=?", [stadiumId], async (err, resu) => {
-                        const wid = resu[0].mid.substring(6);
-                        const cd = resu[0].mid.substring(0,6);
+                        const wid = resu[0].mid.substring(7);
+                        const cd = resu[0].mid.substring(0,7);
                         const nb = parseInt(wid,10)+1;
                         const str_id = nb.toString();
                         var nid = "";
@@ -101,7 +101,7 @@ router.post('/openPayment/:stadiumId', verifyToken, async (req,res) => {
                                 console.log(err);
                                 res.send("Something Wrong")
                             }else{
-                                db.query("select bp_id,payment_status from tbbooking_payment where su_id=? ORDER BY b_id DESC LIMIT 0, 1", [staff_id], (err,bid) => {
+                                db.query("select bp_id,payment_status from tbbooking_payment where su_id=? and st_id=? ORDER BY bp_id DESC LIMIT 0, 1", [staff_id, stadiumId], (err,bid) => {
                                     if(err) return res.send(err).status(400)
                                     res.status(200).send(bid);
                                 })
@@ -120,7 +120,7 @@ router.post('/openPayment/:stadiumId', verifyToken, async (req,res) => {
                             console.log(err);
                             res.send("Something Wrong")
                         }else{
-                            db.query("select bp_id,payment_status from tbbooking_payment where su_id=? ORDER BY b_id DESC LIMIT 0, 1", [staff_id], (err,bid) => {
+                            db.query("select bp_id,payment_status from tbbooking_payment where su_id=? and st_id=? ORDER BY bp_id DESC LIMIT 0, 1", [staff_id, stadiumId], (err,bid) => {
                                 if(err) return res.send(err).status(400)
                                 res.status(200).send(bid);
                             })
@@ -152,15 +152,14 @@ router.post('/paymentfield', async (req,res) => {
     // }
 
     for(let i=0; i<data.length; i++){
-        db.query("call payment_field(?,?,?,?)", [data[i].bp_id,data[i].std_id,data[i].td_id,data[i].price], (err2,result1) => {
+        db.query("call payment_field(?,?,?,?)", [data[i].bp_id,data[i].std_id,data[i].td_id,data[i].sp_price], (err2,result1) => {
             if(err2){
                 return res.status(400).send(err2);
             }
         }) // ເພີ່ມຂໍ້ມູນເດີ່ນທີ່ຈອງໂດຍພະນັກງານ
     }
     
-    res.status(200)
-    res.send("Reserve Complete");
+    res.sendStatus(200)
 
         
 }) // ເພີ່ມລາຍລະອຽດຊຳລະຄ່າເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -184,22 +183,21 @@ router.post('/paymentwater', async (req,res) => {
     // }
 
     for(let i=0; i<data.length; i++){
-        const data = req.body.data;
-        db.query("call payment_water(?,?,?,?)", [data[i].bp_id,data[i].stw_id,data[i].qty,data[i].price], (err2,result1) => {
+        db.query("call payment_water(?,?,?,?)", [data[i].bp_id,data[i].stw_id,data[i].qty,data[i].stw_price], (err2,result1) => {
             if(err2){
                 return res.status(400).send(err2);
             }
         }) // ເພີ່ມຂໍ້ມູນເດີ່ນທີ່ຈອງໂດຍພະນັກງານ
     }
     
-    res.status(200)
-    res.send("Reserve Complete");
+    res.sendStatus(200)
 
         
 }) // ເພີ່ມລາຍລະອຽດຊຳລະຄ່ານ້ຳ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
 router.put('/updateBookingSubStatus', async (req, res) => {
+    const data = req.body.data;
     for(let i=0; i<data.length; i++){
         db.query("call update_bookingSubStatus(?,?,?,?)", [data[i].b_id,data[i].std_id,data[i].td_id,data[i].kickoff_date], (err2,result1) => {
             if(err2){
@@ -207,8 +205,7 @@ router.put('/updateBookingSubStatus', async (req, res) => {
             }
         }) // ເພີ່ມຂໍ້ມູນເດີ່ນທີ່ຈອງໂດຍພະນັກງານ
     }
-    res.status(200)
-    res.send("Reserve Complete");
+    res.sendStatus(200)
 })//ການປັບ status ຂອງບິນຈອງທີ່ຍັງຈ່າຍບໍ່ໝົດ ຫຼືໝົດແລ້ວ
 
 router.put('/updateBookingStatus', async function(req,res,next){
@@ -216,28 +213,26 @@ router.put('/updateBookingStatus', async function(req,res,next){
     
     await db.query("call update_bookingStatus(?)" ,[pid], (err, result) => {
         if(err){
-            res.status(400)
+            res.sendStatus(400)
             console.log(err);
         }else{
-            res.status(200)
-            res.send("Reserve Complete");
+            res.sendStatus(200)
         }
     })
 }) // ປັບ status ຂອງການຈອງທີ່ຈ່າຍຕາມການຈອງໝົດແລ້ວ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
-router.put('/closeBill/:stadiumId/:paymentId', async function(req,res,next){
-    const stadiumId = req.params.stadiumId;
+router.put('/closeBill/:bookingId/:paymentId', async function(req,res,next){
+    const bookingId = req.params.bookingId;
     const pid = req.params.paymentId;
     const wt = req.body.total_drinkingprice;
     const st = req.body.total_stadiumprice;
     
-    await db.query("call close_bill(?,?,?,?)" ,[stadiumId,wt,st,pid], (err, result) => {
+    await db.query("call close_bill(?,?,?,?)" ,[bookingId,wt,st,pid], (err, result) => {
         if(err){
-            res.status(400)
+            res.sendStatus(400)
             console.log(err);
         }else{
-            res.status(200)
-            res.send("Payment Completed!");
+            res.sendStatus(200)
         }
     })
 }) // ສໍາເລັດການຊໍາລະເງີນ ||||||||||||||||||||||||||||||||||||||||||||||||||

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -11,6 +11,9 @@ import {
 } from "../../../../Slices/Features/StadiumUsers/Reports/reportReserveSlice";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
+
+import { fetchGetStadiumDetails } from "../../../../middlewares/stadiumUser/fetchCRUDStadium/fetchStadiumDetails";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,9 +36,13 @@ const useStyles = makeStyles((theme) => ({
 
 const ListStadiums = React.memo(() => {
   const classes = useStyles();
+  const { stadiumId_Admin } = useParams();
   const theme = useTheme();
   const { activeStep } = useShallowEqualSelector(
     (state) => state.reportReserve
+  );
+  const { stadiumsData } = useShallowEqualSelector(
+    (state) => state.stadiumDetails
   );
   const tutorialSteps = [
     {
@@ -61,6 +68,10 @@ const ListStadiums = React.memo(() => {
   ];
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(fetchGetStadiumDetails(stadiumId_Admin));
+  }, [dispatch, stadiumId_Admin]);
+
   const onSlide = (step) => {
     dispatch(handleStepChange(step));
   };
@@ -68,7 +79,7 @@ const ListStadiums = React.memo(() => {
   return (
     <div className={classes.root}>
       <Carousel animation="slide" autoPlay={false} timeout={500}>
-        {tutorialSteps.map((item, index) => (
+        {stadiumsData.map((item, index) => (
           <ListStadiumItems key={index} items={item} />
         ))}
       </Carousel>

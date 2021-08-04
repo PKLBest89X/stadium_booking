@@ -20,10 +20,13 @@ import PaymentTable from "./PaymentDetails/PaymentTable";
 import PaymentToolbar from "./PaymentDetails/PaymentToolbar";
 import WaterToolbar from "./WaterDetails/WaterToolbar";
 import WaterTable from "./WaterDetails/WaterTable";
+import AddWaterPayment from "./WaterDetails/AddWaterPaymentForm";
+import EditWaterPayment from "./WaterDetails/EditWaterPaymentForm";
 import CustomerDetails from "./CustomerDetails";
 import SummarizePayment from "./SummarizePayment";
-import ConfirmPayment from "./ConfirmPayment";
+import ConfirmPayment from "./WaterDetails/ConfirmPayment";
 import moment from "moment";
+import { fetchGetWaterForPayment } from "../../../../middlewares/stadiumUser/fetchPayment/fetchPayment";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
@@ -53,6 +56,8 @@ const BookingView = React.memo(({ ...rest }) => {
   const dispatch = useDispatch();
   const customerRef = useRef();
   const totalPaymentPriceRef = useRef();
+
+  const { watersData } = useShallowEqualSelector((state) => state.getDrinks);
 
   const {
     selectedPaymentState,
@@ -100,6 +105,11 @@ const BookingView = React.memo(({ ...rest }) => {
     }
   }, [history, checkPaymentResult]);
 
+  //ເອົາຂໍ້ມູນດື່ມເພື່ອໃຊ້ໃນການຂາຍ
+  useEffect(() => {
+    dispatch(fetchGetWaterForPayment(stadiumId_Admin));
+  }, [dispatch, stadiumId_Admin]);
+
   const ShowEmptyPayment = () => (
     <div className={classes.emptyView}>
       <Typography variant="h4" color="textSecondary">
@@ -116,11 +126,33 @@ const BookingView = React.memo(({ ...rest }) => {
     </div>
   );
 
+  let addWaterPayment = null;
+  if (popupName === "addWaterPayment" && isOpen === true) {
+    addWaterPayment = (
+      <PopupLayout customWidth={true}>
+        <AddWaterPayment watersData={watersData} />
+      </PopupLayout>
+    );
+  }
+
+  let editWaterPayment = null;
+  if (popupName === "editWaterPayment" && isOpen === true) {
+    editWaterPayment = (
+      <PopupLayout>
+        <EditWaterPayment watersData={waterDetailsSelected} />
+      </PopupLayout>
+    );
+  }
+
   let conformPaymentForm = null;
   if (popupName === "confirmPayment" && isOpen === true) {
     conformPaymentForm = (
-      <PopupLayout customHeight={true}>
-        <ConfirmPayment userNonAccount={customerInfo} />
+      <PopupLayout customWidth={true}>
+        <ConfirmPayment
+          totalStadiumPrice={totalStadiumPrice}
+          totalWaterPrice={totalWaterPrice}
+          total={total}
+        />
       </PopupLayout>
     );
   }
@@ -162,6 +194,8 @@ const BookingView = React.memo(({ ...rest }) => {
   };
   return (
     <>
+      {addWaterPayment}
+      {editWaterPayment}
       {alertNonDataPayment}
       {alertLowPrice}
       {conformPaymentForm}

@@ -1,22 +1,18 @@
-import ShoppingBasket from "@material-ui/icons/ShoppingBasket";
-import FavoriteIcon from "@material-ui/icons/Favorite";
+import HomeIcon from "@material-ui/icons/Home";
+import Assignment from "@material-ui/icons/Assignment";
 import Book from "@material-ui/icons/Book";
+
 
 export const tabRoutesData = [
   {
-    title: "ໜ້າຫຼັກ",
+    title: "ກ່ຽວກັບເດີ່ນ",
     path: "",
-    icon: <ShoppingBasket />,
+    icon: <HomeIcon />,
   },
   {
     title: "Post ຂອງເດີ່ນ",
     path: "/posts",
-    icon: <ShoppingBasket />,
-  },
-  {
-    title: "ກ່ຽວກັບເດີ່ນ",
-    path: "/information",
-    icon: <FavoriteIcon />,
+    icon: <Assignment />,
   },
   {
     title: "ຈອງເດີ່ນ",

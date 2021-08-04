@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { lighten, makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import { Tooltip, Toolbar, Typography, Button } from "@material-ui/core";
@@ -6,11 +6,12 @@ import clsx from "clsx";
 import Cancel from "@material-ui/icons/Cancel";
 import Refresh from "@material-ui/icons/Refresh";
 import PropTypes from "prop-types";
-import { useRouteMatch, useHistory } from "react-router-dom";
 
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import { onDeleteSelectedWaterData } from "../../../../../Slices/Features/StadiumUsers/Payment/paymentDetailsSlice";
+import { onPopupOpen } from "../../../../../Slices/Features/Popup/popupSlice";
+import { onNotiClose } from "../../../../../Slices/Features/Notification/NotificationSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,8 +35,6 @@ const useStyles = makeStyles((theme) => ({
 
 const WaterToolbar = React.memo((props) => {
   const classes = useStyles();
-  const history = useHistory();
-  const { url } = useRouteMatch();
   const dispatch = useDispatch();
   const { numSelected, dataForDelete } = props;
 
@@ -78,7 +77,10 @@ const WaterToolbar = React.memo((props) => {
       ) : (
         <Tooltip title="ເພີ່ມລາຍການຈອງ">
           <Button
-            onClick={() => history.push(`${url}/manage`)}
+            onClick={() => {
+              dispatch(onPopupOpen("addWaterPayment"));
+              dispatch(onNotiClose());
+            }}
             color="primary"
             variant="contained"
           >

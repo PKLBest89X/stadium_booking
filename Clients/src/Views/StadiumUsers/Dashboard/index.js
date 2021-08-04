@@ -8,7 +8,7 @@ import { useShallowEqualSelector } from "../../../Components/useShallowEqualSele
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import TotalCustomers from "./TotalCustomers";
+import TotalEmployees from "./TotalEmployees";
 import TotalFollowers from "./TotalFollowers";
 import TotalReserves from "./TotalReserves";
 import TotalProfit from "./TotalProfit";
@@ -53,7 +53,7 @@ const DashboardView = ({ ...rest }) => {
       <div className={classes.pageContainer}>
         <Grid container spacing={3}>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
-            <TotalCustomers />
+            <TotalEmployees />
           </Grid>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalFollowers />

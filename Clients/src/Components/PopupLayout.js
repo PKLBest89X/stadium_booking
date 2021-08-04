@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 
   formLayout: {
     flex: "1 1 auto",
-    maxWidth: "600px",
     position: "relative",
     margin: "1rem",
     overflow: "hidden",
@@ -34,6 +33,12 @@ const useStyles = makeStyles((theme) => ({
   },
   defaultHeight: {
     height: "70%",
+  },
+  widthFromProps: {
+    maxWidth: 960,
+  },
+  defaultWidth: {
+    maxWidth: 600,
   },
   appbarTop: {
     zIndex: 11,
@@ -94,7 +99,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PopupLayout = forwardRef(
-  ({ children, title, customHeight = false, ...rest }, ref) => {
+  (
+    { children, title, customHeight = false, customWidth = false, ...rest },
+    ref
+  ) => {
     const classes = useStyles();
     const modalRef = useRef();
     const dispatch = useDispatch();
@@ -118,7 +126,9 @@ const PopupLayout = forwardRef(
         <div
           className={clsx(classes.formLayout, {
             [classes.heightFromProps]: customHeight === true,
-            [classes.defaultHeight]: customHeight === false
+            [classes.defaultHeight]: customHeight === false,
+            [classes.widthFromProps]: customWidth === true,
+            [classes.defaultWidth]: customWidth === false,
           })}
           ref={ref}
         >

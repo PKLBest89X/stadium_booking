@@ -23,6 +23,7 @@ const initialState = {
   getAllBookingDetailsError: null,
   getAllBookingDetailsRequestId: undefined,
   customerInfo: {
+    bookingId: "",
     customerfirstName: "",
     customerlastName: "",
     customerType: "",
@@ -44,6 +45,7 @@ const prePaymentSlice = createSlice({
       if (foundData && foundData.profile === "ໂທຈອງ") {
         state.customerInfo = {
           ...state.customerInfo,
+          bookingId: foundData.b_id,
           customerfirstName: foundData.c_name,
           customerlastName: foundData.c_surname,
           customerType: "ໂທຈອງ",
@@ -52,6 +54,7 @@ const prePaymentSlice = createSlice({
       } else {
         state.customerInfo = {
           ...state.customerInfo,
+          bookingId: foundData.b_id,
           customerfirstName: foundData.c_name,
           customerlastName: foundData.c_surname,
           customerType: "ຈອງຜ່ານເວັບ",

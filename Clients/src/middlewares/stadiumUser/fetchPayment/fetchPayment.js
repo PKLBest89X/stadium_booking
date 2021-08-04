@@ -54,7 +54,7 @@ export const fetchGetWaterForPayment = createAsyncThunk(
         return;
       }
       const getWaterForPayment = await Axios.get(
-        `http://localhost:5050/reserve_paid/getWaterForPayment/${params}`
+        `http://localhost:5050/water_paid/getWaterForPayment/${params}`
       );
       return getWaterForPayment.data;
     } catch (err) {
@@ -156,7 +156,7 @@ export const fetchConfirmPayment = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const conformPayment = await Axios.put(
-        `http://localhost:5050/reserve_paid/acceptForNonAccount/${data.stadiumId}/${data.paymentId}`,
+        `http://localhost:5050/reserve_paid/closeBill/${data.bookingId}/${data.paymentId}`,
         {
           total_drinkingprice: data.total_waterPrice,
           total_stadiumprice: data.total_stadiumPrice,
