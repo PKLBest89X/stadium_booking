@@ -119,9 +119,11 @@ const ConfirmPayment = React.memo(
       );
     }
 
-    const findingBookingFromPaymentDetails = (array1, array2) => {
+    const findingBookingFromPaymentDetails = (bookingId, array1, array2) => {
       let remainData = [];
-      remainData = array1.filter(
+      remainData = array1.filter((items) => items.b_id === bookingId);
+      let remainData2 = [];
+      remainData2 = remainData.filter(
         (items1) =>
           !array2.some(
             (items2) =>
@@ -131,93 +133,108 @@ const ConfirmPayment = React.memo(
               items1.kickoff_date === items2.kickoff_date
           )
       );
-      if (remainData.length > 0) {
+      if (remainData2.length > 0) {
         return 0;
       } else {
         return 1;
       }
     };
 
-    const fetchingAddPaymentDetails = useCallback(async (paymentDetails) => {
-      try {
-        const addPaymentDetails = await dispatch(
-          fetchAddPaymentFields(paymentDetails)
-        );
-        const getResponse = unwrapResult(addPaymentDetails);
-        return getResponse;
-      } catch (err) {
-        console.log(err);
-        return 0;
-      }
-    }, [dispatch]);
-
-    const fetchingAddWaterDetails = useCallback(async (waterDetails) => {
-      try {
-        const addWaterDetails = await dispatch(
-          fetchAddPaymentWaters(waterDetails)
-        );
-        const getResponse = unwrapResult(addWaterDetails);
-        return getResponse;
-      } catch (err) {
-        console.log(err);
-        return 0;
-      }
-    }, [dispatch]);
-
-    const fetchingConfirmPayment = useCallback(async (data) => {
-      try {
-        const confirmPayment = await dispatch(fetchConfirmPayment(data));
-        const getResponse = unwrapResult(confirmPayment);
-        return getResponse;
-      } catch (err) {
-        console.log(err);
-        return 0;
-      }
-    }, [dispatch]);
-
-    const fetchingUpdateBookingSubStatus = useCallback(async (array1, array2) => {
-      try {
-        let remainData = [];
-        remainData = array1.filter((items1) =>
-          array2.some(
-            (items2) =>
-              items1.b_id === items2.b_id &&
-              items1.std_id === items2.std_id &&
-              items1.td_id === items2.td_id &&
-              items1.kickoff_date === items2.kickoff_date
-          )
-        );
-        if (remainData.length > 0) {
-          const updateBookingSubStatus = await dispatch(
-            fetchUpdateBookingSubStatus(remainData)
+    const fetchingAddPaymentDetails = useCallback(
+      async (paymentDetails) => {
+        try {
+          const addPaymentDetails = await dispatch(
+            fetchAddPaymentFields(paymentDetails)
           );
-          const getResponse = unwrapResult(updateBookingSubStatus);
+          const getResponse = unwrapResult(addPaymentDetails);
           return getResponse;
+        } catch (err) {
+          console.log(err);
+          return 0;
         }
-      } catch (err) {
-        console.log(err);
-        return 0;
-      }
-    }, [dispatch]);
+      },
+      [dispatch]
+    );
 
-    const fetchingUpdateBookingStatus = useCallback(async (bookingId) => {
-      try {
-        const updateBookingStatus = await dispatch(
-          fetchUpdateBookingStatus(bookingId)
-        );
-        const getResponse = unwrapResult(updateBookingStatus);
-        return getResponse;
-      } catch (err) {
-        console.log(err);
-        return 0;
-      }
-    }, [dispatch]);
+    const fetchingAddWaterDetails = useCallback(
+      async (waterDetails) => {
+        try {
+          const addWaterDetails = await dispatch(
+            fetchAddPaymentWaters(waterDetails)
+          );
+          const getResponse = unwrapResult(addWaterDetails);
+          return getResponse;
+        } catch (err) {
+          console.log(err);
+          return 0;
+        }
+      },
+      [dispatch]
+    );
+
+    const fetchingConfirmPayment = useCallback(
+      async (data) => {
+        try {
+          const confirmPayment = await dispatch(fetchConfirmPayment(data));
+          const getResponse = unwrapResult(confirmPayment);
+          return getResponse;
+        } catch (err) {
+          console.log(err);
+          return 0;
+        }
+      },
+      [dispatch]
+    );
+
+    const fetchingUpdateBookingSubStatus = useCallback(
+      async (array1, array2) => {
+        try {
+          let remainData = [];
+          remainData = array1.filter((items1) =>
+            array2.some(
+              (items2) =>
+                items1.b_id === items2.b_id &&
+                items1.std_id === items2.std_id &&
+                items1.td_id === items2.td_id &&
+                items1.kickoff_date === items2.kickoff_date
+            )
+          );
+          if (remainData.length > 0) {
+            const updateBookingSubStatus = await dispatch(
+              fetchUpdateBookingSubStatus(remainData)
+            );
+            const getResponse = unwrapResult(updateBookingSubStatus);
+            return getResponse;
+          }
+        } catch (err) {
+          console.log(err);
+          return 0;
+        }
+      },
+      [dispatch]
+    );
+
+    const fetchingUpdateBookingStatus = useCallback(
+      async (bookingId) => {
+        try {
+          const updateBookingStatus = await dispatch(
+            fetchUpdateBookingStatus(bookingId)
+          );
+          const getResponse = unwrapResult(updateBookingStatus);
+          return getResponse;
+        } catch (err) {
+          console.log(err);
+          return 0;
+        }
+      },
+      [dispatch]
+    );
 
     const goBackAfterAcceptPayment = useCallback(async () => {
       dispatch(onPopupClose());
       history.push(`/admin/stadium/${stadiumId_Admin}/stadium-payment`);
       dispatch(onNotiOpen("successPayment"));
-    }, [dispatch, history, stadiumId_Admin])
+    }, [dispatch, history, stadiumId_Admin]);
 
     const confirmPayment = useCallback(
       (event) => {
@@ -237,17 +254,17 @@ const ConfirmPayment = React.memo(
               bookingId: customerInfo.bookingId,
               paymentId,
               total_waterPrice: totalWaterPrice,
-              total_stadiumPrice: totalStadiumPrice
-            }
+              total_stadiumPrice: totalStadiumPrice,
+            };
             fetchingConfirmPayment(requestData);
             let check = findingBookingFromPaymentDetails(
+              customerInfo.bookingId,
               getAllBookingDetailsData,
               paymentDetailsData
             );
             if (check === 1) {
               fetchingUpdateBookingStatus(customerInfo.bookingId);
               goBackAfterAcceptPayment();
-
             } else if (check === 0) {
               goBackAfterAcceptPayment();
             }
@@ -269,17 +286,17 @@ const ConfirmPayment = React.memo(
               bookingId: customerInfo.bookingId,
               paymentId,
               total_waterPrice: totalWaterPrice,
-              total_stadiumPrice: totalStadiumPrice
-            }
+              total_stadiumPrice: totalStadiumPrice,
+            };
             fetchingConfirmPayment(requestData);
             let check2 = findingBookingFromPaymentDetails(
+              customerInfo.bookingId,
               getAllBookingDetailsData,
               paymentDetailsData
             );
             if (check2 === 1) {
               fetchingUpdateBookingStatus(customerInfo.bookingId);
               goBackAfterAcceptPayment();
-
             } else if (check2 === 0) {
               goBackAfterAcceptPayment();
             }

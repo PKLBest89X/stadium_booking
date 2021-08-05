@@ -133,7 +133,7 @@ const ConfirmBooking = React.memo(({ userNonAccount }) => {
           <Divider />
           <Box padding="1rem">
             <Typography variant="h5" color="textSecondary">
-              {`ເມື່ອທ່ານດຳເນີນການຈອງເດີ່ນນີ່ແລ້ວ, ຖ້າທ່ານຢາກຍົກເລີກການຈອງເດີ່ນດັ່ງກ່າວ ທ່ານສາມາດຍົກເລີກການຈອງໄດ້ພາຍໃນ ${stateRef.current.time_cancelbooking} ຊົ່ວໂມງ ຕາມທີ່ທາງເດີ່ນໄດ້ກຳນົດໄວ້. ຂໍໃຫ້ທ່ານໂຊກດີ 555.`}
+              {`ເມື່ອທ່ານດຳເນີນການຈອງເດີ່ນນີ່ແລ້ວ, ຖ້າທ່ານຢາກຍົກເລີກການຈອງເດີ່ນດັ່ງກ່າວ ທ່ານສາມາດຍົກເລີກການຈອງໄດ້ພາຍໃນ ${stateRef.current.time_cancelbooking} ຊົ່ວໂມງ ຕາມທີ່ທາງເດີ່ນໄດ້ກຳນົດໄວ້.`}
             </Typography>
           </Box>
         </Paper>

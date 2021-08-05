@@ -7,13 +7,15 @@ import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUs
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Box, Typography, Button } from "@material-ui/core";
+import { Box, Typography, Button, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { fetchAddBookingNonAccount } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
+import { fetchGetAllBooking } from "../../../../middlewares/stadiumUser/fetchPayment/fetchPayment";
+import { fetchGetAllBookingDetails } from "../../../../middlewares/stadiumUser/fetchPayment/fetchPayment";
 
 import NotificationAlert from "../../../../Components/NotificationAlert";
-import ShowBookingCalendar from "./BookingCalendarTools";
+import BookingNavbarControl from './BookingNavbarControl';
+import BookingListUnCheckout from "./BookingListUnCheckout";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
@@ -33,10 +35,16 @@ const OverviewBooking = React.memo(({ ...rest }) => {
     (state) => state.notification
   );
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { bookingNonAccountData } = useShallowEqualSelector(
-    (state) => state.bookingNonAccount
-  );
-  const stateRef = useRef(bookingNonAccountData);
+
+
+//////////////////////////////////////////////////////////////////////ທົດລອງ
+const { getAllBookingDetailsData } = useShallowEqualSelector(
+  (state) => state.prePayment
+);
+  
+
+
+
   const { stadiumId_Admin } = useParams();
   const history = useHistory();
   const { url } = useRouteMatch();
@@ -60,27 +68,17 @@ const OverviewBooking = React.memo(({ ...rest }) => {
     }
   }, [history, checkResult]);
 
-  useMemo(
-    () => bookingNonAccountData.forEach((items) => (stateRef.current = items)),
-    [bookingNonAccountData]
-  );
 
-  const onGetCurrentBooking = useCallback(async () => {
-    try {
-      const staffToken = JSON.parse(localStorage.getItem("accessAdminToken"));
-      if (staffToken && staffToken.token) {
-        const addBookingRequest = await dispatch(
-          fetchAddBookingNonAccount(staffToken.token)
-        );
-        const getResult = unwrapResult(addBookingRequest);
-        if (getResult.status !== 400) {
-          history.push(`${url}/${stateRef.current.b_id}`);
-        }
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }, [dispatch, history, url]);
+
+  //////////////////////////////////////////////////////////////////////ທົດລອງ
+  useEffect(() => {
+    dispatch(fetchGetAllBookingDetails(stadiumId_Admin));
+  }, [dispatch, stadiumId_Admin]);
+
+  useEffect(() => {
+    dispatch(fetchGetAllBooking(stadiumId_Admin));
+  }, [dispatch, stadiumId_Admin]);
+
 
   let alertSuccessBookingNonAccount = null;
   if (notiName === "successBookingNonAccount" && notiState === true) {
@@ -99,10 +97,16 @@ const OverviewBooking = React.memo(({ ...rest }) => {
     <>
       {alertSuccessBookingNonAccount}
       <PageLayout title="Stadium Booking" {...rest}>
-        <ShowBookingCalendar currentBooking={onGetCurrentBooking} />
-        <Button color="primary" variant="contained" className={classes.floatingButton}>
-          ຈອງເດີ່ນ
-        </Button>
+        <BookingNavbarControl />
+        <Box padding="1rem">
+          <Typography variant="h3" color="textSecondary">
+            ການຈອງຂອງລູກຄ້າ
+          </Typography>
+        </Box>
+        <Divider />
+        <Box padding="1rem">
+          <BookingListUnCheckout bookingBillData={getAllBookingDetailsData} />
+        </Box>
       </PageLayout>
     </>
   );

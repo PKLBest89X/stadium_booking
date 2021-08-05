@@ -39,6 +39,7 @@ const prePaymentSlice = createSlice({
       state.getAllBookingDetailsData = [];
     },
     onShowCustomerInfo: (state, { payload }) => {
+      console.log(payload);
       let foundData = state.getAllBookingData.find(
         (items) => items.b_id === payload.b_id
       );

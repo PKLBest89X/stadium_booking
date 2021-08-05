@@ -1,6 +1,51 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "axios";
 
+
+export const fetchBookingList = createAsyncThunk(
+  "preBooking/getBookingList",
+  async (params, { rejectWithValue, getState, requestId }) => {
+    try {
+      const { preBookingLoading, preBookingRequestId } =
+        getState().preBooking;
+      if (
+        preBookingLoading !== true ||
+        requestId !== preBookingRequestId
+      ) {
+        return;
+      }
+      const getBookingList = await Axios.get(
+        `http://localhost:5050/reserve_paid/allBooking/${params}`
+      );
+      return getBookingList.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const  fetchBookingListDetails = createAsyncThunk(
+  "preBooking/getBookingDetailsList",
+  async (params, { rejectWithValue, getState, requestId }) => {
+    try {
+      const { preBookingDetailsLoading, preBookingDetailsRequestId } =
+        getState().preBooking;
+      if (
+        preBookingDetailsLoading !== true ||
+        requestId !== preBookingDetailsRequestId
+      ) {
+        return;
+      }
+      const getBookingDetailsList = await Axios.get(
+        `http://localhost:5050/reserve_paid/allBookingDetails/${params}`
+      );
+      return getBookingDetailsList.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const fetchGetStadiumsToBooking = createAsyncThunk(
   "booking/getStadiumsToBooking",
   async (params, { rejectWithValue, getState, requestId }) => {

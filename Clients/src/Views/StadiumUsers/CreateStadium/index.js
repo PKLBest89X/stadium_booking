@@ -110,7 +110,7 @@ const CreateStadium = () => {
   }, [data]);
   useEffect(() => {
     const { st_id, role } = stateRef.current;
-    if (st_id !== null && role === "manager") {
+    if (st_id !== null && (role === "manager" || role === "staff")) {
       history.push(`/admin/stadium/${st_id}`);
       dispatch(userNow("admin"));
       window.location.reload();

@@ -70,6 +70,9 @@ const paymentDetailsSlice = createSlice({
         0
       );
       state.total = state.totalStadiumPrice + state.totalWaterPrice;
+      state.thonMoney =
+        parseInt(state.getMoney) -
+        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice));
     },
     onSelectedPaymentDetails: (state, { payload }) => {
       const selectedIndex = state.paymentDetailsSelected.findIndex(
@@ -116,6 +119,9 @@ const paymentDetailsSlice = createSlice({
         0
       );
       state.total = state.totalStadiumPrice + state.totalWaterPrice;
+      state.thonMoney =
+        parseInt(state.getMoney) -
+        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice));
       state.paymentDetailsSelected = [];
       if (state.paymentDetailsData.length === 0) {
         state.selectedPaymentState = false;
@@ -213,6 +219,9 @@ const paymentDetailsSlice = createSlice({
         0
       );
       state.total = state.totalStadiumPrice + state.totalWaterPrice;
+      state.thonMoney =
+        parseInt(state.getMoney) -
+        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice));
     },
     onClearWaterDetails: (state) => {
       state.waterDetailsSelected = [];
@@ -228,6 +237,9 @@ const paymentDetailsSlice = createSlice({
         0
       );
       state.total = state.totalStadiumPrice + state.totalWaterPrice;
+      state.thonMoney =
+        parseInt(state.getMoney) -
+        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice));
       state.waterDetailsSelected = [];
     },
     onDeleteSelectedWaterData: (state, { payload }) => {
@@ -239,6 +251,9 @@ const paymentDetailsSlice = createSlice({
         0
       );
       state.total = state.totalStadiumPrice + state.totalWaterPrice;
+      state.thonMoney =
+        parseInt(state.getMoney) -
+        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice));
       state.waterDetailsSelected = [];
       if (state.waterDetailsData.length === 0) {
         state.selectedWaterState = false;

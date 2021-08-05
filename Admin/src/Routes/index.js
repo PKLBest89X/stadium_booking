@@ -15,9 +15,9 @@ const RoutesComponents = ({ ...rest }) => {
           <DashboardView {...rest} />
         </Route>
 
-        <PrivateRoutes path="/all_stadiums">
+        <Route path="/all_stadiums">
           <AllStadium {...rest} />
-        </PrivateRoutes>
+        </Route>
 
         <Route path="/stadium_owner">
           <StadiumOwner {...rest} />

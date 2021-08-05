@@ -29,6 +29,6 @@ export const SidebarData = [
 
 export const user = {
   avatar: "/assets/images/admin_img/neymar.jpg",
-  jobTitle: "Senior Developer",
-  name: "Katarina Smith",
+  jobTitle: "Chanthanakhone",
+  name: "Somsay",
 };

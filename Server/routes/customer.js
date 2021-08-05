@@ -226,4 +226,57 @@ router.delete("/", async function (req, res, next) {
   });
 }); //ລົບຜູ້ໃຊ້ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
+
+
+
+
+//////////////////////////////////////////////////////////////////////ທົດລອງ
+
+
+router.get('/allBooking/:stadiumId', verifyToken, async function(req, res, next) {
+  jwt.verify(req.token, "secret", async (err, authData) => {
+    if (err) {
+        return res.sendStatus(403);
+    }
+    const customerId = authData.data;
+    await db.query("call payment_getBookingList(?)", [customerId],(err, result) => {
+      if (err) {
+          console.log(err);
+          return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+      }
+
+      if (result[0].length > 0) {
+          return res.send(result[0])
+      } else {
+          return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+      }
+  })
+    })
+}) // ສະແດງລາຍການຈອງລູກຄ້າທີ່ມີບັນຊີ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+router.get('/user/bookingHistory', verifyToken, async function(req,res,next){
+
+  jwt.verify(req.token, "secret", async (err, authData) => {
+    if (err) {
+        return res.sendStatus(403);
+    }
+    const customerId = authData.data;
+    await db.query("call report_user_reserve(?)" , [customerId], (err,result) => {
+      if(err){
+          console.log(err);
+          return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+      }
+      if (result[0].length > 0) {
+          return res.send(result[0])
+      } else {
+          return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+      }
+      })
+    })
+
+
+}) // ສະແດງລາຍກາ່ນຈອງທັງໝົດຂອງເດີ່ນນັ້ນໆ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
 module.exports = router;
