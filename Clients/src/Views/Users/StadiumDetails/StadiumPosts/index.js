@@ -6,6 +6,7 @@ import { useShallowEqualSelector } from "../../../../Components/useShallowEqualS
 import { fetchAuthUser } from "../../../../middlewares/fetchAuth/fetchUser";
 import { userNow } from '../../../../Slices/Authentication/authSlice';
 import { useDispatch } from "react-redux";
+import { onPopupClose, onTabClose } from "../../../../Slices/Features/Popup/popupSlice";
 
 const StadiumPosts = ({ getTabChange, ...rest }) => {
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
@@ -35,6 +36,8 @@ const StadiumPosts = ({ getTabChange, ...rest }) => {
 //       history.replace("/404");
 //     }
 //   }, [history, checkResult]);
+
+useEffect(() => dispatch(onTabClose()), [dispatch]);
 
   return (
     <ChildPageLayout title="Stadium Overall">

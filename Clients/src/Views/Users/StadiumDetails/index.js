@@ -22,6 +22,8 @@ import { fetchGetSubscribeByStadiumId } from "../../../middlewares/user/fetchSub
 import SubscribeTool from "./SubScribeTool";
 import { useDispatch } from "react-redux";
 
+import ToolTabControl from "./ToolTabControl/ToolTabControl";
+
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     display: "flex",
@@ -63,6 +65,10 @@ const useStyles = makeStyles((theme) => ({
     position: "sticky",
     top: 0,
     zIndex: 4,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   tab: {
     width: "140px",
@@ -171,12 +177,12 @@ const StadiumDetails = React.memo(({ ...rest }) => {
               </Typography>
             </Box>
           </Box>
-          <SubscribeTool feedStadium={stateRef.current}/>
+          <SubscribeTool feedStadium={stateRef.current} />
         </div>
       </div>
       <Divider />
       <div className={classes.appBar}>
-        <AppBar position="sticky" color="default">
+        <AppBar className={classes.appBar} position="sticky" color="default">
           <Tabs
             value={value}
             onChange={handleChange}
@@ -198,6 +204,7 @@ const StadiumDetails = React.memo(({ ...rest }) => {
               );
             })}
           </Tabs>
+          <ToolTabControl/>
         </AppBar>
       </div>
       <RoutesChildComponentsUser tabChange={tabChange} />

@@ -114,7 +114,7 @@ const EditStadiumDetails = React.memo(() => {
     if (getImageStadiums) {
       setStadiumState((prev) => ({
         ...prev,
-        stadium_postImage: getImageStadiums,
+        stadiums_image: getImageStadiums,
       }));
       setTestImage(window.URL.createObjectURL(getImageStadiums));
     } else {

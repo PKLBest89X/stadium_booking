@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import LibraryAddCheckIcon from "@material-ui/icons/LibraryAddCheck";
 import { Typography, Button } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
+import { useDispatch } from "react-redux";
+import { onTabOpen } from "../../../../../../Slices/Features/Popup/popupSlice";
 
 const useStyles = makeStyles(() => ({
   componentContainer: {
@@ -40,10 +42,14 @@ const useStyles = makeStyles(() => ({
 const AlreadyBooking = () => {
   const classes = useStyles();
   let history = useHistory();
+  const dispatch = useDispatch();
+
+  useEffect(() => dispatch(onTabOpen("tabBackToOverviewBooking")))
 
   const onPushToBookingHistory = () => {
     history.push("/booking-history");
   };
+  
   return (
     <div className={classes.componentContainer}>
       <div className={classes.contentContainer}>

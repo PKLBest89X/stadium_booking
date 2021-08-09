@@ -30,6 +30,7 @@ import StadiumsToPick from "./StadiumsToPick";
 import TimesAndPrice from "./TimesAndPrice";
 import NotificationAlert from "../../../../../Components/NotificationAlert";
 import { onNotiOpen } from "../../../../../Slices/Features/Notification/NotificationSlice";
+import { onTabOpen } from "../../../../../Slices/Features/Popup/popupSlice";
 
 const Booking = React.memo(() => {
   const { bookingId, stadiumId } = useParams();
@@ -102,6 +103,8 @@ const Booking = React.memo(() => {
     dispatch(fetchGetTimesToBooking(stadiumId));
     return () => dispatch(onClearTimes());
   }, [dispatch, stadiumId]);
+
+  useEffect(() => dispatch(onTabOpen("tabBackToOverviewBooking")))
 
   //ການ fetching ເອົາຂໍ້ມູນການຈອງທີ່ຈອງແລ້ວ ແຕ່ຍັງບໍ່ຈ່າຍ
 

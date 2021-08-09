@@ -15,11 +15,13 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
 import Book from "@material-ui/icons/Book";
-import CancelIcon from '@material-ui/icons/Cancel';
+import CancelIcon from "@material-ui/icons/Cancel";
+import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
+import ListIcon from "@material-ui/icons/List";
 
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { useRouteMatch, useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 import { fetchAddBookingNonAccount } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
 import NavigationLayout from "../../../../Components/NavigationLayout";
@@ -51,7 +53,6 @@ const BookingNavbarControl = React.memo(() => {
   const dispatch = useDispatch();
   const { stadiumId_Admin } = useParams();
   let history = useHistory();
-  const { url } = useRouteMatch();
   const { bookingNonAccountData } = useShallowEqualSelector(
     (state) => state.bookingNonAccount
   );
@@ -81,13 +82,19 @@ const BookingNavbarControl = React.memo(() => {
         );
         const getResult = unwrapResult(addBookingRequest);
         if (getResult.status !== 400) {
-          history.push(`${url}/${stateRef.current.b_id}`);
+          history.push(`/admin/stadium/${stadiumId_Admin}/booking/${stateRef.current.b_id}`);
         }
       }
     } catch (err) {
       console.log(err);
     }
-  }, [dispatch, history, url]);
+  }, [dispatch, history, stadiumId_Admin]);
+
+  const RoutesButton = (pathName) => {
+    history.push(
+      `/admin/stadium/${stadiumId_Admin}/stadium-booking/${pathName}`
+    );
+  };
 
   return (
     <NavigationLayout>
@@ -143,7 +150,12 @@ const BookingNavbarControl = React.memo(() => {
             </Typography>
           </Box>
           <Divider />
-          <Box padding="1rem" display="flex" flexDirection="column" alignItems="flex-start">
+          <Box
+            padding="1rem"
+            display="flex"
+            flexDirection="column"
+            alignItems="flex-start"
+          >
             <Button
               startIcon={<Book />}
               color="inherit"
@@ -151,8 +163,19 @@ const BookingNavbarControl = React.memo(() => {
             >
               ຈອງເດີ່ນໃຫ້ລູກຄ້າທີ່ໂທຈອງ
             </Button>
-            <Button startIcon={<CancelIcon />} color="inherit">
-              ການຈອງຂອງລູກຄ້າທີ່ຍົກເລີກໄດ້
+            <Button
+              startIcon={<AssignmentTurnedInIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("available-canceling")}
+            >
+              ຍົກເລີກການຈອງ
+            </Button>
+            <Button
+              startIcon={<ListIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("")}
+            >
+              ການຈອງເດີ່ນທັງໝົດທີ່ຍັງບໍ່ໄດ້ຊຳລະຄ່າ
             </Button>
           </Box>
         </Box>

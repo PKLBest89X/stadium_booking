@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useMemo } from "react";
-import { Avatar, Box, Card, Typography, Grid, Button } from "@material-ui/core";
+import { Avatar, Box, Card, Typography, Grid, Button, colors } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { onShowCustomerInfo } from "../../../../Slices/Features/StadiumUsers/Payment/prePaymentSlice";
@@ -9,6 +9,9 @@ import { useHistory, useRouteMatch, useParams } from "react-router-dom";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { fetchAddPayment } from "../../../../middlewares/stadiumUser/fetchPayment/fetchPayment";
 import { useDispatch } from "react-redux";
+import CheckIcon from "@material-ui/icons/Check";
+import ClearIcon from "@material-ui/icons/Clear";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   cardLayout: {
@@ -45,6 +48,16 @@ const useStyles = makeStyles((theme) => ({
       height: 90,
       width: 90,
     },
+  },
+  paid: {
+    color: colors.green[900],
+    width: 20,
+    height: 20,
+  },
+  notYet: {
+    color: colors.red[600],
+    width: 20,
+    height: 20,
   },
 }));
 
@@ -118,15 +131,53 @@ const BookingListUnCheckout = React.memo(({ bookingBillData }) => {
                     height="100%"
                     padding="0 1em"
                   >
-                    <Box>
-                      <Typography gutterBottom variant="h4" color="textPrimary">
-                        {items.c_name}
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        color="textSecondary"
-                      >{`ຈອງ: ${items.td_start} - ${items.td_end}`}</Typography>
-                    </Box>
+                        <Box>
+                          <Typography
+                            gutterBottom
+                            variant="h4"
+                            color="textPrimary"
+                          >
+                            {items.c_name}
+                          </Typography>
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                          >{`ຈອງ: ${items.td_start.slice(
+                            0,
+                            5
+                          )} ໂມງ - ${items.td_end.slice(
+                            0,
+                            5
+                          )} ໂມງ`}</Typography>
+                          <Box display="flex" alignItems="center">
+                            <Typography
+                              variant="h6"
+                              color="textSecondary"
+                            >{`ມື້ເຕະ: ${moment(items.kickoff_date).format(
+                              "DD/MM/YYYY"
+                            )}`}</Typography>
+                            <Box
+                              marginLeft=".5rem"
+                              display="flex"
+                              alignItems="center"
+                            >
+                              {items.paid_status === "ຈ່າຍແລ້ວ" ? (
+                                <CheckIcon className={classes.paid} />
+                              ) : (
+                                <ClearIcon className={classes.notYet} />
+                              )}
+                              {items.paid_status === "ຈ່າຍແລ້ວ" ? (
+                                <Typography variant="h6" color="textSecondary">
+                                  ຈ່າຍແລ້ວ
+                                </Typography>
+                              ) : (
+                                <Typography variant="h6" color="textSecondary">
+                                  ບໍ່ຈ່າຍ
+                                </Typography>
+                              )}
+                            </Box>
+                          </Box>
+                        </Box>
                     <Button
                       onClick={() => onGetCurrentPayment(items)}
                       color="primary"

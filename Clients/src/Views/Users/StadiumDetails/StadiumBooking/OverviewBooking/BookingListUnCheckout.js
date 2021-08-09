@@ -1,26 +1,23 @@
 import React, { useCallback, useRef, useMemo } from "react";
-import { Avatar, Box, Card, Typography, Grid, Button } from "@material-ui/core";
+import {
+  Avatar,
+  Box,
+  Card,
+  Typography,
+  Grid,
+  Button,
+  Container,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { onShowCustomerInfo } from "../../../Slices/Features/StadiumUsers/Payment/prePaymentSlice";
-import { onSaveSelectedPaymentData } from "../../../Slices/Features/StadiumUsers/Payment/paymentDetailsSlice";
-import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
+import { useShallowEqualSelector } from "../../../../../Components/useShallowEqualSelector";
 import { useHistory, useRouteMatch, useParams } from "react-router-dom";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { fetchAddPayment } from "../../../middlewares/stadiumUser/fetchPayment/fetchPayment";
 import { useDispatch } from "react-redux";
-
-import { onPopupOpen } from "../../../Slices/Features/Popup/popupSlice";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   cardLayout: {
     flex: 1,
     width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "60%",
-    },
     [theme.breakpoints.between("sm", "sm")]: {
       padding: "1rem 2rem",
     },
@@ -30,6 +27,15 @@ const useStyles = makeStyles((theme) => ({
     transition: "200ms ease-in-out",
     "&:hover": {
       transform: "scale(1.02)",
+    },
+  },
+  avatarContainer: {
+    display: "flex",
+    padding: ".5rem",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    [theme.breakpoints.up("md")]: {
+      justifyContent: "center",
     },
   },
   avatar: {
@@ -52,36 +58,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BookingList = React.memo(({ bookingBillData, clicked }) => {
+const BookingListUnCheckout = React.memo(({ bookingBillData }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { stadiumId_Admin } = useParams();
-  let history = useHistory();
-  const { url } = useRouteMatch();
-  const { paymentData } = useShallowEqualSelector((state) => state.payment);
-  const stateRef = useRef(paymentData);
-
-  useMemo(
-    () => paymentData.forEach((items) => (stateRef.current = items)),
-    [paymentData]
-  );
 
   return (
-    <div className={classes.cardLayout}>
+    <Container maxWidth="lg">
       {bookingBillData.map((items, index) => {
         return (
           <div className={classes.cardContainer} key={index}>
             <Card elevation={10}>
               <Grid container spacing={3}>
                 <Grid item xs={2} sm={2} md={2} lg={2} xl={2}>
-                  <Box padding={1}>
+                  <div className={classes.avatarContainer}>
                     <Box>
                       <Avatar
                         className={classes.avatar}
-                        src={`/assets/images/adminPics/stadiumPics/icons/${items.logo}`}
+                        src={`/assets/images/userPics/usersProfile/${items.profile}`}
                       />
                     </Box>
-                  </Box>
+                  </div>
                 </Grid>
                 <Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
                   <Box
@@ -94,25 +90,22 @@ const BookingList = React.memo(({ bookingBillData, clicked }) => {
                   >
                     <Box>
                       <Typography gutterBottom variant="h4" color="textPrimary">
-                        {items.st_name}
+                        {items.c_name}
                       </Typography>
                       <Typography
                         variant="h6"
                         color="textSecondary"
-                      >{`ມື້ຈອງ: ${moment(items.kickoff_date).format(
-                        "DD/MM/YYYY"
-                      )}`}</Typography>
+                      >{`ຈອງ: ${items.td_start.slice(0, 5)} ໂມງ - ${items.td_end.slice(0, 5)} ໂມງ`}</Typography>
                     </Box>
-                    <Button
-                      onClick={() => {
-                        dispatch(onPopupOpen("showBookingHistoryInfo"));
-                        clicked(items);
-                      }}
-                      color="primary"
-                      variant="contained"
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      component="h2"
+                      color="textSecondary"
+                      noWrap
                     >
-                      ລາຍລະອຽດ
-                    </Button>
+                      {items.std_name}
+                    </Typography>
                   </Box>
                 </Grid>
               </Grid>
@@ -120,8 +113,8 @@ const BookingList = React.memo(({ bookingBillData, clicked }) => {
           </div>
         );
       })}
-    </div>
+    </Container>
   );
 });
 
-export default BookingList;
+export default BookingListUnCheckout;

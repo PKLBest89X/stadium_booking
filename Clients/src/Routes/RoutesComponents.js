@@ -85,15 +85,15 @@ const RoutesComponents = ({ ...rest }) => {
         </PrivateRoutesAdmin>
 
 
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-booking" exact>
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-booking" >
           <OverviewBooking {...rest} />
         </PrivateRoutesAdmin>
 
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-booking/:bookingId" exact>
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/booking/:bookingId" exact>
           <BookingView {...rest} />
         </PrivateRoutesAdmin>
 
-        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/stadium-booking/:bookingId/manage">
+        <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/booking/:bookingId/manage">
           <BookingDetailsData {...rest} />
         </PrivateRoutesAdmin>
 

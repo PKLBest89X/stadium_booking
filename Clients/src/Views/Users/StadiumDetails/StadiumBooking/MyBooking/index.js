@@ -12,6 +12,7 @@ import { Box, Typography } from "@material-ui/core";
 import { fetchGetCurrentBooking } from "../../../../../middlewares/user/fetchBooking/fetchBooking";
 import PopupLayout from "../../../../../Components/PopupLayout";
 import NotificationAlert from "../../../../../Components/NotificationAlert";
+import { onPopupOpen, onTabOpen } from "../../../../../Slices/Features/Popup/popupSlice";
 
 import AlreadyBooking from "./AlreadyBooking";
 import PreBooking from "./PreBooking";
@@ -75,6 +76,8 @@ const MyBooking = React.memo(() => {
       dispatch(fetchGetCurrentBooking(requestCurrentBooking));
     }
   }, [dispatch, bookingId]);
+
+  useEffect(() => dispatch(onTabOpen("tabBackToOverviewBooking")))
 
   useMemo(
     () => bookingData.forEach((items) => (stateRef.current = items)),

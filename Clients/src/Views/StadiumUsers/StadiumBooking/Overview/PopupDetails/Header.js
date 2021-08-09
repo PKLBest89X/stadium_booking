@@ -44,17 +44,6 @@ const BillHeader = ({ stadiumData }) => {
           </Typography>
         </Box>
       </Box>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        mb={2}
-        mt={2}
-      >
-        <Typography variant="h5" color="textPrimary">
-          {`ວັນທີ: ${moment(Date.now()).format("MM/DD/YYYY")}`}
-        </Typography>
-      </Box>
       {/* <Box
         display="flex"
         justifyContent="center"

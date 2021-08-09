@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   popupName: "",
   isOpen: false,
+  tabName: "",
+  tabOpen: false,
 };
 
 const popupSlice = createSlice({
@@ -17,8 +19,17 @@ const popupSlice = createSlice({
       state.popupName = "";
       state.isOpen = false;
     },
+    onTabOpen: (state, { payload }) => {
+      state.tabName = payload;
+      state.tabOpen = true;
+    },
+    onTabClose: (state) => {
+      state.tabName = "";
+      state.tabOpen = false;
+    },
   },
 });
 
-export const { onPopupOpen, onPopupClose } = popupSlice.actions;
+export const { onPopupOpen, onPopupClose, onTabOpen, onTabClose } =
+  popupSlice.actions;
 export default popupSlice.reducer;

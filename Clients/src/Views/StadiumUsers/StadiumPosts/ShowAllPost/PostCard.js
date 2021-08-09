@@ -30,7 +30,7 @@ const PostCard = ({ getitems }) => {
   const classes = useStyles();
   return (
     <div className={classes.ItemsContainer}>
-      <Card className={classes.root} elevation={20}>
+      <Card className={classes.root} elevation={10}>
         <CardMedia
           className={classes.media}
           image={`/assets/images/adminPics/postPics/${getitems.post_img}`}

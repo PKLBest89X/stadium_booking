@@ -80,7 +80,7 @@ const OverviewByBooking = React.memo(({ ...rest }) => {
           </Typography>
         </Box>
         <Divider />
-        <Box padding="1rem">
+        <Box padding="1rem" display="flex" justifyContent="center">
           <BookingListUnCheckout bookingBillData={getAllBookingDetailsData} />
         </Box>
       </PageLayout>

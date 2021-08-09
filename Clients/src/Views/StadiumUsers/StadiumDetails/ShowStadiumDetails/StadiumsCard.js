@@ -32,7 +32,7 @@ const StadiumsCard = ({ getitems }) => {
   const history = useHistory();
   return (
     <div className={classes.ItemsContainer}>
-      <Card className={classes.root} elevation={20}>
+      <Card className={classes.root} elevation={10}>
         <CardMedia
           className={classes.media}
           image={`/assets/images/adminPics/stadiumDetailsPics/${getitems.picture}`}

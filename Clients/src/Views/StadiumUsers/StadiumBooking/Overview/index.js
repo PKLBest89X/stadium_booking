@@ -6,27 +6,25 @@ import { useShallowEqualSelector } from "../../../../Components/useShallowEqualS
 import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUsers";
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { Box, Typography, Button, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { fetchGetAllBooking } from "../../../../middlewares/stadiumUser/fetchPayment/fetchPayment";
-import { fetchGetAllBookingDetails } from "../../../../middlewares/stadiumUser/fetchPayment/fetchPayment";
-
 import NotificationAlert from "../../../../Components/NotificationAlert";
-import BookingNavbarControl from './BookingNavbarControl';
-import BookingListUnCheckout from "./BookingListUnCheckout";
+import BookingNavbarControl from "./BookingNavbarControl";
+import RoutesBookingHistoryAdmin from "../../../../Routes/RoutesBookingHistoryAdmin";
+import PopupDetails from "./PopupDetails";
+import PopupLayout from "../../../../Components/PopupLayout";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
     padding: "2rem",
   },
   floatingButton: {
-    position: 'fixed',
-    bottom: '20px',
-    right: '20px',
-    zIndex: 1
-  }
+    position: "fixed",
+    bottom: "20px",
+    right: "20px",
+    zIndex: 1,
+  },
 }));
 
 const OverviewBooking = React.memo(({ ...rest }) => {
@@ -34,16 +32,8 @@ const OverviewBooking = React.memo(({ ...rest }) => {
   const { notiName, notiState } = useShallowEqualSelector(
     (state) => state.notification
   );
+  const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-
-
-//////////////////////////////////////////////////////////////////////ທົດລອງ
-const { getAllBookingDetailsData } = useShallowEqualSelector(
-  (state) => state.prePayment
-);
-  
-
-
 
   const { stadiumId_Admin } = useParams();
   const history = useHistory();
@@ -68,25 +58,22 @@ const { getAllBookingDetailsData } = useShallowEqualSelector(
     }
   }, [history, checkResult]);
 
+  let showBookingHistoryInfo = null;
+  if (popupName === "showBookingHistoryInfoAdmin" && isOpen === true) {
+    showBookingHistoryInfo = (
+      <PopupLayout customWidth={true}>
+        <PopupDetails />
+      </PopupLayout>
+    );
+  }
 
-
-  //////////////////////////////////////////////////////////////////////ທົດລອງ
-  useEffect(() => {
-    dispatch(fetchGetAllBookingDetails(stadiumId_Admin));
-  }, [dispatch, stadiumId_Admin]);
-
-  useEffect(() => {
-    dispatch(fetchGetAllBooking(stadiumId_Admin));
-  }, [dispatch, stadiumId_Admin]);
-
-
-  let alertSuccessBookingNonAccount = null;
-  if (notiName === "successBookingNonAccount" && notiState === true) {
-    alertSuccessBookingNonAccount = (
+  let alertSuccessCancelBookingNonAccount = null;
+  if (notiName === "successCancelBookingNonAccount" && notiState === true) {
+    alertSuccessCancelBookingNonAccount = (
       <NotificationAlert notiTitle="ສຳເລັດ" intervalTimeout={10000}>
         <Box display="flex" alignItems="center">
           <Typography variant="h4" color="textSecondary">
-            ການຈອງຂອງທ່ານສຳເລັດແລ້ວ!
+            ທານໄດ້ຍົກເລີກການຈອງສຳເລັດ!
           </Typography>
         </Box>
       </NotificationAlert>
@@ -95,18 +82,11 @@ const { getAllBookingDetailsData } = useShallowEqualSelector(
 
   return (
     <>
-      {alertSuccessBookingNonAccount}
+      {showBookingHistoryInfo}
+      {alertSuccessCancelBookingNonAccount}
       <PageLayout title="Stadium Booking" {...rest}>
         <BookingNavbarControl />
-        <Box padding="1rem">
-          <Typography variant="h3" color="textSecondary">
-            ການຈອງຂອງລູກຄ້າ
-          </Typography>
-        </Box>
-        <Divider />
-        <Box padding="1rem">
-          <BookingListUnCheckout bookingBillData={getAllBookingDetailsData} />
-        </Box>
+        <RoutesBookingHistoryAdmin />
       </PageLayout>
     </>
   );

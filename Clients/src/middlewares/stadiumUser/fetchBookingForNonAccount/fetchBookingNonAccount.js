@@ -15,7 +15,7 @@ export const fetchBookingListNonAccount = createAsyncThunk(
         return;
       }
       const getBookingListNonAccount = await Axios.get(
-        `http://localhost:5050/reserve_paid/allBooking/${params}`
+        `http://localhost:5050/reserve/bookingNonAccount_getBookingList/${params}`
       );
       return getBookingListNonAccount.data;
     } catch (err) {
@@ -37,7 +37,7 @@ export const  fetchBookingListDetailsNonAccount = createAsyncThunk(
         return;
       }
       const getBookingDetailsListNonAccount = await Axios.get(
-        `http://localhost:5050/reserve_paid/allBookingDetails/${params}`
+        `http://localhost:5050/reserve/getBookingDetailsNonAccountList/${params}`
       );
       return getBookingDetailsListNonAccount.data;
     } catch (err) {

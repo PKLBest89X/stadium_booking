@@ -15,7 +15,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
 import NumberFormat from "react-number-format";
 
-import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
+import { useShallowEqualSelector } from "../../../../../Components/useShallowEqualSelector";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -50,16 +50,16 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const WaterPaymentDetails = React.memo(() => {
+const PaymentDetails = React.memo(({ data }) => {
   const classes = useStyles();
-  const { waterDetailsData } = useShallowEqualSelector(
-    (state) => state.paymentDetails
-  );
+  // const { paymentDetailsData } = useShallowEqualSelector(
+  //   (state) => state.paymentDetails
+  // );
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(-1);
   const emptyRows =
     rowsPerPage -
-    Math.min(rowsPerPage, waterDetailsData.length - page * rowsPerPage);
+    Math.min(rowsPerPage, data.length - page * rowsPerPage);
   return (
     <>
       <TableContainer className={classes.customScrollbar}>
@@ -71,25 +71,28 @@ const WaterPaymentDetails = React.memo(() => {
           <TableHead>
             <TableRow>
               <TableCell align="center">
-                <Typography variant="h5">ເຄື່ອງດື່ມ</Typography>
+                <Typography variant="h5">ຊື່ສະໜາມ</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h5">ຈຳນວນ</Typography>
+                <Typography variant="h5">ເວລາ</Typography>
               </TableCell>
               <TableCell align="center">
+                <Typography variant="h5">ມື້ຈອງ</Typography>
+              </TableCell>
+              {/* <TableCell align="center">
                 <Typography variant="h5">ລາຄາ</Typography>
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? waterDetailsData.slice(
+              ? data.slice(
                   page * rowsPerPage,
                   page * rowsPerPage + rowsPerPage
                 )
-              : waterDetailsData
-            ).map((row) => (
-              <TableRow key={row.stw_id}>
+              : data
+            ).map((row, index) => (
+              <TableRow key={index}>
                 <TableCell
                   component="th"
                   scope="row"
@@ -102,18 +105,26 @@ const WaterPaymentDetails = React.memo(() => {
                     justifyContent="center"
                   >
                     <Box>
-                      <Typography variant="h5">{row.stw_name} </Typography>
+                      <Typography variant="h5">{row.std_name} </Typography>
                     </Box>
                   </Box>
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
                   <Typography variant="h5">
-                    {`${row.qty}`}
+                    {`${row.td_start.slice(0, 2)} ໂມງ - ${row.td_end.slice(
+                      0,
+                      2
+                    )} ໂມງ`}
                   </Typography>
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
+                  <Typography variant="h5">
+                    {moment(row.kickoff_date).format("DD/MM/YYYY")}
+                  </Typography>
+                </TableCell>
+                {/* <TableCell style={{ width: 100 }} align="center">
                   <NumberFormat
-                    value={row.stw_price}
+                    value={row.sp_price}
                     displayType={"text"}
                     thousandSeparator={true}
                     suffix={" ກີບ"}
@@ -123,7 +134,7 @@ const WaterPaymentDetails = React.memo(() => {
                       </Typography>
                     )}
                   />
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
 
@@ -139,4 +150,4 @@ const WaterPaymentDetails = React.memo(() => {
   );
 });
 
-export default WaterPaymentDetails;
+export default PaymentDetails;

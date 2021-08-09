@@ -15,9 +15,10 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
 import Book from "@material-ui/icons/Book";
-import CancelIcon from '@material-ui/icons/Cancel';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import PaymentIcon from '@material-ui/icons/Payment';
+import CancelIcon from "@material-ui/icons/Cancel";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import PaymentIcon from "@material-ui/icons/Payment";
+import ListIcon from "@material-ui/icons/List";
 
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -74,22 +75,9 @@ const BookingNavbarControl = React.memo(() => {
     });
   };
 
-  const onGetCurrentBooking = useCallback(async () => {
-    try {
-      const staffToken = JSON.parse(localStorage.getItem("accessAdminToken"));
-      if (staffToken && staffToken.token) {
-        const addBookingRequest = await dispatch(
-          fetchAddBookingNonAccount(staffToken.token)
-        );
-        const getResult = unwrapResult(addBookingRequest);
-        if (getResult.status !== 400) {
-          history.push(`${url}/${stateRef.current.b_id}`);
-        }
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }, [dispatch, history, url]);
+  const RoutesButton = (pathName) => {
+    history.push(`/booking-history/${pathName}`);
+  };
 
   return (
     <NavigationLayout>
@@ -145,22 +133,39 @@ const BookingNavbarControl = React.memo(() => {
             </Typography>
           </Box>
           <Divider />
-          <Box padding="1rem" display="flex" flexDirection="column" alignItems="flex-start">
+          <Box
+            padding="1rem"
+            display="flex"
+            flexDirection="column"
+            alignItems="flex-start"
+          >
             <Button
               startIcon={<Book />}
               color="inherit"
-              onClick={onGetCurrentBooking}
+              onClick={() => RoutesButton("")}
             >
               ການຈອງທັງໝົດຂອງຂ້ອຍ
             </Button>
-            <Button startIcon={<CheckCircleIcon />} color="inherit">
-              ການຈອງທີ່ຍົກເລີກໄດ້
+            <Button
+              startIcon={<CheckCircleIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("available-canceling")}
+            >
+              ຍົກເລີກການຈອງ
             </Button>
-            <Button startIcon={<PaymentIcon />} color="inherit">
+            <Button
+              startIcon={<PaymentIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("allBooking-paid")}
+            >
               ການຈອງທີ່ໄດ້ຊຳລະເງິນແລ້ວ
             </Button>
-            <Button startIcon={<CancelIcon />} color="inherit">
-              ການຈອງທີ່ຍົກເລີກບໍ່ໄດ້
+            <Button
+              startIcon={<ListIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("allBooking-unpaid")}
+            >
+              ການຈອງທີ່ຍັງບໍ່ໄດ້ຊຳລະຄ່າເດີ່ນ
             </Button>
           </Box>
         </Box>

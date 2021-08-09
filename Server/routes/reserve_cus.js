@@ -60,6 +60,56 @@ function verifyToken(req, res, next) {
 //     res.send(data[0].fid);
 // }) //Test sue2
 
+router.get('/getAllStadiumsDetails/:st_id', async function(req,res,next){
+    const stadium_id = req.params.st_id;
+    await db.query("call field(?)", [stadium_id] , (err,result) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+}) // ສະແດງສະໜາມທັງໝົດທີ່ມີໃນເດີ່ນນັ້ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+router.get('/getBookingList/:stadiumId', async function(req, res, next) {
+    const stadium_id = req.params.stadiumId;
+    await db.query("call booking_getBookinglist(?)", [stadium_id],(err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+}) // ສະແດງລາຍການຈອງລູກຄ້າທີ່ມີບັນຊີ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+router.get('/getBookingDetailsList/:stadiumId', async function(req,res,next){
+    const sid = req.params.stadiumId;
+
+    await db.query("call booking_getBookingDetailslist(?)" , [sid], (err,result) => {
+        if(err){
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+}) // ສະແດງລາຍກາ່ນຈອງທັງໝົດຂອງເດີ່ນນັ້ນໆ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
 
 router.get('/getStadiumDetailsToBooking/:st_id', async function(req,res,next){
     const stadium_id = req.params.st_id;
