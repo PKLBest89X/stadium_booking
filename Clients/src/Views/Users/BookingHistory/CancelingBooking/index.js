@@ -68,7 +68,7 @@ const CancelingBooking = React.memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { bookingHistoryDetailsData, cancelSuccess } = useShallowEqualSelector(
+  const { cancelData, cancelSuccess } = useShallowEqualSelector(
     (state) => state.bookingHistory
   );
 
@@ -104,7 +104,7 @@ const CancelingBooking = React.memo(() => {
       <Divider />
       <Box padding="1rem">
         {cancelSuccess === true &&
-          bookingHistoryDetailsData.map((items, index) => {
+          cancelData.map((items, index) => {
             return (
               <div className={classes.cardContainer} key={index}>
                 <Card elevation={10}>
@@ -158,12 +158,12 @@ const CancelingBooking = React.memo(() => {
                               display="flex"
                               alignItems="center"
                             >
-                              {items.paid_status === "ຈ່າຍແລ້ວ" ? (
+                              {items.sub_status === "ເຕະແລ້ວ" ? (
                                 <CheckIcon className={classes.paid} />
                               ) : (
                                 <ClearIcon className={classes.notYet} />
                               )}
-                              {items.paid_status === "ຈ່າຍແລ້ວ" ? (
+                              {items.sub_status === "ເຕະແລ້ວ" ? (
                                 <Typography variant="h6" color="textSecondary">
                                   ຈ່າຍແລ້ວ
                                 </Typography>

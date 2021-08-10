@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from './NavbarComponent';
 import Sidebar from './SidebarComponent'
-import RoutesComponents from "../../Routes";
+import RoutesComponents from "../../Routes/RoutesComponents";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import useMediaQuery from "@material-ui/core/useMediaQuery";

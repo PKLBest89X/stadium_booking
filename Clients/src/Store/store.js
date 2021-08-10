@@ -34,6 +34,9 @@ import bookingDetailsNonAccountSlice from '../Slices/Features/StadiumUsers/Booki
 import getStadiumsNonAccountSlice from '../Slices/Features/StadiumUsers/BookingForNoAccount/getStadiumsNonAccountSlice';
 import getTimesNonAccountSlice from '../Slices/Features/StadiumUsers/BookingForNoAccount/getTimeNonAccountSlice';
 
+import reportBookingSlice from '../Slices/Features/StadiumUsers/Reports/reportBookingSlice';
+import reportPaymentSlice from '../Slices/Features/StadiumUsers/Reports/reportPaymentSlice';
+
 import prePaymentSlice from '../Slices/Features/StadiumUsers/Payment/prePaymentSlice';
 import paymentSlice from '../Slices/Features/StadiumUsers/Payment/paymentSlice';
 import paymentDetailsSlice from '../Slices/Features/StadiumUsers/Payment/paymentDetailsSlice';
@@ -74,6 +77,8 @@ const store = configureStore({
     payment: paymentSlice,
     paymentDetails: paymentDetailsSlice,
     getDrinks: getDrinksSlice,
+    reportBooking: reportBookingSlice,
+    reportPayment: reportPaymentSlice,
   }, 
 });
 

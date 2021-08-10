@@ -16,9 +16,9 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
 import Book from "@material-ui/icons/Book";
-import CancelIcon from '@material-ui/icons/Cancel';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-
+import CancelIcon from "@material-ui/icons/Cancel";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,10 +40,10 @@ function getRandomNumber(min, max) {
 
 const ReportAllStadiumsNavbarControl = React.memo(() => {
   const classes = useStyles();
+  let history = useHistory();
   const [selectedDays, setSelectedDays] = useState([1, 2, 15]);
   const [date, changeDate] = useState(new Date());
   const [selectedDate, handleDateChange] = useState(new Date());
-
 
   const handleMonthChange = async () => {
     // just select random days to simulate server side based data
@@ -55,6 +55,9 @@ const ReportAllStadiumsNavbarControl = React.memo(() => {
     });
   };
 
+  const RoutesButton = (pathName) => {
+    history.push(`/all_stadiums/${pathName}`);
+  };
 
   return (
     <NavigationLayout>
@@ -110,17 +113,31 @@ const ReportAllStadiumsNavbarControl = React.memo(() => {
             </Typography>
           </Box>
           <Divider />
-          <Box padding="1rem" display="flex" flexDirection="column" alignItems="flex-start">
+          <Box
+            padding="1rem"
+            display="flex"
+            flexDirection="column"
+            alignItems="flex-start"
+          >
             <Button
               startIcon={<Book />}
               color="inherit"
+              onClick={() => RoutesButton("")}
             >
               ເດີ່ນທັງໝົດ
             </Button>
-            <Button startIcon={<CheckCircleIcon />} color="inherit">
+            <Button
+              startIcon={<CheckCircleIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("available-stadiums")}
+            >
               ເດີ່ນທີ່ພ້ອມໃຫ້ບໍລິການ
             </Button>
-            <Button startIcon={<CancelIcon />} color="inherit">
+            <Button
+              startIcon={<CancelIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("Not-available-stadiums")}
+            >
               ເດີ່ນທີ່ບໍ່ພ້ອມໃຫ້ບໍລິການ
             </Button>
           </Box>

@@ -158,12 +158,12 @@ const AllBooking = React.memo(() => {
                               display="flex"
                               alignItems="center"
                             >
-                              {items.paid_status === "ຈ່າຍແລ້ວ" ? (
+                              {items.sub_status === "ເຕະແລ້ວ" ? (
                                 <CheckIcon className={classes.paid} />
                               ) : (
                                 <ClearIcon className={classes.notYet} />
                               )}
-                              {items.paid_status === "ຈ່າຍແລ້ວ" ? (
+                              {items.sub_status === "ເຕະແລ້ວ" ? (
                                 <Typography variant="h6" color="textSecondary">
                                   ຈ່າຍແລ້ວ
                                 </Typography>

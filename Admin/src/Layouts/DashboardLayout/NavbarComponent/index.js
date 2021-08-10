@@ -1,22 +1,13 @@
 import React from "react";
-import { fade, makeStyles } from "@material-ui/core/styles";
-import SearchIcon from "@material-ui/icons/Search";
-import MenuIcon from "@material-ui/icons/Menu";
-// import { adminLogOut } from '../../../Slices/Authentication/authSlice';
+import { makeStyles } from "@material-ui/core/styles";
+import { superAdminLogOut } from '../../../Slices/Authentication/authSlice';
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
-import { useDispatch } from 'react-redux'
-import { deepOrange } from '@material-ui/core/colors';
-import { onSmUpOpen, onSmDownOpen } from '../../../Slices/Features/ToggleDrawer/toggleSlice';
-import clsx from 'clsx';
+import { useDispatch } from "react-redux";
+import ExitToApp from "@material-ui/icons/ExitToApp";
 
-import Logo from './Logo';
+import Logo from "./Logo";
 
-import {
-  Button,
-  AppBar,
-  IconButton,
-  Typography,
-} from "@material-ui/core";
+import { Button, AppBar, IconButton, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   appbarTop: {
@@ -40,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
     "& > :last-child": {
       "& > button": {
-        border: "1px solid #f3f3f3",
+        
       },
     },
   },
@@ -59,16 +50,23 @@ const useStyles = makeStyles((theme) => ({
 
 const Navbar = () => {
   const classes = useStyles();
-  const { smUp, smDown } = useShallowEqualSelector(state => state.toggle);
+  const { smUp, smDown } = useShallowEqualSelector((state) => state.toggle);
   const dispatch = useDispatch();
   return (
     <div>
       <AppBar className={classes.appbarTop} position="fixed">
         <div className={classes.toolbar}>
-        <Logo/>
+          <Logo />
 
           <div className="login-container">
-            {/* <Button color="inherit" onClick={() => dispatch(adminLogOut())}>log out</Button> */}
+            <IconButton
+              color="inherit"
+              onClick={() => {
+                dispatch(superAdminLogOut());
+              }}
+            >
+              <ExitToApp />
+            </IconButton>
           </div>
         </div>
       </AppBar>

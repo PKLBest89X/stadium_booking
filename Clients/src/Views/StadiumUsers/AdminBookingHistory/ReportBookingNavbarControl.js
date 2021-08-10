@@ -29,6 +29,8 @@ import SwiperCore, { Keyboard, Navigation, Pagination } from "swiper/core";
 // Import Swiper styles
 import "swiper/swiper.scss";
 
+import { useHistory, useParams } from "react-router-dom";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "2px 4px",
@@ -49,6 +51,8 @@ function getRandomNumber(min, max) {
 
 const ReportBookingNavbarControl = React.memo(() => {
   const classes = useStyles();
+  let history = useHistory();
+  const { stadiumId_Admin } = useParams();
   const [selectedDays, setSelectedDays] = useState([1, 2, 15]);
   const [date, changeDate] = useState(new Date());
   const [selectedDate, handleDateChange] = useState(new Date());
@@ -63,6 +67,10 @@ const ReportBookingNavbarControl = React.memo(() => {
         resolve();
       }, 1000);
     });
+  };
+
+  const RoutesButton = (pathName) => {
+    history.push(`/admin/stadium/${stadiumId_Admin}/booking-history/${pathName}`);
   };
 
   return (
@@ -190,13 +198,25 @@ const ReportBookingNavbarControl = React.memo(() => {
             flexDirection="column"
             alignItems="flex-start"
           >
-            <Button startIcon={<AdjustIcon />} color="inherit">
+            <Button
+              startIcon={<AdjustIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("")}
+            >
               ການຈອງທັງໝົດ
             </Button>
-            <Button startIcon={<AdjustIcon />} color="inherit">
+            <Button
+              startIcon={<AdjustIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("booking-unPaid")}
+            >
               ການຈອງທີ່ຍັງບໍ່ໄດ້ຊຳລະຄ່າ
             </Button>
-            <Button startIcon={<AdjustIcon />} color="inherit">
+            <Button
+              startIcon={<AdjustIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("booking-paid")}
+            >
               ການຈອງທີ່ຊຳລະຄ່າແລ້ວ
             </Button>
           </Box>

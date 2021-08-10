@@ -47,19 +47,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReportPaymentList = React.memo(({ bookingBillData }) => {
+const NotAvailableUsing = React.memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { stadiumId_Admin } = useParams();
   let history = useHistory();
   const { url } = useRouteMatch();
 
-
+  const fakeData = [
+    {
+      st_name: "Saysettha Stadium",
+      logo: "E3IzI-yVgAEuKyv.jpg",
+      status: "ພ້ອມໃຫ້ບໍລິການ",
+    },
+    {
+      st_name: "PKL Stadium",
+      logo: "test_stadium_logo.jpg",
+      status: "ພ້ອມໃຫ້ບໍລິການ",
+    },
+    {
+      st_name: "KPS Stadium",
+      logo: "KhampasongStadiumLogo.jpg",
+      status: "ພ້ອມໃຫ້ບໍລິການ",
+    },
+    {
+      st_name: "Singha Sport FC",
+      logo: "singha_stadium_logo.jpg",
+      status: "ບໍ່ພ້ອມໃຫ້ບໍລິການ",
+    },
+  ];
 
 
   return (
     <div className={classes.cardLayout}>
-      {bookingBillData.map((items, index) => {
+      {fakeData.map((items, index) => {
         return (
           <div className={classes.cardContainer} key={index}>
             <Card elevation={10}>
@@ -69,7 +90,7 @@ const ReportPaymentList = React.memo(({ bookingBillData }) => {
                     <Box>
                       <Avatar
                         className={classes.avatar}
-                        src={`/assets/images/adminPics/stadiumPics/${items.logo}`}
+                        src={`/assets/images/adminPics/stadiumPics/icons/${items.logo}`}
                       />
                     </Box>
                   </Box>
@@ -85,12 +106,12 @@ const ReportPaymentList = React.memo(({ bookingBillData }) => {
                   >
                     <Box>
                       <Typography gutterBottom variant="h4" color="textPrimary">
-                        {items.c_name}
+                        {items.st_name}
                       </Typography>
                       <Typography
                         variant="h6"
                         color="textSecondary"
-                      >{`ຈອງ: ${items.start} ໂມງ - ${items.end} ໂມງ`}</Typography>
+                      >{`ສະຖານະ: ${items.status}`}</Typography>
                     </Box>
                     <Button
                       
@@ -110,4 +131,4 @@ const ReportPaymentList = React.memo(({ bookingBillData }) => {
   );
 });
 
-export default ReportPaymentList;
+export default NotAvailableUsing;

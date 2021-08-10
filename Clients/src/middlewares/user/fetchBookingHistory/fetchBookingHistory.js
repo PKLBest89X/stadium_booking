@@ -50,55 +50,55 @@ export const fetchGetHistoryByUser = createAsyncThunk(
   );
 
 
-  export const fetchGetPaidHistoryByUser = createAsyncThunk(
-    "bookingHistory/getBookingPaidHistory",
-    async (token, { rejectWithValue, getState, requestId }) => {
-      try {
-        const { userPaidLoading, userPaidRequestId } =
-          getState().bookingHistory;
-        if (
-          userPaidLoading !== true ||
-          requestId !== userPaidRequestId
-        ) {
-          return;
-        }
-        const getBookingPaidHistory = await Axios.get(
-          `http://localhost:5050/customer/user/bookingHistory_paid`,         {
-            headers: {
-              authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        return getBookingPaidHistory.data;
-      } catch (err) {
-        return rejectWithValue(err.response.data);
-      }
-    }
-  );
+  // export const fetchGetPaidHistoryByUser = createAsyncThunk(
+  //   "bookingHistory/getBookingPaidHistory",
+  //   async (token, { rejectWithValue, getState, requestId }) => {
+  //     try {
+  //       const { userPaidLoading, userPaidRequestId } =
+  //         getState().bookingHistory;
+  //       if (
+  //         userPaidLoading !== true ||
+  //         requestId !== userPaidRequestId
+  //       ) {
+  //         return;
+  //       }
+  //       const getBookingPaidHistory = await Axios.get(
+  //         `http://localhost:5050/customer/user/bookingHistory_paid`,         {
+  //           headers: {
+  //             authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+  //       return getBookingPaidHistory.data;
+  //     } catch (err) {
+  //       return rejectWithValue(err.response.data);
+  //     }
+  //   }
+  // );
 
 
-  export const fetchGetUnPaidHistoryByUser = createAsyncThunk(
-    "bookingHistory/getBookingUnPaidHistory",
-    async (token, { rejectWithValue, getState, requestId }) => {
-      try {
-        const { userUnPaidLoading, userUnPaidRequestId } =
-          getState().bookingHistory;
-        if (
-          userUnPaidLoading !== true ||
-          requestId !== userUnPaidRequestId
-        ) {
-          return;
-        }
-        const getBookingUnPaidHistory = await Axios.get(
-          `http://localhost:5050/customer/user/bookingHistory_unPaid`,         {
-            headers: {
-              authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        return getBookingUnPaidHistory.data;
-      } catch (err) {
-        return rejectWithValue(err.response.data);
-      }
-    }
-  );
+  // export const fetchGetUnPaidHistoryByUser = createAsyncThunk(
+  //   "bookingHistory/getBookingUnPaidHistory",
+  //   async (token, { rejectWithValue, getState, requestId }) => {
+  //     try {
+  //       const { userUnPaidLoading, userUnPaidRequestId } =
+  //         getState().bookingHistory;
+  //       if (
+  //         userUnPaidLoading !== true ||
+  //         requestId !== userUnPaidRequestId
+  //       ) {
+  //         return;
+  //       }
+  //       const getBookingUnPaidHistory = await Axios.get(
+  //         `http://localhost:5050/customer/user/bookingHistory_unPaid`,         {
+  //           headers: {
+  //             authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+  //       return getBookingUnPaidHistory.data;
+  //     } catch (err) {
+  //       return rejectWithValue(err.response.data);
+  //     }
+  //   }
+  // );

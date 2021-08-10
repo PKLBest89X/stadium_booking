@@ -136,16 +136,71 @@ const PaymentNavbarControl = React.memo(() => {
           </MuiPickersUtilsProvider>
         </Box>
       </Paper>
-      <Box mt={2} display="flex" justifyContent="center">
-        <Button
-          startIcon={<LocalDrinkIcon />}
-          color="primary"
-          variant="contained"
-          onClick={onGetCurrentPayment}
-        >
-          ຂາຍສະເພາະນ້ຳ
-        </Button>
-      </Box>
+      <Paper>
+        <Box mt={2} display="block">
+          <Box padding="1rem" display="flex" alignItems="center">
+            <Typography gutterBottom variant="h5" color="textPrimary">
+              ສະຫຼຸບລວມ
+            </Typography>
+          </Box>
+          <Divider />
+          <Box
+            display="block"
+            justifyContent="center"
+            alignItems="center"
+            padding="1rem"
+          >
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              height="100%"
+              width="100%"
+              mb={2}
+              mt={2}
+            >
+              <Typography variant="h5" color="textPrimary">
+                ທັງໝົດ:{" "}
+              </Typography>
+              <Typography variant="h5" color="textPrimary">
+                {`4 ລາຍການ`}
+              </Typography>
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="flex-start"
+              height="100%"
+              width="100%"
+              mb={2}
+              mt={2}
+            >
+              <Typography variant="h5" color="textPrimary">
+                ຈອງຜ່ານເວັບ:{" "}
+              </Typography>
+              <Typography variant="h5" color="textPrimary">
+                {`3 ລາຍການ`}
+              </Typography>
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="flex-start"
+              height="100%"
+              width="100%"
+              mb={2}
+              mt={2}
+            >
+              <Typography variant="h5" color="textPrimary">
+                ໂທຈອງ:{" "}
+              </Typography>
+              <Typography variant="h5" color="textPrimary">
+                {`1 ລາຍການ`}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+      </Paper>
     </NavigationLayout>
   );
 });

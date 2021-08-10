@@ -1,14 +1,18 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-const mysql = require('mysql');
-const dbconfig = require('../dbConnect/dbconnect');
+const mysql = require("mysql");
+const dbconfig = require("../dbConnect/dbconnect");
 
-const bcrypt = require('bcrypt');
-const cookieParser = require('cookie-parser');
-const cors=require('cors');
-const aut = require("../middleware/admin-JWT");
+const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const jwt = require("jsonwebtoken");
+
+const aut = require("../middleware/admin-JWT");
+
+router.use(express.static("public"));
+router.use(express.static("upload"));
 
 router.use(express.json());
 router.use(cookieParser());
@@ -16,7 +20,7 @@ router.use(cors());
 
 const db = mysql.createConnection(dbconfig.db);
 
-router.get('/userlogin',verifyToken, (req, res) => {
+router.get('/authSuperAdmin',verifyToken, (req, res) => {
     jwt.verify(req.token, "secret",async (err, authData) => {
         if(err){
             res.sendStatus(403);
@@ -33,10 +37,9 @@ router.get('/userlogin',verifyToken, (req, res) => {
     })
 }) //ແປງ token ເອົາໄອດີ admin ໄປ select ເອົາຂໍ້ມູນໄປສະແດງຢູ່ front end ||||||||||||||||||||||||||||||||||||||||||||||||||
 
-router.post('/', async (req, res) => {
-    const email = req.body.a_email;
-    const password = req.body.a_password;
-    
+router.post('/superAdminLogin', async (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
         await db.query("call check_ad_email(?)", [email], (err,result) => {
             if(result[0].length > 0){
                 const database_pw = result[0][0].a_password;
@@ -44,11 +47,12 @@ router.post('/', async (req, res) => {
                     if(!match){
                         res
                             .status(400)
-                            .send({ error: "Wrong Username and Password Combination!" });
+                            .send("Wrong Username and Password Combination!");
                     }else{
 
-                        jwt.sign({data:result[0][0].a_id, role:result[0][0].role}, "secret", (er, token) => {
+                        jwt.sign({data:result[0][0].a_id}, "secret", (er, token) => {
                             //res.cookie("access-token", token, { httpOnly: true });
+                            if (er) return res.status(404).json({ er });
                             res.status(200)
                             res.json({token});
                             // res.cookie("access-token", token, {

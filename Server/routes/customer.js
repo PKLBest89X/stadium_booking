@@ -278,51 +278,51 @@ router.get('/user/bookingHistory', verifyToken, async function(req,res,next){
 
 }) // ສະແດງລາຍກາ່ນຈອງທັງໝົດຂອງເດີ່ນນັ້ນໆ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
-router.get('/user/bookingHistory_paid', verifyToken, async function(req,res,next){
+// router.get('/user/bookingHistory_paid', verifyToken, async function(req,res,next){
 
-  jwt.verify(req.token, "secret", async (err, authData) => {
-    if (err) {
-        return res.sendStatus(403);
-    }
-    const customerId = authData.data;
-    await db.query("call report_user_reserve_paid(?)" , [customerId], (err,result) => {
-      if(err){
-          console.log(err);
-          return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
-      }
-      if (result[0].length > 0) {
-          return res.send(result[0])
-      } else {
-          return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
-      }
-      })
-    })
-
-
-}) // ສະແດງລາຍກາ່ນຈອງທີ່ຈ່າຍແລ້ວໃຫ້ user ມີບັນຊີ ||||||||||||||||||||||||||||||||||||||||||||||||||
-
-router.get('/user/bookingHistory_unPaid', verifyToken, async function(req,res,next){
-
-  jwt.verify(req.token, "secret", async (err, authData) => {
-    if (err) {
-        return res.sendStatus(403);
-    }
-    const customerId = authData.data;
-    await db.query("call report_user_reserve_unPaid(?)" , [customerId], (err,result) => {
-      if(err){
-          console.log(err);
-          return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
-      }
-      if (result[0].length > 0) {
-          return res.send(result[0])
-      } else {
-          return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
-      }
-      })
-    })
+//   jwt.verify(req.token, "secret", async (err, authData) => {
+//     if (err) {
+//         return res.sendStatus(403);
+//     }
+//     const customerId = authData.data;
+//     await db.query("call report_user_reserve_paid(?)" , [customerId], (err,result) => {
+//       if(err){
+//           console.log(err);
+//           return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+//       }
+//       if (result[0].length > 0) {
+//           return res.send(result[0])
+//       } else {
+//           return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+//       }
+//       })
+//     })
 
 
-}) // ສະແດງລາຍກາ່ນຈອງທີ່ຍັງບໍ່ຈ່າຍໃຫ້ user ມີບັນຊີ  ||||||||||||||||||||||||||||||||||||||||||||||||||
+// }) // ສະແດງລາຍກາ່ນຈອງທີ່ຈ່າຍແລ້ວໃຫ້ user ມີບັນຊີ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+// router.get('/user/bookingHistory_unPaid', verifyToken, async function(req,res,next){
+
+//   jwt.verify(req.token, "secret", async (err, authData) => {
+//     if (err) {
+//         return res.sendStatus(403);
+//     }
+//     const customerId = authData.data;
+//     await db.query("call report_user_reserve_unPaid(?)" , [customerId], (err,result) => {
+//       if(err){
+//           console.log(err);
+//           return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+//       }
+//       if (result[0].length > 0) {
+//           return res.send(result[0])
+//       } else {
+//           return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+//       }
+//       })
+//     })
+
+
+// }) // ສະແດງລາຍກາ່ນຈອງທີ່ຍັງບໍ່ຈ່າຍໃຫ້ user ມີບັນຊີ  ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
 module.exports = router;

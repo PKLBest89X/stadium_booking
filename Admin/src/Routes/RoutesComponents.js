@@ -1,7 +1,6 @@
 import DashboardView from "../Views/Dashboard";
 import AllStadium from "../Views/All_Stadium";
 import StadiumOwner from "../Views/Stadium_Owner";
-import AddStadiumOwner from "../Views/Stadium_Owner/AddStadium_ower";
 import Account from "../Views/Account/AccountView";
 import PrivateRoutes from "./PrivateRoutes";
 
@@ -11,21 +10,21 @@ const RoutesComponents = ({ ...rest }) => {
   return (
     <>
       <Switch>
-        <Route path="/" exact>
+        <PrivateRoutes path="/" exact>
           <DashboardView {...rest} />
-        </Route>
+        </PrivateRoutes>
 
-        <Route path="/all_stadiums">
+        <PrivateRoutes path="/all_stadiums">
           <AllStadium {...rest} />
-        </Route>
+        </PrivateRoutes>
 
-        <Route path="/stadium_owner">
+        <PrivateRoutes path="/stadium_owner">
           <StadiumOwner {...rest} />
-        </Route>
+        </PrivateRoutes>
 
-        <Route path={`/stadium_ownergg`}>
+        {/* <Route path={`/stadium_ownergg`}>
           <AddStadiumOwner {...rest}/>
-        </Route>
+        </Route> */}
 
         <PrivateRoutes path="/account">
           <Account {...rest} />
@@ -36,7 +35,6 @@ const RoutesComponents = ({ ...rest }) => {
         </Route>
 
         <Redirect to="/login" />
-        <Redirect to="/register" />
       </Switch>
     </>
   );

@@ -76,7 +76,7 @@ const OverviewByBooking = React.memo(({ ...rest }) => {
         <PaymentNavbarControl />
         <Box padding="1rem">
           <Typography variant="h3" color="textSecondary">
-            ການຈອງຂອງລູກຄ້າ
+            ການຈອງທີ່ບໍ່ໄດ້ຊຳລະຄ່າ
           </Typography>
         </Box>
         <Divider />

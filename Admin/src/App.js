@@ -8,7 +8,6 @@ import NotFoundView from "./Views/Errors/NotFound";
 import GlobalStyles from "./Components/GlobalStyles";
 
 import LoginView from "./Views/Auth/LoginView";
-import Registerview from "./Views/Auth/RegisterView";
 
 const App = () => {
   return (
@@ -18,15 +17,12 @@ const App = () => {
           <GlobalStyles />
           <Switch>
             <Route path="/404" exact>
+              <DefaultLayout />
               <NotFoundView />
             </Route>
             <Route path="/login" exact>
               <DefaultLayout />
               <LoginView />
-            </Route>
-            <Route path="/register" exact>
-              <DefaultLayout />
-              <Registerview />
             </Route>
             <Route path="/">
               <DashboardLayout />

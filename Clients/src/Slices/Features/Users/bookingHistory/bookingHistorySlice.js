@@ -3,7 +3,7 @@ import {
   fetchGetHistoryByUser,
   fetchGetHistoryDetailsByUser,
   fetchGetPaidHistoryByUser,
-  fetchGetUnPaidHistoryByUser
+  fetchGetUnPaidHistoryByUser,
 } from "../../../../middlewares/user/fetchBookingHistory/fetchBookingHistory";
 import {
   fetchAvailableCancel,
@@ -16,16 +16,13 @@ const initialState = {
   bookingHistoryLoading: false,
   cancelLoading: false,
   cancelSuccess: null,
+  cancelData: [],
   cancelError: null,
   cancelRequestId: undefined,
-  userPaidLoading: false,
   userPaidSuccess: null,
-  userPaidError: null,
-  userPaidRequestId: undefined,
-  userUnPaidLoading: false,
   userUnPaidSuccess: null,
-  userUnPaidError: null,
-  userUnPaidRequestId: undefined,
+  userPaidData: [],
+  userUnPaidData: [],
   bookingHistoryData: [],
   bookingHistoryDetailsData: [],
   bookingHistorySuccess: null,
@@ -98,17 +95,33 @@ const bookingHistorySlice = createSlice({
     },
     onCancelBooking: (state, { payload }) => {
       let afterDeleted = [];
-      afterDeleted = state.bookingHistoryDetailsData.filter(
+      afterDeleted = state.cancelData.filter(
         (items) => items.b_id !== payload
       );
       if (afterDeleted.length > 0) {
-        state.bookingHistoryDetailsData = afterDeleted;
+        state.cancelData = afterDeleted;
         state.bookingHistoryDetailsSuccess = true;
         state.cancelSuccess = true;
       } else {
-        state.bookingHistoryDetailsData = [];
+        state.cancelData = [];
         state.bookingHistoryDetailsSuccess = false;
         state.cancelSuccess = false;
+      }
+    },
+    onLoadUserBookingPaid: (state, { payload }) => {
+      state.userPaidData = state.bookingHistoryDetailsData.filter((items) => items.sub_status === payload);
+      if (state.userPaidData.length > 0) {
+        state.userPaidSuccess = true;
+      } else {
+        state.userPaidSuccess = false;
+      }
+    },
+    onLoadUserBookingUnPaid: (state, { payload }) => {
+      state.userUnPaidData = state.bookingHistoryDetailsData.filter((items) => items.sub_status === payload);
+      if (state.userUnPaidData.length > 0) {
+        state.userUnPaidSuccess = true;
+      } else {
+        state.userUnPaidSuccess = false;
       }
     },
     onFilterBookingForPayment: (state, { payload }) => {
@@ -196,8 +209,8 @@ const bookingHistorySlice = createSlice({
         state.cancelLoading = false;
         state.cancelRequestId = undefined;
         state.cancelSuccess = true;
-        state.bookingHistoryDetailsData = [];
-        state.bookingHistoryDetailsData = action.payload;
+        state.cancelData = [];
+        state.cancelData = action.payload;
       }
     });
     builder.addCase(fetchAvailableCancel.rejected, (state, action) => {
@@ -209,7 +222,7 @@ const bookingHistorySlice = createSlice({
         state.cancelRequestId = undefined;
         state.cancelSuccess = false;
         state.cancelError = action.payload;
-        state.bookingHistoryDetailsData = [];
+        state.cancelData = [];
       }
     });
 
@@ -226,73 +239,9 @@ const bookingHistorySlice = createSlice({
       state.bookingHistoryDetailsLoading = false;
       state.bookingHistoryDetailsError = action.payload;
     });
-
-    //ລາຍການຈອງທີ່ໄດ້ຈ່າຍແລ້ວ
-    builder.addCase(fetchGetPaidHistoryByUser.pending, (state, action) => {
-      state.userPaidLoading = true;
-      if (state.userPaidLoading === true) {
-        state.userPaidRequestId = action.meta.requestId;
-      }
-    });
-    builder.addCase(fetchGetPaidHistoryByUser.fulfilled, (state, action) => {
-      if (
-        state.userPaidLoading === true &&
-        state.userPaidRequestId === action.meta.requestId
-      ) {
-        state.userPaidLoading = false;
-        state.userPaidRequestId = undefined;
-        state.userPaidSuccess = true;
-        state.bookingHistoryDetailsData = [];
-        state.bookingHistoryDetailsData = action.payload;
-      }
-    });
-    builder.addCase(fetchGetPaidHistoryByUser.rejected, (state, action) => {
-      if (
-        state.userPaidLoading === true &&
-        state.userPaidRequestId === action.meta.requestId
-      ) {
-        state.userPaidLoading = false;
-        state.userPaidRequestId = undefined;
-        state.userPaidSuccess = false;
-        state.userPaidError = action.payload;
-        state.bookingHistoryDetailsData = [];
-      }
-    });
-
-    //ລາຍການຈອງທີ່ບໍ່ໄດ້ຈ່າຍ
-    builder.addCase(fetchGetUnPaidHistoryByUser.pending, (state, action) => {
-      state.userUnPaidLoading = true;
-      if (state.userUnPaidLoading === true) {
-        state.userUnPaidRequestId = action.meta.requestId;
-      }
-    });
-    builder.addCase(fetchGetUnPaidHistoryByUser.fulfilled, (state, action) => {
-      if (
-        state.userUnPaidLoading === true &&
-        state.userUnPaidRequestId === action.meta.requestId
-      ) {
-        state.userUnPaidLoading = false;
-        state.userUnPaidRequestId = undefined;
-        state.userUnPaidSuccess = true;
-        state.bookingHistoryDetailsData = [];
-        state.bookingHistoryDetailsData = action.payload;
-      }
-    });
-    builder.addCase(fetchGetUnPaidHistoryByUser.rejected, (state, action) => {
-      if (
-        state.userUnPaidLoading === true &&
-        state.userUnPaidRequestId === action.meta.requestId
-      ) {
-        state.userUnPaidLoading = false;
-        state.userUnPaidRequestId = undefined;
-        state.userUnPaidSuccess = false;
-        state.userUnPaidError = action.payload;
-        state.bookingHistoryDetailsData = [];
-      }
-    });
   },
 });
 
-export const { onShowBookingHistory, onCancelBooking } =
+export const { onShowBookingHistory, onCancelBooking, onLoadUserBookingPaid, onLoadUserBookingUnPaid } =
   bookingHistorySlice.actions;
 export default bookingHistorySlice.reducer;

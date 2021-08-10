@@ -16,11 +16,14 @@ import { useDispatch } from "react-redux";
 
 import { fetchAuthUser } from "../../../../middlewares/fetchAuth/fetchUser";
 import { userNow } from "../../../../Slices/Authentication/authSlice";
-import { fetchGetUnPaidHistoryByUser } from "../../../../middlewares/user/fetchBookingHistory/fetchBookingHistory";
+import { fetchGetHistoryDetailsByUser } from "../../../../middlewares/user/fetchBookingHistory/fetchBookingHistory";
 
 import ReportContainerLayout from "../../../../Components/ReportContainerLayout";
 import { onPopupOpen } from "../../../../Slices/Features/Popup/popupSlice";
-import { onShowBookingHistory } from "../../../../Slices/Features/Users/bookingHistory/bookingHistorySlice";
+import {
+  onShowBookingHistory,
+  onLoadUserBookingUnPaid,
+} from "../../../../Slices/Features/Users/bookingHistory/bookingHistorySlice";
 import NonBookingHistory from "./NonBookingHistory";
 import CheckIcon from "@material-ui/icons/Check";
 import ClearIcon from "@material-ui/icons/Clear";
@@ -67,10 +70,9 @@ const useStyles = makeStyles((theme) => ({
 const AllBookingUnPayment = React.memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const {
-    bookingHistoryDetailsData,
-    userUnPaidSuccess,
-  } = useShallowEqualSelector((state) => state.bookingHistory);
+  const { userUnPaidData, userUnPaidSuccess } = useShallowEqualSelector(
+    (state) => state.bookingHistory
+  );
 
   useEffect(() => {
     let userToken = JSON.parse(localStorage.getItem("accessUserToken"));
@@ -83,10 +85,14 @@ const AllBookingUnPayment = React.memo(() => {
   }, [dispatch]);
 
   useEffect(() => {
-    let userToken = JSON.parse(localStorage.getItem("accessUserToken"));
-    if (userToken && userToken.token) {
-      dispatch(fetchGetUnPaidHistoryByUser(userToken.token));
-    }
+    const getReportBooking = async () => {
+      let userToken = JSON.parse(localStorage.getItem("accessUserToken"));
+      if (userToken && userToken.token) {
+        await dispatch(fetchGetHistoryDetailsByUser(userToken.token));
+        dispatch(onLoadUserBookingUnPaid("ຍັງບໍ່ເຕະ"));
+      }
+    };
+    getReportBooking();
   }, [dispatch]);
 
   const onGetCurrentPayment = (payload) => {
@@ -104,7 +110,7 @@ const AllBookingUnPayment = React.memo(() => {
       <Divider />
       <Box padding="1rem">
         {userUnPaidSuccess === true &&
-          bookingHistoryDetailsData.map((items, index) => {
+          userUnPaidData.map((items, index) => {
             return (
               <div className={classes.cardContainer} key={index}>
                 <Card elevation={10}>
@@ -158,12 +164,12 @@ const AllBookingUnPayment = React.memo(() => {
                               display="flex"
                               alignItems="center"
                             >
-                              {items.paid_status === "ຈ່າຍແລ້ວ" ? (
+                              {items.sub_status === "ເຕະແລ້ວ" ? (
                                 <CheckIcon className={classes.paid} />
                               ) : (
                                 <ClearIcon className={classes.notYet} />
                               )}
-                              {items.paid_status === "ຈ່າຍແລ້ວ" ? (
+                              {items.sub_status === "ເຕະແລ້ວ" ? (
                                 <Typography variant="h6" color="textSecondary">
                                   ຈ່າຍແລ້ວ
                                 </Typography>

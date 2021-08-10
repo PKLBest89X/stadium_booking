@@ -21,6 +21,8 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import AdjustIcon from "@material-ui/icons/Adjust";
 import NumberFormat from "react-number-format";
 
+import { useHistory, useParams } from "react-router-dom";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "2px 4px",
@@ -41,6 +43,8 @@ function getRandomNumber(min, max) {
 
 const ReportPaymentNavbarControl = React.memo(() => {
   const classes = useStyles();
+  let history = useHistory();
+  const { stadiumId_Admin } = useParams();
   const [selectedDays, setSelectedDays] = useState([1, 2, 15]);
   const [date, changeDate] = useState(new Date());
   const [selectedDate, handleDateChange] = useState(new Date());
@@ -53,6 +57,12 @@ const ReportPaymentNavbarControl = React.memo(() => {
         resolve();
       }, 1000);
     });
+  };
+
+  const RoutesButton = (pathName) => {
+    history.push(
+      `/admin/stadium/${stadiumId_Admin}/payment-history/${pathName}`
+    );
   };
 
   return (
@@ -172,17 +182,26 @@ const ReportPaymentNavbarControl = React.memo(() => {
             flexDirection="column"
             alignItems="flex-start"
           >
-            <Button startIcon={<AdjustIcon />} color="inherit">
-              ບິນຊຳລະທັງໝົດ
+            <Button
+              startIcon={<AdjustIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("")}
+            >
+              ການຊຳລະທັງໝົດ
             </Button>
-            <Button startIcon={<AdjustIcon />} color="inherit">
-              ບິນຊຳລະທັງຄ່າເດີ່ນ ແລະ ເຄື່ອງດື່ມ
+            <Button
+              startIcon={<AdjustIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("payment-water_and_stadiums")}
+            >
+              ການຊຳລະທັງຄ່າເດີ່ນ ແລະ ເຄື່ອງດື່ມ
             </Button>
-            <Button startIcon={<AdjustIcon />} color="inherit">
-              ບິນຊຳລະສະເພາະຄ່າເດີ່ນ
-            </Button>
-            <Button startIcon={<AdjustIcon />} color="inherit">
-              ບິນຊຳລະສະເພາະຄ່າເຄື່ອງດື່ມ
+            <Button
+              startIcon={<AdjustIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("payment-stadiums")}
+            >
+              ການຊຳລະສະເພາະຄ່າເດີ່ນ
             </Button>
           </Box>
         </Box>
