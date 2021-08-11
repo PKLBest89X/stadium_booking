@@ -16,7 +16,7 @@ const RoutesReportStadiums = () => {
           <AvailableUsing />
         </PrivateRoutes>
 
-        <PrivateRoutes path="/all_stadiums/Not-available-stadiums">
+        <PrivateRoutes path="/all_stadiums/not-available-stadiums">
           <NotAvailableUsing />
         </PrivateRoutes>
 

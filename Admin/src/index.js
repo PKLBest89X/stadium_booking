@@ -8,13 +8,13 @@ import store from "./Store/store";
 import { history } from "./Components/history";
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <Provider store={store}>
       <Router history={history}>
         <App />
       </Router>
     </Provider>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById("root")
 );
 

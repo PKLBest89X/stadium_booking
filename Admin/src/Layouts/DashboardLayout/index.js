@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Navbar from './NavbarComponent';
-import Sidebar from './SidebarComponent'
+import Navbar from "./NavbarComponent";
+import Sidebar from "./SidebarComponent";
 import RoutesComponents from "../../Routes/RoutesComponents";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
@@ -56,7 +56,6 @@ const DashboardLayout = React.memo(() => {
   );
   const matchLg = useMediaQuery((theme) => theme.breakpoints.up("lg"));
 
-
   useEffect(() => {
     if (matchSm === true) {
       dispatch(onSmUpClose());
@@ -78,16 +77,14 @@ const DashboardLayout = React.memo(() => {
   }, [matchLg, dispatch]);
   return (
     <>
-      <>
-        <Navbar />
-        <Sidebar />
-        <RoutesComponents
-          className={clsx(classes.pageStyles, {
-            [classes.pageOpenTranslate]: smUp,
-            [classes.pageCloseTranslate]: !smUp,
-          })}
-        />
-      </>
+      <Navbar />
+      <Sidebar />
+      <RoutesComponents
+        className={clsx(classes.pageStyles, {
+          [classes.pageOpenTranslate]: smUp,
+          [classes.pageCloseTranslate]: !smUp,
+        })}
+      />
     </>
   );
 });

@@ -1,20 +1,19 @@
 import React, { useEffect } from "react";
-import PageLayout from "../../../../Components/PageLayout";
-import PopupLayout from "../../../../Components/PopupLayout";
-import { fetchCheckStadium } from "../../../../middlewares/fetchCheckValidData/fetchCheckValidData";
-import { useHistory, useParams } from "react-router-dom";
-import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
-import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUsers";
-import { userNow } from "../../../../Slices/Authentication/authSlice";
-import { fetchGetEmployee } from "../../../../middlewares/stadiumUser/fetchCRUDEmployee/fetchCRUDEmployee";
+import PageLayout from "../../../Components/PageLayout";
+import PopupLayout from "../../../Components/PopupLayout";
+import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
+
+import { fetchGetAllStadiumOwner } from "../../../middlewares/fetchStadiumOwner";
+import { fetchAuthSuperAdmin } from "../../../middlewares/fetchAuth";
+
 import { useDispatch } from "react-redux";
-import EmployeeTable from "./EmployeeTable";
-import EmployeeToolbar from "./EmployeeToolbar";
-import AddEmployee from '../AddEmployee';
+import StadiumOwnerTable from "./StadiumOwnerTable";
+import StadiumOwnerToolbar from "./StadiumOwnerToolbar";
+import AddStadiumOwner from '../AddStadium_owner';
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Box, Divider, Paper, Toolbar } from "@material-ui/core";
 
-import EmployeeCard from "./EmployeeCard";
+import StadiumOwnerCard from "./StadiumOwnerCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper.min.css";
 import "swiper/components/pagination/pagination.min.css";
@@ -42,51 +41,46 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StadiumEmployee = React.memo(({ ...rest }) => {
+const ShowStadiumOwner = React.memo(({ ...rest }) => {
   const classes = useStyles();
   SwiperCore.use([Keyboard, Navigation, Pagination]);
-  const { checkResult } = useShallowEqualSelector((state) => state.validData);
   const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
-  const { employeeFetchSuccess, employeeDataSortByDate } = useShallowEqualSelector(
-    (state) => state.employees
+  const { stadiumOwnerData, stadiumOwnerSuccess } = useShallowEqualSelector(
+    (state) => state.stadiumOwner
   );
-  const { stadiumId_Admin } = useParams();
-  const history = useHistory();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
-    if (adminToken && adminToken.token) {
-      dispatch(fetchAuthAdmin(adminToken.token));
-      dispatch(userNow("admin"));
+    const superAdminToken = JSON.parse(localStorage.getItem("accessSuperAdminToken"));
+    if (superAdminToken && superAdminToken.token) {
+      dispatch(fetchAuthSuperAdmin(superAdminToken.token));
     }
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(fetchCheckStadium(stadiumId_Admin));
-  }, [dispatch, stadiumId_Admin]);
 
   useEffect(() => {
-    if (checkResult === 404) {
-      history.replace("/404");
-    }
-  }, [history, checkResult]);
+    dispatch(fetchGetAllStadiumOwner());
+  }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(fetchGetEmployee(stadiumId_Admin));
-  }, [dispatch, stadiumId_Admin]);
+  const sortStadiumOwner = (array) => {
+    const getArray = [...array];
+    getArray.sort(
+      (a, b) => new Date(b["regis_date"]) - new Date(a["regis_date"])
+    );
+    return getArray;
+  };
 
-  const ShowEmptyEmployee = () => (
+  const ShowEmptyStadiumOwner = () => (
     <div className={classes.emptyView}>
       <Typography variant="h3">ບໍ່ມີພະນັກງານຂອງເດີ່ນ</Typography>
     </div>
   );
 
-  let AddEmployeeForm = null;
-  if (popupName === "addEmployee" && isOpen === true) {
-    AddEmployeeForm = (
+  let AddStadiumOwnerForm = null;
+  if (popupName === "addStadiumOwner" && isOpen === true) {
+    AddStadiumOwnerForm = (
       <PopupLayout>
-        <AddEmployee />
+        <AddStadiumOwner />
       </PopupLayout>
     );
   }
@@ -102,14 +96,15 @@ const StadiumEmployee = React.memo(({ ...rest }) => {
 
   return (
     <>
-      {AddEmployeeForm}
+      {AddStadiumOwnerForm}
       <PageLayout title="Stadium Employee" {...rest}>
         <div className={classes.pageContainer}>
           <Box mb={3}>
             <Typography color="textPrimary" variant="h2">
-              ພະນັກງານຂອງເດີ່ນ
+              ເຈົ້າຂອງເດີ່ນ
             </Typography>
           </Box>
+          <Divider />
           <Divider />
           <Box mt={3}>
             <Paper>
@@ -128,7 +123,6 @@ const StadiumEmployee = React.memo(({ ...rest }) => {
               <Swiper
                 spaceBetween={20}
                 observeParents={true}
-                simulateTouch={false}
                 observer={true}
                 slidesPerView={1}
                 navigation={true}
@@ -145,10 +139,10 @@ const StadiumEmployee = React.memo(({ ...rest }) => {
                   },
                 }}
               >
-                {employeeDataSortByDate.map((items, index) => {
+                {sortStadiumOwner(stadiumOwnerData).map((items, index) => {
                   return (
                     <SwiperSlide key={index}>
-                      <EmployeeCard getitems={items} />
+                      <StadiumOwnerCard getitems={items} />
                     </SwiperSlide>
                   );
                 })}
@@ -156,9 +150,9 @@ const StadiumEmployee = React.memo(({ ...rest }) => {
             </Paper>
           </Box>
           <Box mt={3}>
-            <EmployeeToolbar />
-            {employeeFetchSuccess === true && <EmployeeTable />}
-            {employeeFetchSuccess === false && <ShowEmptyEmployee />}
+            <StadiumOwnerToolbar />
+            {stadiumOwnerSuccess === true && <StadiumOwnerTable />}
+            {stadiumOwnerSuccess === false && <ShowEmptyStadiumOwner />}
           </Box>
         </div>
       </PageLayout>
@@ -166,4 +160,4 @@ const StadiumEmployee = React.memo(({ ...rest }) => {
   );
 });
 
-export default StadiumEmployee;
+export default ShowStadiumOwner;

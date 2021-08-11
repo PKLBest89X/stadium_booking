@@ -13,8 +13,8 @@ const App = () => {
   return (
     <>
       <ThemeProvider theme={theme}>
+        <GlobalStyles />
         <Router>
-          <GlobalStyles />
           <Switch>
             <Route path="/404" exact>
               <DefaultLayout />

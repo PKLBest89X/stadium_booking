@@ -1,10 +1,10 @@
 import DashboardView from "../Views/Dashboard";
 import AllStadium from "../Views/All_Stadium";
-import StadiumOwner from "../Views/Stadium_Owner";
+import StadiumOwner from "../Views/Stadium_Owner/ShowStadium_owner";
 import Account from "../Views/Account/AccountView";
 import PrivateRoutes from "./PrivateRoutes";
 
-import { Switch, Route, Redirect, useRouteMatch } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 
 const RoutesComponents = ({ ...rest }) => {
   return (
@@ -21,10 +21,6 @@ const RoutesComponents = ({ ...rest }) => {
         <PrivateRoutes path="/stadium_owner">
           <StadiumOwner {...rest} />
         </PrivateRoutes>
-
-        {/* <Route path={`/stadium_ownergg`}>
-          <AddStadiumOwner {...rest}/>
-        </Route> */}
 
         <PrivateRoutes path="/account">
           <Account {...rest} />

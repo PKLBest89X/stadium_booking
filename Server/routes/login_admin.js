@@ -30,7 +30,7 @@ router.get('/authSuperAdmin',verifyToken, (req, res) => {
                 if(er){
                     console.log(er);
                 }else{
-                    res.send(result);
+                    res.send(result[0][0]);
                 }
             })
         }

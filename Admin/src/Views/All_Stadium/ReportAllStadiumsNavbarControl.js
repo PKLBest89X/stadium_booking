@@ -136,7 +136,7 @@ const ReportAllStadiumsNavbarControl = React.memo(() => {
             <Button
               startIcon={<CancelIcon />}
               color="inherit"
-              onClick={() => RoutesButton("Not-available-stadiums")}
+              onClick={() => RoutesButton("not-available-stadiums")}
             >
               ເດີ່ນທີ່ບໍ່ພ້ອມໃຫ້ບໍລິການ
             </Button>

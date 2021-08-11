@@ -17,7 +17,6 @@ const db = mysql.createConnection(dbconfig.db);
 
 router.get("/get_employee/:st_id", async (req, res) => {
   const stadium_id = req.params.st_id;
-  console.log(stadium_id)
   await db.query("call staff_employee(?)", [stadium_id], (err, result) => {
     if (err) {
       return res.status(400);
@@ -40,6 +39,20 @@ function verifyToken(req, res, next) {
     res.sendStatus(403); //forbidden
   }
 } // function ແປງ token ເປັນຂໍ້ມູນ
+
+router.get("/getAllStadiumOwner", async (req, res) => {
+  await db.query("call stadiumOwner_getAll()", (err, result) => {
+    if (err) {
+      return res.status(400);
+    } 
+    if (result[0].length > 0) {
+      return res.send(result[0]);
+    } else {
+      return res.status(304).send('Not found data!!');
+    }
+  });
+}); // ສະແດງພະນັກງານທັງໝົດຂອງເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
 
 router.post("/login", async (req, res) => {
   const staff_email = req.body.email;
@@ -121,8 +134,12 @@ router.post("/add", async function (req, res, next) {
                 console.log(err);
                 res.status(400).json({ error: err });
               } else {
-                res.status(200);
-                res.send("Staff Complete");
+                db.query("call stadiumOwner_getAll()", (err, result) => {
+                  if (err) {
+                    return res.status(400);
+                  } 
+                  return res.send(result[0]);
+                });
               }
             }
           );
@@ -156,8 +173,12 @@ router.post("/add", async function (req, res, next) {
                 if (err) {
                   res.status(400).json({ error: err });
                 } else {
-                  res.status(200);
-                  res.send("Staff Complete");
+                  db.query("call stadiumOwner_getAll()", (err, result) => {
+                    if (err) {
+                      return res.status(400);
+                    } 
+                    return res.send(result[0]);
+                  });
                 }
               }
             );

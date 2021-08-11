@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useMemo, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { onSmDownClose } from "../../../Slices/Features/ToggleDrawer/toggleSlice";
 import { useDispatch } from "react-redux";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
-import { user, SidebarData } from "../SidebarData";
+import { SidebarData } from "../SidebarData";
 import { NavLink } from "react-router-dom";
 import clsx from "clsx";
 import {
@@ -94,10 +94,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ListContent = () => {
+const ListContent = React.memo(() => {
   const classes = useStyles();
   const { smUp } = useShallowEqualSelector((state) => state.toggle);
+  const { data } = useShallowEqualSelector((state) => state.auth);
+  const stateRef = useRef(data);
   const dispatch = useDispatch();
+
+  useMemo(() => data.forEach((items) => (stateRef.current = items)), [data]);
+
   return (
     <div className={classes.content_wrapper}>
       <div className={classes.overflow_container}>
@@ -110,18 +115,17 @@ const ListContent = () => {
           <Box alignItems="center" display="flex" flexDirection="column" p={2}>
             <Avatar
               className={classes.avatar}
-              src={user.avatar}
-              to="/account"
+              src={`/assets/images/admin_img/${stateRef.current.a_img}`}
             />
             <Typography
               className={classes.name}
               color="textPrimary"
               variant="h5"
             >
-              {user.name}
+              {stateRef.current.a_name}
             </Typography>
             <Typography color="textSecondary" variant="body2">
-              {user.jobTitle}
+              {stateRef.current.a_surname}
             </Typography>
           </Box>
         </div>
@@ -193,6 +197,6 @@ const ListContent = () => {
       </div>
     </div>
   );
-};
+});
 
 export default ListContent;

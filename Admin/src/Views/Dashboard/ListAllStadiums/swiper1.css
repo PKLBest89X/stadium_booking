@@ -1,0 +1,14 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.swiper-slide {
+  width: 100%;
+  height: 100%;
+}
+.swiper-container {
+  padding: 2em 0px;
+  width: 100%;
+  height: 100%;
+}

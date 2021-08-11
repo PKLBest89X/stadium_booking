@@ -26,9 +26,3 @@ export const SidebarData = [
     icon: <AccountCircle />,
   },
 ];
-
-export const user = {
-  avatar: "/assets/images/admin_img/neymar.jpg",
-  jobTitle: "Chanthanakhone",
-  name: "Somsay",
-};

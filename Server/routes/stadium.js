@@ -55,27 +55,60 @@ router.get('/reserve', async function(req,res,next){
 }) // ສະແດງຕາຕະລາງຈອງເດີ່ນທັງໝົດຂອງເດີ່ນນັ້ນໆ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
-router.get('/show', async function(req,res,next){
+router.get('/showAll', async function(req,res,next){
     await db.query("call stadium()", (err, result) => {
         if(err){
             res.status(400)
             console.log(err);
         }else{
             res.status(200)
-            res.send(result);
+            res.send(result[0]);
+        }
+    })
+}) // ສະແດງຕາຕະລາງເດີ່ນທັງໝົດ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+router.get('/showAvailable', async function(req,res,next){
+    await db.query("call stadium_available()", (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+}) // ສະແດງຕາຕະລາງເດີ່ນທັງໝົດ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+router.get('/showNotAvailable', async function(req,res,next){
+    await db.query("call stadium_notAvailable()", (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
         }
     })
 }) // ສະແດງຕາຕະລາງເດີ່ນທັງໝົດ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 router.get('/show/byStadiumId/:stadiumId', async function(req, res){
-    const stadium_id = req.params.stadiumId
-    await db.query("call stadium_byStadiumId(?)", [stadium_id], (err, result) => {
-        if(err){
-            res.status(400)
+    const stadiumId = req.params.stadiumId;
+    await db.query("call stadium_byStadiumId(?)", [stadiumId], (err, result) => {
+        if (err) {
             console.log(err);
-        }else{
-            res.status(200)
-            res.send(result[0]);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
         }
     })
 }) // ສະແດງຕາຕະລາງເດີ່ນທັງໝົດ ||||||||||||||||||||||||||||||||||||||||||||||||||

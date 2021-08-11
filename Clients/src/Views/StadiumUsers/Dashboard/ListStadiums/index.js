@@ -44,28 +44,6 @@ const ListStadiums = React.memo(() => {
   const { stadiumsData } = useShallowEqualSelector(
     (state) => state.stadiumDetails
   );
-  const tutorialSteps = [
-    {
-      label: "San Francisco – Oakland Bay Bridge, United States",
-      imgPath: "/assets/images/Test/test1.jpg",
-    },
-    {
-      label: "Bird",
-      imgPath: "/assets/images/Test/test2.jpg",
-    },
-    {
-      label: "Bali, Indonesia",
-      imgPath: "/assets/images/Test/test3.jpg",
-    },
-    {
-      label: "NeONBRAND Digital Marketing, Las Vegas, United States",
-      imgPath: "/assets/images/Test/test4.jpg",
-    },
-    {
-      label: "Goč, Serbia",
-      imgPath: "/assets/images/Test/test5.jpg",
-    },
-  ];
   const dispatch = useDispatch();
 
   useEffect(() => {

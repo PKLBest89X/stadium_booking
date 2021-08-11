@@ -1,13 +1,28 @@
-import React, { useCallback, useRef, useMemo } from "react";
-import { Avatar, Box, Card, Typography, Grid, Button } from "@material-ui/core";
+import React, { useEffect } from "react";
+import {
+  Avatar,
+  Box,
+  Card,
+  Typography,
+  Grid,
+  Button,
+  colors,
+  Divider,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import ReportContainerLayout from "../../../Components/ReportContainerLayout";
+import CheckIcon from "@material-ui/icons/Check";
+import ClearIcon from "@material-ui/icons/Clear";
+import moment from "moment";
 
+import { fetchGetAvailableStadiums } from "../../../middlewares/fetchAllStadiums";
+import { fetchAuthSuperAdmin } from "../../../middlewares/fetchAuth";
 
-import { useHistory, useRouteMatch, useParams } from "react-router-dom";
-import { unwrapResult } from "@reduxjs/toolkit";
+import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { useDispatch } from "react-redux";
+import NonStadiums from '../NonStadiums';
 
-import VisibilityIcon from '@material-ui/icons/Visibility';
+
 
 const useStyles = makeStyles((theme) => ({
   cardLayout: {
@@ -45,89 +60,123 @@ const useStyles = makeStyles((theme) => ({
       width: 90,
     },
   },
+  paid: {
+    color: colors.green[900],
+    width: 20,
+    height: 20,
+  },
+  notYet: {
+    color: colors.red[600],
+    width: 20,
+    height: 20,
+  },
 }));
 
 const AvailableUsing = React.memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { stadiumId_Admin } = useParams();
-  let history = useHistory();
-  const { url } = useRouteMatch();
+  const { availableData, availableSuccess } = useShallowEqualSelector(
+    (state) => state.allStadiums
+  );
 
-  const fakeData = [
-    {
-      st_name: "Saysettha Stadium",
-      logo: "E3IzI-yVgAEuKyv.jpg",
-      status: "ພ້ອມໃຫ້ບໍລິການ",
-    },
-    {
-      st_name: "PKL Stadium",
-      logo: "test_stadium_logo.jpg",
-      status: "ພ້ອມໃຫ້ບໍລິການ",
-    },
-    {
-      st_name: "KPS Stadium",
-      logo: "KhampasongStadiumLogo.jpg",
-      status: "ພ້ອມໃຫ້ບໍລິການ",
-    },
-    {
-      st_name: "Singha Sport FC",
-      logo: "singha_stadium_logo.jpg",
-      status: "ບໍ່ພ້ອມໃຫ້ບໍລິການ",
-    },
-  ];
+  useEffect(() => {
+    const superAdminToken = JSON.parse(localStorage.getItem("accessSuperAdminToken"));
+    if (superAdminToken && superAdminToken.token) {
+      dispatch(fetchAuthSuperAdmin(superAdminToken.token));
+    }
+  }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(fetchGetAvailableStadiums());
+  }, [dispatch]);
 
   return (
-    <div className={classes.cardLayout}>
-      {fakeData.map((items, index) => {
-        return (
-          <div className={classes.cardContainer} key={index}>
-            <Card elevation={10}>
-              <Grid container spacing={3}>
-                <Grid item xs={2} sm={2} md={2} lg={2} xl={2}>
-                  <Box padding={1}>
-                    <Box>
-                      <Avatar
-                        className={classes.avatar}
-                        src={`/assets/images/adminPics/stadiumPics/icons/${items.logo}`}
-                      />
-                    </Box>
-                  </Box>
-                </Grid>
-                <Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    width="100%"
-                    height="100%"
-                    padding="0 1em"
-                  >
-                    <Box>
-                      <Typography gutterBottom variant="h4" color="textPrimary">
-                        {items.st_name}
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        color="textSecondary"
-                      >{`ສະຖານະ: ${items.status}`}</Typography>
-                    </Box>
-                    <Button
-                      
-                      color="primary"
-                      variant="contained"
-                    >
-                      ລາຍລະອຽດ
-                    </Button>
-                  </Box>
-                </Grid>
-              </Grid>
-            </Card>
-          </div>
-        );
-      })}
-    </div>
+    <ReportContainerLayout>
+      <Box padding="1rem">
+        <Typography variant="h3" color="textSecondary">
+          ເດີ່ນທີ່ພ້ອມໃຊ້ງານ
+        </Typography>
+      </Box>
+      <Divider />
+      <Box padding="1rem">
+        {availableSuccess === true &&
+          availableData.map((items, index) => {
+            return (
+              <div className={classes.cardContainer} key={index}>
+                <Card elevation={10}>
+                  <Grid container spacing={3}>
+                    <Grid item xs={2} sm={2} md={2} lg={2} xl={2}>
+                      <Box padding={1}>
+                        <Box>
+                          <Avatar
+                            className={classes.avatar}
+                            src={`/assets/images/adminPics/stadiumPics/icons/${items.logo}`}
+                          />
+                        </Box>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        width="100%"
+                        height="100%"
+                        padding="0 1em"
+                      >
+                        <Box>
+                          <Typography
+                            gutterBottom
+                            variant="h4"
+                            color="textPrimary"
+                          >
+                            {items.st_name}
+                          </Typography>
+                          <Box display="flex" alignItems="center">
+                            <Typography variant="h6" color="textSecondary">
+                              ສະຖານະ:
+                            </Typography>
+                            <Box
+                              marginLeft=".3rem"
+                              display="flex"
+                              alignItems="center"
+                            >
+                              {items.status === "ດຳເນີນການ" ? (
+                                <CheckIcon className={classes.paid} />
+                              ) : (
+                                <ClearIcon className={classes.notYet} />
+                              )}
+                              {items.status === "ດຳເນີນການ" ? (
+                                <Typography variant="h6" color="textSecondary">
+                                  ດຳເນີນການ
+                                </Typography>
+                              ) : (
+                                <Typography variant="h6" color="textSecondary">
+                                  ບໍ່ພ້ອມໃຊ້ງານ
+                                </Typography>
+                              )}
+                            </Box>
+                          </Box>
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                          >{`ມື້ລົງທະບຽນ: ${moment(items.regis_date).format(
+                            "DD/MM/YYYY"
+                          )}`}</Typography>
+                        </Box>
+                        <Button color="primary" variant="contained">
+                          ລາຍລະອຽດ
+                        </Button>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Card>
+              </div>
+            );
+          })}
+        {availableSuccess === false && <NonStadiums />}
+      </Box>
+    </ReportContainerLayout>
   );
 });
 
