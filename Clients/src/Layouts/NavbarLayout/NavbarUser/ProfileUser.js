@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
   editToolContainer: {
     display: "flex",
+    justifyContent: 'flex-end',
     "& > :nth-child(n)": {
       margin: "0 .35em",
     },

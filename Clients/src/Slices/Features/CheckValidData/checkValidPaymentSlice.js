@@ -6,7 +6,7 @@ const initialState = {
   checkPaymentResult: null,
 };
 
-const validBookingDataSlice = createSlice({
+const validPaymentDataSlice = createSlice({
   name: "validPaymentData",
   initialState,
   reducers: {},
@@ -25,4 +25,4 @@ const validBookingDataSlice = createSlice({
   },
 });
 
-export default validBookingDataSlice.reducer;
+export default validPaymentDataSlice.reducer;

@@ -45,7 +45,7 @@ const ShowStadiumOwner = React.memo(({ ...rest }) => {
   const classes = useStyles();
   SwiperCore.use([Keyboard, Navigation, Pagination]);
   const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
-  const { stadiumOwnerData, stadiumOwnerSuccess } = useShallowEqualSelector(
+  const {  stadiumOwnerSuccess, stadiumOwnerDataSortByDate } = useShallowEqualSelector(
     (state) => state.stadiumOwner
   );
   const dispatch = useDispatch();
@@ -62,13 +62,6 @@ const ShowStadiumOwner = React.memo(({ ...rest }) => {
     dispatch(fetchGetAllStadiumOwner());
   }, [dispatch]);
 
-  const sortStadiumOwner = (array) => {
-    const getArray = [...array];
-    getArray.sort(
-      (a, b) => new Date(b["regis_date"]) - new Date(a["regis_date"])
-    );
-    return getArray;
-  };
 
   const ShowEmptyStadiumOwner = () => (
     <div className={classes.emptyView}>
@@ -139,7 +132,7 @@ const ShowStadiumOwner = React.memo(({ ...rest }) => {
                   },
                 }}
               >
-                {sortStadiumOwner(stadiumOwnerData).map((items, index) => {
+                {stadiumOwnerDataSortByDate.map((items, index) => {
                   return (
                     <SwiperSlide key={index}>
                       <StadiumOwnerCard getitems={items} />

@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchFeedPost } from "../../../../middlewares/user/fetchFeedPost/fetchFeedPost";
+import {
+  fetchFeedPost,
+  fetchFeedPostOfStadium,
+  fetchFeedPostOfStadiumOnSeleted,
+} from "../../../../middlewares/user/fetchFeedPost/fetchFeedPost";
 
 const initialState = {
   feedPostLoading: false,
@@ -7,6 +11,15 @@ const initialState = {
   feedPostData: [],
   feddPostError: null,
   feedPostRequestId: null,
+  postOfStadiumLoading: false,
+  postOfStadiumSuccess: null,
+  postOfStadiumData: [],
+  postOfStadiumError: null,
+  postOfStadiumRequestId: undefined,
+  postOnSelectedLoading: false,
+  postOnSelectedData: [],
+  postOnSelectedError: null,
+  postOnSelectedRequestId: undefined
 };
 
 const feedPostSlice = createSlice({
@@ -45,6 +58,81 @@ const feedPostSlice = createSlice({
         state.feedPostError = action.payload;
       }
     });
+
+    //ບັນດາ post ສະເພາະຂອງເດີ່ນ
+    builder.addCase(fetchFeedPostOfStadium.pending, (state, { meta }) => {
+      state.postOfStadiumLoading = true;
+      if (state.postOfStadiumLoading === true) {
+        state.postOfStadiumRequestId = meta.requestId;
+      }
+    });
+    builder.addCase(fetchFeedPostOfStadium.fulfilled, (state, action) => {
+      const { requestId } = action.meta;
+      if (
+        state.postOfStadiumLoading === true ||
+        state.postOfStadiumRequestId === requestId
+      ) {
+        state.postOfStadiumLoading = false;
+        state.postOfStadiumSuccess = true;
+        state.postOfStadiumRequestId = undefined;
+        state.postOfStadiumData = [];
+        state.postOfStadiumData = action.payload;
+      }
+    });
+    builder.addCase(fetchFeedPostOfStadium.rejected, (state, action) => {
+      const { requestId } = action.meta;
+      if (
+        state.postOfStadiumLoading === true ||
+        state.postOfStadiumRequestId === requestId
+      ) {
+        state.postOfStadiumLoading = false;
+        state.postOfStadiumSuccess = false;
+        state.postOfStadiumRequestId = undefined;
+        state.postOfStadiumError = action.payload;
+      }
+    });
+
+    //1 post ສະເພາະຂອງເດີ່ນ
+    builder.addCase(
+      fetchFeedPostOfStadiumOnSeleted.pending,
+      (state, { meta }) => {
+        state.postOnSelectedLoading = true;
+        if (state.postOnSelectedLoading === true) {
+          state.postOnSelectedRequestId = meta.requestId;
+        }
+      }
+    );
+    builder.addCase(
+      fetchFeedPostOfStadiumOnSeleted.fulfilled,
+      (state, action) => {
+        const { requestId } = action.meta;
+        if (
+          state.postOnSelectedLoading === true ||
+          state.postOnSelectedRequestId === requestId
+        ) {
+          state.postOnSelectedLoading = false;
+          // state.feedPostSuccess = true;
+          state.postOnSelectedRequestId = undefined;
+          state.postOnSelectedData = [];
+          state.postOnSelectedData.push(action.payload);
+        }
+      }
+    );
+    builder.addCase(
+      fetchFeedPostOfStadiumOnSeleted.rejected,
+      (state, action) => {
+        const { requestId } = action.meta;
+        if (
+          state.postOnSelectedLoading === true ||
+          state.postOnSelectedRequestId === requestId
+        ) {
+          state.postOnSelectedLoading = false;
+          // state.feedPostSuccess = false;
+          state.postOnSelectedRequestId = undefined;
+          state.postOnSelectedError = action.payload;
+        }
+      }
+    );
   },
 });
 

@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PageLayout from "../../../Components/PageLayout";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
-import { animated, useSpring } from "@react-spring/web";
+import { makeStyles } from "@material-ui/core/styles";
+
+import { fetchAuthUser } from "../../../middlewares/fetchAuth/fetchUser";
+import { userNow } from "../../../Slices/Authentication/authSlice";
+import {
+  fetchGetFeedPostBySubscribed,
+  fetchGetSubscribe,
+} from "../../../middlewares/user/fetchSubscribe/fetchSubscribe";
+import { useDispatch } from "react-redux";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper.min.css";
 import "swiper/components/pagination/pagination.min.css";
@@ -9,58 +18,112 @@ import "swiper/components/navigation/navigation.min.css";
 import SwiperCore, { Keyboard, Navigation, Pagination } from "swiper/core";
 // Import Swiper styles
 import "swiper/swiper.scss";
+import "./swiper.css";
 
 import FeedPostByFollowed from "./FeedPostByFollowed";
-import { Box } from "@material-ui/core";
+import FeedStadiumByFollowed from "./FeedStadiumByFollowed";
+import { Box, Typography, Divider } from "@material-ui/core";
+import NonFollowStadium from "./NonFollowStadium";
 
-import './swiper.css'
-const StadiumFollow = ({ ...rest }) => {
+const useStyles = makeStyles(() => ({
+  contentContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))",
+    gridGap: "1em",
+  },
+}));
+
+const StadiumFollow = React.memo(({ ...rest }) => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
   SwiperCore.use([Keyboard, Navigation, Pagination]);
-  const animation = useSpring({
-    to: {
-      opacity: 1,
-    },
-    from: { opacity: 0 },
-  });
+  const {
+    subscribeData,
+    subscribeSuccess,
+    getFeedPostData,
+    getFeedPostSuccess,
+  } = useShallowEqualSelector((state) => state.subscribe);
 
-  const { feedPostData } = useShallowEqualSelector((state) => state.feedPost);
+  useEffect(() => {
+    let userToken = JSON.parse(localStorage.getItem("accessUserToken"));
+    if (userToken && userToken.token) {
+      dispatch(fetchAuthUser(userToken.token));
+      dispatch(userNow("userLoggedIn"));
+    } else {
+      dispatch(userNow("quest"));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    const userToken = JSON.parse(localStorage.getItem("accessUserToken"));
+    if (userToken && userToken.token) {
+      dispatch(fetchGetSubscribe(userToken.token));
+      dispatch(fetchGetFeedPostBySubscribed(userToken.token));
+    }
+  }, [dispatch]);
+
   return (
     <PageLayout title="ຕິດຕາມເດີ່ນ" {...rest}>
-      <animated.div style={animation}>
-        <h1>ເປັນ feed ການຕິດຕາມເດີ່ນທັງໝົດ</h1>
+      {subscribeSuccess === true && (
         <Box padding="2rem">
-          <Swiper
-            spaceBetween={20}
-            observeParents={true}
-            simulateTouch={false}
-            observer={true}
-            slidesPerView={1}
-            navigation={true}
-            keyboard={{ enabled: true }}
-            pagination={{
-              clickable: true,
-            }}
-            breakpoints={{
-              600: {
-                slidesPerView: 2,
-              },
-              960: {
-                slidesPerView: 3,
-              },
-            }}
-          >
-            {feedPostData.map((items, index) => {
-              return (
-                <SwiperSlide key={index}>
-                  <FeedPostByFollowed getitems={items} />
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
+          <Box mb={2}>
+            <Typography variant="h4" color="textSecondary">
+              ເດີ່ນທັງໝົດທີ່ໄດ້ຕິດຕາມ
+            </Typography>
+          </Box>
+          <Divider />
+          <Box>
+            <Swiper
+              spaceBetween={20}
+              observeParents={true}
+              simulateTouch={false}
+              observer={true}
+              slidesPerView={1}
+              navigation={true}
+              keyboard={{ enabled: true }}
+              pagination={{
+                clickable: true,
+              }}
+              breakpoints={{
+                600: {
+                  slidesPerView: 2,
+                },
+                960: {
+                  slidesPerView: 3,
+                },
+              }}
+            >
+              {subscribeData.map((items, index) => {
+                return (
+                  <SwiperSlide key={index}>
+                    <FeedStadiumByFollowed getitems={items} />
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          </Box>
+          <Box mt={3}>
+            <Box mb={2}>
+              <Typography variant="h4" color="textSecondary">
+                Post ທັງໝົດຂອງເດີ່ນທີ່ຕິດຕາມ
+              </Typography>
+            </Box>
+            <Divider />
+            <Box mt={3}>
+              <div className={classes.contentContainer}>
+                {getFeedPostData.map((items) => {
+                  return (
+                    <FeedPostByFollowed key={items.pt_id} getitems={items} />
+                  );
+                })}
+              </div>
+            </Box>
+          </Box>
         </Box>
-      </animated.div>
+      )}
+      {subscribeSuccess === false && <NonFollowStadium />}
     </PageLayout>
   );
-};
+});
 
 export default StadiumFollow;

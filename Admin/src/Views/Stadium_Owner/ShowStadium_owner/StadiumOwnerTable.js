@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
 import Delete from "@material-ui/icons/Delete";
-import Edit from "@material-ui/icons/Edit";
-import { useRouteMatch, useHistory } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 
 import StadiumOwnerTabControl from "./StadiumOwnerTabControl";

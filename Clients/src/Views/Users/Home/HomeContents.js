@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { IconButton, Typography, Button, Box } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import {
   Avatar,
   Card,
@@ -57,6 +57,12 @@ const useStyles = makeStyles(() => ({
 const HomeContents = ({ getitems }) => {
   const classes = useStyles();
   const history = useHistory();
+  const cardRef = useRef();
+  const onPushPost = (event) => {
+    if (cardRef.current !== event.target) {
+      history.push(`/stadium/${getitems.st_id}/posts/${getitems.pt_id}`);
+    }
+  };
   return (
     <div className={classes.ItemsContainer}>
       <Card className={classes.root} elevation={10}>
@@ -86,6 +92,7 @@ const HomeContents = ({ getitems }) => {
           className={classes.media}
           image={`/assets/images/adminPics/postPics/${getitems.post_img}`}
           title={getitems.post_title}
+          onClick={onPushPost}
         />
         <CardContent className={classes.cardContent}>
           <Typography gutterBottom variant="h4" component="h2" noWrap>

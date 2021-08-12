@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useRef } from "react";
-import PageLayout from "../../../Components/PageLayout";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { useDispatch } from "react-redux";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { addStadiumOwner } from "../../../middlewares/fetchStadiumOwner";
 import ImageStadiumOwner from "./ImageStadiumOwner";
 import { onPopupClose } from "../../../Slices/Features/Popup/popupSlice";
@@ -44,9 +44,6 @@ const AddStadiumOwner = React.memo(({ ...rest }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const imageOwnerRef = useRef(null);
-  const { loading, error } = useShallowEqualSelector(
-    (state) => state.stadiumOwner
-  );
   const [addPeople, setAddPeople] = useState({
     firstName: "",
     lastName: "",
@@ -108,8 +105,11 @@ const AddStadiumOwner = React.memo(({ ...rest }) => {
     formData.append("password", addPeople.password);
     formData.append("sampleFile", addPeople.image);
     try {
-      await dispatch(addStadiumOwner(formData));
-      dispatch(onPopupClose());
+      const requestData = await dispatch(addStadiumOwner(formData));
+      const getResponse = unwrapResult(requestData);
+      if (getResponse) {
+        dispatch(onPopupClose());
+      }
     } catch (err) {
       console.log(err);
     }
@@ -232,10 +232,9 @@ const AddStadiumOwner = React.memo(({ ...rest }) => {
               type="submit"
               variant="contained"
             >
-              {loading === true ? "Loading..." : "ເພີ່ມ"}
+              ເພີ່ມ
             </Button>
           </Box>
-          {error && <p>{error}</p>}
         </form>
       </Container>
     </div>

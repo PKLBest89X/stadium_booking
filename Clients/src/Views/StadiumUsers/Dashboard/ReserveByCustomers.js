@@ -77,28 +77,30 @@ const ReserveByCustomers = ({ className, ...rest }) => {
   };
 
   return (
-    <Card className={clsx(classes.root, className)} elevation={10} {...rest}>
-      <CardHeader title="ການຈອງຂອງເດີ່ນ" />
-      <Divider />
-      <CardContent>
-        <Box height={300} position="relative">
-          <Doughnut data={data} options={options} />
-        </Box>
-        <Box display="flex" justifyContent="center" mt={2}>
-          {devices.map(({ color, icon: Icon, title, value }) => (
-            <Box key={title} p={1} textAlign="center">
-              <Icon color="action" />
-              <Typography color="textPrimary" variant="body1">
-                {title}
-              </Typography>
-              <Typography style={{ color }} variant="h3">
-                {value} ລາຍການ
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-      </CardContent>
-    </Card>
+    <Box display="block" justifyContent="center" alignItems="center">
+      <Card className={clsx(classes.root, className)} elevation={10} {...rest}>
+        <CardHeader title="ການຈອງຂອງເດີ່ນ" />
+        <Divider />
+        <CardContent>
+          <Box height={300} position="relative">
+            <Doughnut data={data} options={options} />
+          </Box>
+          <Box display="flex" justifyContent="center" mt={2}>
+            {devices.map(({ color, icon: Icon, title, value }) => (
+              <Box key={title} p={1} textAlign="center">
+                <Icon color="action" />
+                <Typography color="textPrimary" variant="body1">
+                  {title}
+                </Typography>
+                <Typography style={{ color }} variant="h3">
+                  {value} ລາຍການ
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </CardContent>
+      </Card>
+    </Box>
   );
 };
 

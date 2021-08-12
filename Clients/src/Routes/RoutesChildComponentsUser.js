@@ -1,5 +1,6 @@
 import { Switch, Redirect, Route } from "react-router-dom";
-import StadiumPosts from "../Views/Users/StadiumDetails/StadiumPosts";
+import ShowAllPostOfStadium from "../Views/Users/StadiumDetails/StadiumPosts/ShowAllPostOfStadium";
+import ShowPostBySelected from "../Views/Users/StadiumDetails/StadiumPosts/ShowPostBySelected";
 import StadiumInformation from "../Views/Users/StadiumDetails/StadiumInfomation";
 import StadiumBooking from "../Views/Users/StadiumDetails/StadiumBooking/OverviewBooking";
 import MyBooking from "../Views/Users/StadiumDetails/StadiumBooking/MyBooking";
@@ -14,8 +15,12 @@ const RoutesChildComponentsUser = ({ tabChange, ...rest }) => {
           <StadiumInformation getTabChange={tabChange} {...rest} />
         </Route>
 
-        <Route path="/stadium/:stadiumId/posts">
-          <StadiumPosts getTabChange={tabChange} {...rest} />
+        <Route path="/stadium/:stadiumId/posts" exact>
+          <ShowAllPostOfStadium getTabChange={tabChange} {...rest} />
+        </Route>
+
+        <Route path="/stadium/:stadiumId/posts/:postId" >
+          <ShowPostBySelected getTabChange={tabChange} {...rest} />
         </Route>
 
         <PrivateRoutesUsers path="/stadium/:stadiumId/stadium-booking" exact>

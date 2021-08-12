@@ -7,7 +7,6 @@ import ToggleHandle from "./ToggleHandle";
 import LogoutAdmin from "./NavbarAdmin/LogoutAdmin";
 
 import ProfileUser from "./NavbarUser/ProfileUser";
-import SearchUser from "./NavbarUser/SearchUser";
 
 const useStyles = makeStyles((theme) => ({
   appbarTop: {
@@ -27,17 +26,6 @@ const useStyles = makeStyles((theme) => ({
     "& > :first-child": {
       display: "flex",
       alignItems: "center",
-    },
-    "& > :nth-child(2)": {
-      flex: 1,
-      maxWidth: 600,
-      padding: "0 1em",
-    },
-
-    "& > :last-child": {
-      "& > button": {
-        border: "1px solid #f3f3f3",
-      },
     },
   },
 
@@ -68,7 +56,6 @@ const NavbarLayout = () => {
       <AppBar className={classes.appbarTop} position="fixed">
         <div className={classes.toolbar}>
           <ToggleHandle />
-          <SearchUser role={user} />
           <ProfileUser userLoggedIn={stateRef.current} />
           <LogoutAdmin userLoggedIn={stateRef.current} />
         </div>

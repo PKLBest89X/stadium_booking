@@ -4,6 +4,7 @@ import {
   fetchGetSubscribeByStadiumId,
   fetchSubscribeStadium,
   fetchUnSubscribeStadium,
+  fetchGetFeedPostBySubscribed
 } from "../../../../middlewares/user/fetchSubscribe/fetchSubscribe";
 
 const initialState = {
@@ -15,6 +16,11 @@ const initialState = {
   subscribeError: null,
   subscribeRequestId: null,
   subscribeRequestId2: null,
+  getFeedPostLoading: false,
+  getFeedPostSuccess: null,
+  getFeedPostData: [],
+  getFeedPostError: null,
+  getFeedPostRequestId: undefined
 };
 
 const subscribeSlice = createSlice({
@@ -74,6 +80,43 @@ const subscribeSlice = createSlice({
         state.subscribeError = action.payload;
       }
     });
+
+    //ເອົາຂໍ້ມູນ post ຕ່າງໆຕາມການຕິດຕາມ
+
+    builder.addCase(fetchGetFeedPostBySubscribed.pending, (state, { meta }) => {
+      state.getFeedPostLoading = true;
+      if (state.getFeedPostLoading === true) {
+        state.getFeedPostRequestId = meta.requestId;
+      }
+    });
+    builder.addCase(fetchGetFeedPostBySubscribed.fulfilled, (state, action) => {
+      const { requestId } = action.meta;
+      if (
+        state.getFeedPostLoading === true ||
+        state.getFeedPostRequestId === requestId
+      ) {
+        state.getFeedPostLoading = false;
+        state.getFeedPostSuccess = true;
+        state.getFeedPostRequestId = undefined;
+        state.getFeedPostData = [];
+        state.getFeedPostData = action.payload;
+      }
+    });
+    builder.addCase(fetchGetFeedPostBySubscribed.rejected, (state, action) => {
+      const { requestId } = action.meta;
+      if (
+        state.getFeedPostLoading === true ||
+        state.getFeedPostRequestId === requestId
+      ) {
+        state.getFeedPostLoading = false;
+        state.getFeedPostSuccess = false;
+        state.getFeedPostRequestId = undefined;
+        state.getFeedPostError = action.payload;
+      }
+    });
+
+    //////////////////////////////////////
+
     builder.addCase(fetchGetSubscribeByStadiumId.pending, (state, { meta }) => {
       state.subscribeLoading = true;
       if (state.subscribeLoading === true) {

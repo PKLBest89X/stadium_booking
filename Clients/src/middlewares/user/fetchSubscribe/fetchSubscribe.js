@@ -47,6 +47,29 @@ export const fetchGetSubscribe = createAsyncThunk(
   }
 );
 
+export const fetchGetFeedPostBySubscribed= createAsyncThunk(
+  "subscribe/getFeedPostBySubscribed",
+  async (token, { rejectWithValue, getState, requestId }) => {
+    try {
+      const { getFeedPostLoading, getFeedPostRequestId } = getState().subscribe;
+      if (getFeedPostLoading !== true || requestId !== getFeedPostRequestId) {
+        return;
+      }
+      const getFeedPostBySubscribed = await Axios.get(
+        `http://localhost:5050/subscribe/getFeedPostBySubscribed`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return getFeedPostBySubscribed.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const fetchSubscribeStadium = createAsyncThunk(
   "subscribe/subscribeStadium",
   async (data, { rejectWithValue }) => {

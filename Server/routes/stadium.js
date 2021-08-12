@@ -28,6 +28,21 @@ function verifyToken(req, res, next) {
   } // function ແປງ token ເປັນຂໍ້ມູນ
 
 
+  router.get('/showAllForUser', async function(req,res,next){
+    await db.query("call stadium_forUser()", (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+}) // ສະແດງຕາຕະລາງເດີ່ນທັງໝົດ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
   router.get('/detail/:st_id', (req,res) => {
     const stadium_id = req.params.st_id;
     db.query("call stadium_detail(?)", [stadium_id], (err, result) => {
@@ -57,12 +72,15 @@ router.get('/reserve', async function(req,res,next){
 
 router.get('/showAll', async function(req,res,next){
     await db.query("call stadium()", (err, result) => {
-        if(err){
-            res.status(400)
+        if (err) {
             console.log(err);
-        }else{
-            res.status(200)
-            res.send(result[0]);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
         }
     })
 }) // ສະແດງຕາຕະລາງເດີ່ນທັງໝົດ ||||||||||||||||||||||||||||||||||||||||||||||||||

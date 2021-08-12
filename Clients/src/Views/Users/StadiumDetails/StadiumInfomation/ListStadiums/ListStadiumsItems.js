@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography, Box } from "@material-ui/core";
+import { IconButton, Typography, Box } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
 import { Card, CardMedia } from "@material-ui/core";
 import moment from "moment";
 
@@ -22,20 +23,25 @@ const useStyles = makeStyles(() => ({
   cardContent: {
     display: "block",
   },
-
 }));
 
-const StadiumOwnerCard = ({ getitems }) => {
+const ListStadiumsItems = ({ getitems }) => {
   const classes = useStyles();
   return (
     <div className={classes.ItemsContainer}>
       <Card className={classes.root} elevation={10}>
         <CardMedia
           className={classes.media}
-          image={`/assets/images/adminPics/adminProfile/${getitems.picture}`}
-          title={getitems.su_name}
+          image={`/assets/images/adminPics/stadiumDetailsPics/${getitems.picture}`}
+          title={getitems.stw_name}
         />
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={1} mt={1}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={1}
+          mt={1}
+        >
           <Box paddingLeft="1rem">
             <Typography
               gutterBottom
@@ -44,10 +50,10 @@ const StadiumOwnerCard = ({ getitems }) => {
               color="textPrimary"
               noWrap
             >
-              {getitems.su_name}
+              {getitems.std_name}
             </Typography>
             <Typography variant="body2" color="textSecondary" component="p">
-              {`ເພີ່ມເມື່ອ: ${moment(getitems.regis_date).format('DD/MM/YYYY')}`}
+              {`ສະຖານະ: ${getitems.std_status}`}
             </Typography>
           </Box>
         </Box>
@@ -56,4 +62,4 @@ const StadiumOwnerCard = ({ getitems }) => {
   );
 };
 
-export default StadiumOwnerCard;
+export default ListStadiumsItems;

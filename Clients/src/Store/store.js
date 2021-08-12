@@ -7,6 +7,7 @@ import notificationSlice from "../Slices/Features/Notification/NotificationSlice
 import validDataSlice from "../Slices/Features/CheckValidData/checkValidDataSlice";
 import validBookingDataSlice from "../Slices/Features/CheckValidData/checkValidBookingSlice";
 import validPaymentDataSlice from "../Slices/Features/CheckValidData/checkValidPaymentSlice";
+import validPostDataSlice from "../Slices/Features/CheckValidData/checkValidPostSlice";
 
 import crudStadiumSlice from "../Slices/Features/StadiumUsers/crudStadium/crudStadiumSlice";
 import stadiumDetailsSlice from "../Slices/Features/StadiumUsers/crudStadium/stadiumDetailsSlice";
@@ -54,6 +55,7 @@ const store = configureStore({
     validData: validDataSlice,
     validBookingData: validBookingDataSlice,
     validPaymentData: validPaymentDataSlice,
+    validPostData: validPostDataSlice,
     employees: employeeSlice,
     posts: postSlice,
     reportReserve: reportReserveSlice,

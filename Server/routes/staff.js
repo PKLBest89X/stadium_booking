@@ -20,11 +20,11 @@ router.get("/get_employee/:st_id", async (req, res) => {
   await db.query("call staff_employee(?)", [stadium_id], (err, result) => {
     if (err) {
       return res.status(400);
-    } 
+    }
     if (result[0].length > 0) {
       return res.send(result[0]);
     } else {
-      return res.status(400).send('Not found data!!');
+      return res.status(400).send("Not found data!!");
     }
   });
 }); // ສະແດງພະນັກງານທັງໝົດຂອງເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -44,15 +44,14 @@ router.get("/getAllStadiumOwner", async (req, res) => {
   await db.query("call stadiumOwner_getAll()", (err, result) => {
     if (err) {
       return res.status(400);
-    } 
+    }
     if (result[0].length > 0) {
       return res.send(result[0]);
     } else {
-      return res.status(304).send('Not found data!!');
+      return res.status(304).send("Not found data!!");
     }
   });
 }); // ສະແດງພະນັກງານທັງໝົດຂອງເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
-
 
 router.post("/login", async (req, res) => {
   const staff_email = req.body.email;
@@ -66,15 +65,11 @@ router.post("/login", async (req, res) => {
         if (!match) {
           res.status(400).send("Wrong Username and Password Combination!");
         } else {
-          jwt.sign(
-            { data: result[0][0].su_id },
-            "secret",
-            (er, token) => {
-              // res.cookie("access-token", token, {httpOnly:true});
-              res.status(200);
-              res.json({ token });
-            }
-          );
+          jwt.sign({ data: result[0][0].su_id }, "secret", (er, token) => {
+            // res.cookie("access-token", token, {httpOnly:true});
+            res.status(200);
+            res.json({ token });
+          });
         }
       });
     } else {
@@ -101,7 +96,7 @@ router.get("/login/authen", verifyToken, (req, res) => {
   });
 }); // authen ສົ່ງຂໍ້ມູນທີ່ແປງຈາກ token ||||||||||||||||||||||||||||||||||||||||||||||||||
 
-router.post("/add", async function (req, res, next) {
+router.post("/add/stadiumOwner", async function (req, res) {
   const staff_name = req.body.firstName;
   const staff_surname = req.body.lastName;
   const staff_age = req.body.age;
@@ -136,9 +131,11 @@ router.post("/add", async function (req, res, next) {
               } else {
                 db.query("call stadiumOwner_getAll()", (err, result) => {
                   if (err) {
-                    return res.status(400);
-                  } 
-                  return res.send(result[0]);
+                    res.status(400);
+                  }
+                  console.log(result[0]);
+                  res.status(200);
+                  res.send(result[0]);
                 });
               }
             }
@@ -148,8 +145,10 @@ router.post("/add", async function (req, res, next) {
         let sampleFile = req.files.sampleFile;
         let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/adminProfile/${sampleFile.name}`;
         let uploadPathToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/adminProfile/${sampleFile.name}`;
-    
-        sampleFile.mv(uploadPathToAdminFolder, (err) => {if (err) return res.status(500).send(err)});
+
+        sampleFile.mv(uploadPathToAdminFolder, (err) => {
+          if (err) return res.status(500).send(err);
+        });
 
         sampleFile.mv(uploadPath, function (err) {
           if (err) return res.status(500).send(err);
@@ -167,7 +166,7 @@ router.post("/add", async function (req, res, next) {
                 staff_email,
                 hash,
                 im,
-                'manager',
+                "manager",
               ],
               (err, result) => {
                 if (err) {
@@ -175,9 +174,10 @@ router.post("/add", async function (req, res, next) {
                 } else {
                   db.query("call stadiumOwner_getAll()", (err, result) => {
                     if (err) {
-                      return res.status(400);
-                    } 
-                    return res.send(result[0]);
+                      res.status(400);
+                    }
+                    res.status(200);
+                    res.send(result[0]);
                   });
                 }
               }
@@ -224,12 +224,16 @@ router.post("/employee/add", async function (req, res, next) {
                 console.log(err);
                 res.status(400).json({ error: err });
               } else {
-                db.query("call staff_employee(?)", [stadium_id], (err, result) => {
-                  if (err) {
-                    return res.status(400);
-                  } 
-                  return res.send(result[0]);
-                });
+                db.query(
+                  "call staff_employee(?)",
+                  [stadium_id],
+                  (err, result) => {
+                    if (err) {
+                      return res.status(400);
+                    }
+                    return res.send(result[0]);
+                  }
+                );
               }
             }
           );
@@ -238,8 +242,10 @@ router.post("/employee/add", async function (req, res, next) {
         let sampleFile = req.files.sampleFile;
         let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/adminProfile/${sampleFile.name}`;
         let uploadPathToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/adminProfile/${sampleFile.name}`;
-    
-        sampleFile.mv(uploadPathToAdminFolder, (err) => {if (err) return res.status(500).send(err)});
+
+        sampleFile.mv(uploadPathToAdminFolder, (err) => {
+          if (err) return res.status(500).send(err);
+        });
 
         sampleFile.mv(uploadPath, function (err) {
           if (err) return res.status(500).send(err);
@@ -258,18 +264,22 @@ router.post("/employee/add", async function (req, res, next) {
                 staff_email,
                 hash,
                 im,
-                'staff',
+                "staff",
               ],
               (err, result) => {
                 if (err) {
                   res.status(400).json({ error: err });
                 } else {
-                  db.query("call staff_employee(?)", [stadium_id], (err, result) => {
-                    if (err) {
-                      return res.status(400);
-                    } 
-                    return res.send(result[0]);
-                  });
+                  db.query(
+                    "call staff_employee(?)",
+                    [stadium_id],
+                    (err, result) => {
+                      if (err) {
+                        return res.status(400);
+                      }
+                      return res.send(result[0]);
+                    }
+                  );
                 }
               }
             );
@@ -291,7 +301,16 @@ router.put("/", async function (req, res, next) {
   if (!req.files) {
     db.query(
       "call staff_update(?,?,?,?,?,?,?)",
-      [staff_name, staff_surname, staff_age, staff_gender,, img, staff_status, staff_id],
+      [
+        staff_name,
+        staff_surname,
+        staff_age,
+        staff_gender,
+        ,
+        img,
+        staff_status,
+        staff_id,
+      ],
       (err, result) => {
         if (err) {
           res.status(400);
@@ -307,7 +326,9 @@ router.put("/", async function (req, res, next) {
     let uploadPath = `${__dirname}/../../Clients/public/assets/images/adminPics/adminProfile/${sampleFile.name}`;
     let uploadPathToAdminFolder = `${__dirname}/../../Admin/public/assets/images/adminPics/adminProfile/${sampleFile.name}`;
 
-    sampleFile.mv(uploadPathToAdminFolder, (err) => {if (err) return res.status(500).send(err)});
+    sampleFile.mv(uploadPathToAdminFolder, (err) => {
+      if (err) return res.status(500).send(err);
+    });
 
     sampleFile.mv(uploadPath, function (err) {
       if (err) return res.status(500).send(err);
@@ -316,7 +337,16 @@ router.put("/", async function (req, res, next) {
 
       db.query(
         "call staff_update(?,?,?,?,?,?,?)",
-        [staff_name, staff_surname, staff_age, staff_gender,, im, staff_status, staff_id],
+        [
+          staff_name,
+          staff_surname,
+          staff_age,
+          staff_gender,
+          ,
+          im,
+          staff_status,
+          staff_id,
+        ],
         (err, result) => {
           if (err) {
             res.status(400);

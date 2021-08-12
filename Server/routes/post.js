@@ -25,6 +25,32 @@ router.get("/feedPost", (req, res) => {
   });
 }); //ສະແດງໂພສຢູ່ໜ້າ home user
 
+router.get("/feedPostOfStadium/:stadiumId", (req, res) => {
+  const stadiumId = req.params.stadiumId;
+  db.query("call timeline_postOfStadium(?)", [stadiumId], (err, result) => {
+    if (err) {
+      res.status(400).send(err);
+      console.log(err);
+    } else {
+      res.status(200).send(result[0]);
+    }
+  });
+}); //ສະແດງໂພສຢູ່ໜ້າ home user
+
+router.get("/feedPostOfStadium/:stadiumId/:postId", (req, res) => {
+  const stadiumId = req.params.stadiumId;
+  const postId = req.params.postId;
+  db.query("call postOfStadiumOnSelected(?,?)", [stadiumId, postId], (err, result) => {
+    if (err) {
+      res.status(400).send(err);
+      console.log(err);
+    } else {
+      res.status(200).send(result[0][0]);
+    }
+  });
+}); //ສະແດງໂພສຢູ່ໜ້າ home user
+
+
 router.get("/getPostByStadiumId/:stadiumId", async function (req, res) {
     const stadiumId = req.params.stadiumId
     await db.query("call get_post_byStadiumId(?)", [stadiumId], (err, result) => {

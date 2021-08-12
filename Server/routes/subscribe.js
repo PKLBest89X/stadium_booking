@@ -51,6 +51,28 @@ router.get("/getSubscribeByCustomerId", verifyToken, function (req, res) {
 
 })
 
+router.get("/getFeedPostBySubscribed", verifyToken, function (req, res) {
+  jwt.verify(req.token, "secret", async (err, authData) => {
+    if (err) {
+      return res.sendStatus(403);
+    };
+    const user_id = authData.data;
+    await db.query("call get_subscribePost_byCustomerId(?)", [user_id], (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+  })
+
+})
+
 router.get("/getSubscribeByStadiumIdCustomerId/:stadiumId", verifyToken, function (req, res) {
   jwt.verify(req.token, "secret", async (err, authData) => {
     if (err) {

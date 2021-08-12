@@ -26,10 +26,10 @@ export const fetchGetAllStadiumOwner = createAsyncThunk(
 
 export const addStadiumOwner = createAsyncThunk(
   "stadiumOwner/add",
-  async (addStadiumOwner, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
-      const addPeople = Axios.post("http://localhost:5050/staff/add", addStadiumOwner);
-      return addPeople.data;
+      const addPeople = Axios.post("http://localhost:5050/staff/add/stadiumOwner", data);
+      return (await addPeople).data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }

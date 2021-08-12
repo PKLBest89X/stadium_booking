@@ -7,10 +7,10 @@ import {
 const initialState = {
   stadiumOwnerLoading: false,
   stadiumOwnerData: [],
+  stadiumOwnerDataSortByDate: [],
   stadiumOwnerError: null,
   stadiumOwnerSuccess: null,
   stadiumOwnerRequestId: undefined,
-  stadiumAddLoading: false,
 };
 
 const crudStadiumOwnerSlice = createSlice({
@@ -37,6 +37,12 @@ const crudStadiumOwnerSlice = createSlice({
         state.stadiumOwnerRequestId = undefined;
         state.stadiumOwnerData = [];
         state.stadiumOwnerData = action.payload;
+        state.stadiumOwnerDataSortByDate = [];
+        let slicePayload = action.payload.slice(0, 6);
+        let newSort = slicePayload.sort(
+          (a, b) => (new Date(a["regis_date"]) - new Date(b["regis_date"])) * -1
+        );
+        state.stadiumOwnerDataSortByDate = newSort;
       }
     });
     builder.addCase(fetchGetAllStadiumOwner.rejected, (state, action) => {
@@ -57,14 +63,19 @@ const crudStadiumOwnerSlice = createSlice({
       state.stadiumOwnerLoading = true;
     });
     builder.addCase(addStadiumOwner.fulfilled, (state, action) => {
-      state.stadiumAddLoading = false;
+      state.stadiumOwnerLoading = false;
       state.stadiumOwnerSuccess = true;
       state.stadiumOwnerData = [];
       state.stadiumOwnerData = action.payload;
+      state.stadiumOwnerDataSortByDate = [];
+      let slicePayload = action.payload.slice(0, 6);
+      let newSort = slicePayload.sort(
+        (a, b) => (new Date(a["regis_date"]) - new Date(b["regis_date"])) * -1
+      );
+      state.stadiumOwnerDataSortByDate = newSort;
     });
     builder.addCase(addStadiumOwner.rejected, (state, action) => {
-      state.stadiumAddLoading = false;
-      state.stadiumOwnerSuccess = false;
+      state.stadiumOwnerLoading = false;
       state.stadiumOwnerError = action.payload;
     });
   },
