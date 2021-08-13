@@ -47,7 +47,7 @@ const ProfileUser = React.memo(({ userLoggedIn }) => {
             <Box alignItems="center" display="flex" flexDirection="row">
               <Avatar
                 className={classes.avatar}
-                src={`/assets/images/usersPics/usersProfile/${userLoggedIn.picture}`}
+                src={`/assets/images/usersPics/usersProfile/${userLoggedIn.profile}`}
                 alt={`${userLoggedIn.c_name}`}
                 onClick={() => history.push("/account")}
               />

@@ -4,7 +4,7 @@ import { onSmDownClose } from "../../../Slices/Features/ToggleDrawer/toggleSlice
 import { useDispatch } from "react-redux";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { SidebarData } from "../SidebarData";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import clsx from "clsx";
 import {
   Avatar,
@@ -96,6 +96,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ListContent = React.memo(() => {
   const classes = useStyles();
+  let history = useHistory();
   const { smUp } = useShallowEqualSelector((state) => state.toggle);
   const { data } = useShallowEqualSelector((state) => state.auth);
   const stateRef = useRef(data);
@@ -116,6 +117,7 @@ const ListContent = React.memo(() => {
             <Avatar
               className={classes.avatar}
               src={`/assets/images/admin_img/${stateRef.current.a_img}`}
+              onClick={() => history.push(`/account`)}
             />
             <Typography
               className={classes.name}

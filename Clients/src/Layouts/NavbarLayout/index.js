@@ -42,14 +42,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NavbarLayout = () => {
+const NavbarLayout = React.memo(() => {
   const classes = useStyles();
   const { data, user } = useShallowEqualSelector((state) => state.auth);
   const stateRef = useRef(data);
   useMemo(() => {
-    data.forEach((items) => {
-      return (stateRef.current = items);
-    });
+    data.forEach((items) => (stateRef.current = items));
   }, [data]);
   return (
     <div>
@@ -62,6 +60,6 @@ const NavbarLayout = () => {
       </AppBar>
     </div>
   );
-};
+});
 
 export default NavbarLayout;

@@ -51,7 +51,7 @@ const LogoutAdmin = React.memo(({ userLoggedIn }) => {
           <Box alignItems="center" display="flex" flexDirection="row">
             <Avatar
               className={classes.avatar}
-              src={`/assets/images/adminsPics/adminProfile/stadiumOwner/${userLoggedIn.picture}`}
+              src={`/assets/images/adminPics/adminProfile/${userLoggedIn.picture}`}
               alt={`${userLoggedIn.su_name}`}
               onClick={() =>
                 history.push(`/admin/stadium/${stateRef.current.st_id}/account`)

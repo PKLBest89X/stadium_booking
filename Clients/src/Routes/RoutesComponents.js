@@ -3,7 +3,7 @@ import Stadiums from "../Views/Users/Stadiums";
 import StadiumDetails from "../Views/Users/StadiumDetails";
 import BookingHistory from "../Views/Users/BookingHistory";
 import StadiumFollow from "../Views/Users/StadiumsFollow";
-import AccountView from '../Views/Users/Account'
+import OverviewAccount from '../Views/Users/Account/OverviewAccount';
 
 import DashboardView from "../Views/StadiumUsers/Dashboard";
 import StadiumView from '../Views/StadiumUsers/Stadiums';
@@ -21,7 +21,7 @@ import Payment from '../Views/StadiumUsers/StadiumPayment/Payment';
 
 import AdminBookingHistory from "../Views/StadiumUsers/AdminBookingHistory";
 import PaymentHistory from '../Views/StadiumUsers/PaymentHistory';
-import AdminAccountView from '../Views/StadiumUsers/Account/AccountView'
+import OverviewAccountAdmin from '../Views/StadiumUsers/Account/OverviewAccount';
 
 import PrivateRoutesAdmin from "./PrivateRoutesAdmin";
 import PrivateRoutesUsers from "./PrivateRoutesUsers";
@@ -53,7 +53,7 @@ const RoutesComponents = ({ ...rest }) => {
         </Route>
 
         <PrivateRoutesUsers path="/account">
-          <AccountView {...rest} />
+          <OverviewAccount {...rest} />
         </PrivateRoutesUsers>
 
         <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin" exact>
@@ -114,7 +114,7 @@ const RoutesComponents = ({ ...rest }) => {
         </PrivateRoutesAdmin>
         
         <PrivateRoutesAdmin path="/admin/stadium/:stadiumId_Admin/account">
-          <AdminAccountView {...rest} />
+          <OverviewAccountAdmin {...rest} />
         </PrivateRoutesAdmin>
 
         <Route path="*">

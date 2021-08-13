@@ -81,6 +81,7 @@ const UserRegisterView = React.memo(() => {
               variant="outlined"
               value={userRegis.firstName}
               onChange={onFirstNameChange}
+              required
             />
             <TextField
               fullWidth
@@ -90,6 +91,7 @@ const UserRegisterView = React.memo(() => {
               variant="outlined"
               value={userRegis.lastName}
               onChange={onLastNameChange}
+              required
             />
             <TextField
               fullWidth
@@ -100,6 +102,18 @@ const UserRegisterView = React.memo(() => {
               variant="outlined"
               value={userRegis.phone}
               onChange={onPhoneChange}
+              required
+              InputProps={{
+                inputProps: { maxLength: 10, min: 0 },
+              }}
+              onInput={(e) => {
+                e.target.value = Math.max(
+                  0,
+                  parseInt(e.target.value)
+                )
+                  .toString()
+                  .slice(0, 8);
+              }}
             />
             <TextField
               fullWidth
@@ -110,6 +124,7 @@ const UserRegisterView = React.memo(() => {
               variant="outlined"
               value={userRegis.email}
               onChange={onEmailChange}
+              required
             />
             <TextField
               fullWidth
@@ -120,6 +135,7 @@ const UserRegisterView = React.memo(() => {
               variant="outlined"
               value={userRegis.password}
               onChange={onPasswordChange}
+              required
             />
 
             <Box my={2}>

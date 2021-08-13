@@ -1,7 +1,7 @@
 import DashboardView from "../Views/Dashboard";
 import AllStadium from "../Views/All_Stadium";
 import StadiumOwner from "../Views/Stadium_Owner/ShowStadium_owner";
-import Account from "../Views/Account/AccountView";
+import OverviewAccount from '../Views/Account/OverviewAccount';
 import PrivateRoutes from "./PrivateRoutes";
 
 import { Switch, Route, Redirect } from "react-router-dom";
@@ -23,7 +23,7 @@ const RoutesComponents = ({ ...rest }) => {
         </PrivateRoutes>
 
         <PrivateRoutes path="/account">
-          <Account {...rest} />
+          <OverviewAccount {...rest} />
         </PrivateRoutes>
 
         <Route path="*">

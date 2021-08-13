@@ -4,7 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUsers";
 import { fetchAddEmployee } from "../../../../middlewares/stadiumUser/fetchCRUDEmployee/fetchCRUDEmployee";
-import { onPopupClose } from '../../../../Slices/Features/Popup/popupSlice';
+import { onPopupClose } from "../../../../Slices/Features/Popup/popupSlice";
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -19,6 +19,7 @@ import {
   Grid,
   Button,
   TextField,
+  FormControl,
 } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 import ImageEmployee from "./ImageEmployee";
@@ -170,6 +171,7 @@ const AddEmployee = () => {
                   variant="outlined"
                   value={employeeState.email}
                   onChange={onEmailChange}
+                  required
                 />
                 <TextField
                   fullWidth
@@ -180,6 +182,7 @@ const AddEmployee = () => {
                   variant="outlined"
                   value={employeeState.password}
                   onChange={onPasswordChange}
+                  required
                 />
                 <TextField
                   fullWidth
@@ -189,6 +192,7 @@ const AddEmployee = () => {
                   variant="outlined"
                   value={employeeState.firstName}
                   onChange={onFirstNameChange}
+                  required
                 />
                 <TextField
                   fullWidth
@@ -198,6 +202,7 @@ const AddEmployee = () => {
                   variant="outlined"
                   value={employeeState.lastName}
                   onChange={onLastNameChange}
+                  required
                 />
                 <Box marginTop="1em">
                   <Grid container spacing={3}>
@@ -207,33 +212,43 @@ const AddEmployee = () => {
                         label="ອາຍຸ"
                         name="age"
                         type="number"
-                        InputLabelProps={{ maxLength: 10 }}
+                        InputProps={{
+                          inputProps: { maxLength: 10, min: 0 },
+                        }}
+                        onInput={(e) => {
+                          e.target.value = Math.max(0, parseInt(e.target.value))
+                            .toString()
+                            .slice(0, 2);
+                        }}
                         variant="outlined"
                         value={employeeState.age}
                         onChange={onAgeChange}
+                        required
                       />
                     </Grid>
 
                     <Grid item xs={6} sm={4} md={4} lg={4} xl={4}>
-                      <FormLabel component="legend">ເພດ</FormLabel>
-                      <RadioGroup
-                        name="gender"
-                        value={employeeState.gender}
-                        onChange={onGenderChange}
-                      >
-                        <Box display="flex">
-                          <FormControlLabel
-                            value="ຊາຍ"
-                            control={<Radio />}
-                            label="ຊາຍ"
-                          />
-                          <FormControlLabel
-                            value="ຍິງ"
-                            control={<Radio />}
-                            label="ຍິງ"
-                          />
-                        </Box>
-                      </RadioGroup>
+                      <FormControl>
+                        <FormLabel component="legend">ເພດ</FormLabel>
+                        <RadioGroup
+                          name="gender"
+                          value={employeeState.gender}
+                          onChange={onGenderChange}
+                        >
+                          <Box display="flex">
+                            <FormControlLabel
+                              value="ຊາຍ"
+                              control={<Radio />}
+                              label="ຊາຍ"
+                            />
+                            <FormControlLabel
+                              value="ຍິງ"
+                              control={<Radio />}
+                              label="ຍິງ"
+                            />
+                          </Box>
+                        </RadioGroup>
+                      </FormControl>
                     </Grid>
                   </Grid>
                 </Box>

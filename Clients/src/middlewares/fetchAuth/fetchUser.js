@@ -9,8 +9,7 @@ export const fetchLoginUser = createAsyncThunk(
         email: loginUser.email,
         password: loginUser.password,
       });
-      if (user.data)
-      return user.data;
+      if (user.data) return user.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -35,7 +34,52 @@ export const fetchAuthUser = createAsyncThunk(
       );
       return accessTokenUsers.data;
     } catch (err) {
-      return rejectWithValue(err.response.data)
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const fetchUpdateUserProfile = createAsyncThunk(
+  "user/updateProfile",
+  async (data, { rejectWithValue }) => {
+    try {
+      const userToken = JSON.parse(localStorage.getItem("accessUserToken"));
+      if (userToken && userToken.token) {
+        const updateProfile = await Axios.put(
+          "http://localhost:5050/customer/updateProfile",
+          data,
+          {
+            headers: { Authorization: `Bearer ${userToken.token}` },
+          }
+        );
+        return updateProfile.data;
+      }
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const fetchUpdatePassword = createAsyncThunk(
+  "user/updatePassword",
+  async (data, { rejectWithValue }) => {
+    try {
+      const userToken = JSON.parse(localStorage.getItem("accessUserToken"));
+      if (userToken && userToken.token) {
+        const updatePassword = await Axios.put(
+          "http://localhost:5050/customer/updatePassword",
+          {
+            old_password: data.oldPassword,
+            new_password: data.newPassword,
+          },
+          {
+            headers: { Authorization: `Bearer ${userToken.token}` },
+          }
+        );
+        return updatePassword.data;
+      }
+    } catch (err) {
+      return rejectWithValue(err.response.data);
     }
   }
 );

@@ -28,11 +28,56 @@ export const fetchAuthAdmin = createAsyncThunk(
         "http://localhost:5050/staff/login/authen",
         {
           headers: {
-            'authorization': `Bearer ${token}`,
+            authorization: `Bearer ${token}`,
           },
         }
       );
       return accessTokenAdmin.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const fetchUpdateUserProfileAdmin = createAsyncThunk(
+  "admin/updateProfileAdmin",
+  async (data, { rejectWithValue }) => {
+    try {
+      const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
+      if (adminToken && adminToken.token) {
+        const updateProfileAdmin = await Axios.put(
+          "http://localhost:5050/staff/updateProfile",
+          data,
+          {
+            headers: { Authorization: `Bearer ${adminToken.token}` },
+          }
+        );
+        return updateProfileAdmin.data;
+      }
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const fetchUpdatePasswordAdmin = createAsyncThunk(
+  "admin/updatePasswordAdmin",
+  async (data, { rejectWithValue }) => {
+    try {
+      const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
+      if (adminToken && adminToken.token) {
+        const updatePasswordAdmin = await Axios.put(
+          "http://localhost:5050/staff/updatePassword",
+          {
+            old_password: data.oldPassword,
+            new_password: data.newPassword,
+          },
+          {
+            headers: { Authorization: `Bearer ${adminToken.token}` },
+          }
+        );
+        return updatePasswordAdmin.data;
+      }
     } catch (err) {
       return rejectWithValue(err.response.data);
     }

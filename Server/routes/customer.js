@@ -166,52 +166,116 @@ router.post("/register", async (req, res) => {
   });
 }); //ເພີ່ມຜູ້ໃຊ້ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
-router.put("/", async (req, res) => {
-  const id = req.body.c_id;
-  const nm = req.body.c_name;
-  const sn = req.body.c_surname;
-  const pf = req.body.profile;
-  const ph = req.body.c_phone;
-
-  if (!req.files) {
-    await db.query(
-      "call user_update(?,?,?,?,?)",
-      [nm, sn, pf, ph, id],
-      (err, result) => {
-        if (err) {
-          res.status(400);
-          console.log(err);
-        } else {
-          res.status(200);
-          res.send(result);
-        }
-      }
-    );
-  } else {
-    let sampleFile = req.files.sampleFile;
-    let uploadPath = "./upload/user/" + sampleFile.name;
-
-    sampleFile.mv(uploadPath, function (err) {
-      if (err) return res.status(500).send(err);
-
-      const im = sampleFile.name;
-
-      db.query(
-        "call user_update(?,?,?,?,?)",
-        [nm, sn, im, ph, id],
-        (err, result) => {
-          if (err) {
-            res.status(400);
-            console.log(err);
-          } else {
-            res.status(200);
-            res.send(result);
+router.put("/updateProfile", verifyToken, async (req, res) => {
+  jwt.verify(req.token, "secret", async (err, authData) => {
+    if (err) {
+      console.log(err);
+      res.sendStatus(403);
+    } else {
+      const id = authData.data;
+      const nm = req.body.c_name;
+      const sn = req.body.c_surname;
+      const pf = req.body.profile;
+      const ph = req.body.c_phone;
+    
+      if (!req.files) {
+        await db.query(
+          "call user_update(?,?,?,?,?)",
+          [nm, sn, pf, ph, id],
+          async (err, result) => {
+            if (err) {
+              res.status(400);
+              console.log(err);
+            } else {
+              await db.query("call user_user_login(?)", [id], (er, result) => {
+                if (er) {
+                  console.log(er);
+                } else {
+                  res.send(result[0][0]);
+                }
+              });
+            }
           }
-        }
-      );
-    });
-  }
+        );
+      } else {
+        let sampleFile = req.files.sampleFile;
+        let uploadPath = `${__dirname}/../../Clients/public/assets/images/usersPics/usersProfile/${sampleFile.name}`;
+    
+        sampleFile.mv(uploadPath, function (err) {
+          if (err) return res.status(500).send(err);
+    
+          const im = sampleFile.name;
+    
+          db.query(
+            "call user_update(?,?,?,?,?)",
+            [nm, sn, im, ph, id],
+            async (err, result) => {
+              if (err) {
+                res.status(400);
+                console.log(err);
+              } else {
+                await db.query("call user_user_login(?)", [id], (er, result) => {
+                  if (er) {
+                    console.log(er);
+                  } else {
+                    res.send(result[0][0]);
+                  }
+                });
+              }
+            }
+          );
+        });
+      }
+    }
+  });
 }); //ແກ້ໄຂຜູ້ໃຊ້ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+router.put('/updatePassword', verifyToken, async (req, res) => {
+
+  jwt.verify(req.token, "secret", async (err, authData) => {
+    if (err) {
+      console.log(err);
+      res.sendStatus(403);
+    } else {
+      const user_id = authData.data;
+      const password = req.body.old_password;
+      const newPassword = req.body.new_password;
+          await db.query("call check_user_password(?)", [user_id], (err,result) => {
+              if(result[0].length > 0){
+                  const database_pw = result[0][0].c_password;
+                  bcrypt.compare(password,database_pw).then((match) => {
+                      if(!match){
+                          res
+                              .status(400)
+                              .send("ປ້ອນລະຫັດເກົ່າບໍ່ຖືກຕ້ອງ!");
+                      }else{
+                        bcrypt.hash(newPassword, 10).then((hash) => {
+                          db.query(
+                            "call update_user_password(?,?)",
+                            [hash, user_id],
+                            (err, result) => {
+                              if (err) {
+                                res.status(400).send("error!!");
+                              } else {
+                                res.status(200);
+                                res.send("User Complete");
+                              }
+                            }
+                          );
+                        });
+                      }
+                  })
+              }else{
+                  res.status(400)
+                  res.send("Wrong Username and Password Combination!");
+              }
+          });
+    }
+  });
+
+}) // update ລະຫັດຜ່ານ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
 
 router.delete("/", async function (req, res, next) {
   const id = req.body.c_id;

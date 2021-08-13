@@ -18,6 +18,7 @@ import {
   Typography,
   Grid,
   makeStyles,
+  FormControl,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -153,6 +154,7 @@ const AddStadiumOwner = React.memo(({ ...rest }) => {
                   variant="outlined"
                   value={addPeople.email}
                   onChange={onEmailChange}
+                  required
                 />
                 <TextField
                   fullWidth
@@ -163,6 +165,7 @@ const AddStadiumOwner = React.memo(({ ...rest }) => {
                   variant="outlined"
                   value={addPeople.password}
                   onChange={onPasswordChange}
+                  required
                 />
                 <TextField
                   fullWidth
@@ -172,6 +175,7 @@ const AddStadiumOwner = React.memo(({ ...rest }) => {
                   variant="outlined"
                   value={addPeople.firstName}
                   onChange={onFirstNameChange}
+                  required
                 />
                 <TextField
                   fullWidth
@@ -181,6 +185,7 @@ const AddStadiumOwner = React.memo(({ ...rest }) => {
                   variant="outlined"
                   value={addPeople.lastName}
                   onChange={onLastNameChange}
+                  required
                 />
                 <Box marginTop="1em">
                   <Grid container spacing={3}>
@@ -190,33 +195,43 @@ const AddStadiumOwner = React.memo(({ ...rest }) => {
                         label="ອາຍຸ"
                         name="age"
                         type="number"
-                        InputLabelProps={{ maxLength: 10 }}
+                        InputProps={{
+                          inputProps: { maxLength: 10, min: 0 },
+                        }}
+                        onInput={(e) => {
+                          e.target.value = Math.max(0, parseInt(e.target.value))
+                            .toString()
+                            .slice(0, 2);
+                        }}
                         variant="outlined"
                         value={addPeople.age}
                         onChange={onAgeChange}
+                        required
                       />
                     </Grid>
 
                     <Grid item xs={6} sm={4} md={4} lg={4} xl={4}>
-                      <FormLabel component="legend">ເພດ</FormLabel>
-                      <RadioGroup
-                        name="gender"
-                        value={addPeople.gender}
-                        onChange={onGenderChange}
-                      >
-                        <Box display="flex">
-                          <FormControlLabel
-                            value="ຊາຍ"
-                            control={<Radio />}
-                            label="ຊາຍ"
-                          />
-                          <FormControlLabel
-                            value="ຍິງ"
-                            control={<Radio />}
-                            label="ຍິງ"
-                          />
-                        </Box>
-                      </RadioGroup>
+                      <FormControl>
+                        <FormLabel component="legend">ເພດ</FormLabel>
+                        <RadioGroup
+                          name="gender"
+                          value={addPeople.gender}
+                          onChange={onGenderChange}
+                        >
+                          <Box display="flex">
+                            <FormControlLabel
+                              value="ຊາຍ"
+                              control={<Radio />}
+                              label="ຊາຍ"
+                            />
+                            <FormControlLabel
+                              value="ຍິງ"
+                              control={<Radio />}
+                              label="ຍິງ"
+                            />
+                          </Box>
+                        </RadioGroup>
+                      </FormControl>
                     </Grid>
                   </Grid>
                 </Box>
