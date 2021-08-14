@@ -8,7 +8,8 @@ import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUs
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Paper, Typography, Divider, Box } from "@material-ui/core";
+import { Paper, Typography, Divider, Box, IconButton } from "@material-ui/core";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import { onLoadCurrentSaveSelectedPayment } from "../../../../Slices/Features/StadiumUsers/Payment/paymentDetailsSlice";
 import PopupLayout from "../../../../Components/PopupLayout";
@@ -203,10 +204,18 @@ const BookingView = React.memo(({ ...rest }) => {
         <div className={classes.pageContainer}>
           <div className={classes.root}>
             <form onSubmit={onConfirmBooking}>
-              <Box mb={3}>
+              <Box
+                mb={3}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Typography color="textPrimary" variant="h2">
                   ຊຳລະການຈອງເດີ່ນ ແລະ ເຄື່ອງດື່ມ
                 </Typography>
+                <IconButton color="primary" onClick={() => history.goBack()}>
+                  <ArrowBackIcon />
+                </IconButton>
               </Box>
               <Divider />
               <Box mt={3}>

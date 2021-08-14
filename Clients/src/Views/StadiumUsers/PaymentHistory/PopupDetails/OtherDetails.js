@@ -77,11 +77,11 @@ const OtherDetails = React.memo(({ data }) => {
                 <Typography variant="h5">ເວລາ</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h5">ມື້ຈອງ</Typography>
+                <Typography variant="h5">ມື້ເຕະ</Typography>
               </TableCell>
-              {/* <TableCell align="center">
+              <TableCell align="center">
                 <Typography variant="h5">ລາຄາ</Typography>
-              </TableCell> */}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -122,9 +122,9 @@ const OtherDetails = React.memo(({ data }) => {
                     {moment(row.kickoff_date).format("DD/MM/YYYY")}
                   </Typography>
                 </TableCell>
-                {/* <TableCell style={{ width: 100 }} align="center">
+                <TableCell style={{ width: 100 }} align="center">
                   <NumberFormat
-                    value={row.sp_price}
+                    value={row.price}
                     displayType={"text"}
                     thousandSeparator={true}
                     suffix={" ກີບ"}
@@ -134,7 +134,7 @@ const OtherDetails = React.memo(({ data }) => {
                       </Typography>
                     )}
                   />
-                </TableCell> */}
+                </TableCell>
               </TableRow>
             ))}
 

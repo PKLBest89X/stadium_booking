@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchGetAllStadiums, fetchGetAvailableStadiums, fetchGetNotAvailableStadiums } from "../middlewares/fetchAllStadiums";
+import {
+  fetchGetAllStadiums,
+  fetchGetAvailableStadiums,
+  fetchGetNotAvailableStadiums,
+} from "../middlewares/fetchAllStadiums";
 
 const initialState = {
   allStadiumsLoading: false,
@@ -17,12 +21,42 @@ const initialState = {
   notAvailableData: [],
   notAvailableError: null,
   notAvailbleRequestId: undefined,
+  stadiumInfo: {
+    stadiumId: "",
+    stadiumName: "",
+    managerName: "",
+    managerSurname: "",
+    village: "",
+    district: "",
+    province: "",
+    regisDate: "",
+    logo: "",
+    phone: "",
+    status: "",
+  },
 };
 
 const allStadiumsSlice = createSlice({
   name: "allStadiums",
   initialState,
-  reducers: {},
+  reducers: {
+    onShowStadiumdetails: (state, { payload }) => {
+      state.stadiumInfo = {
+        ...state.stadiumInfo,
+        stadiumId: payload.st_id,
+        stadiumName: payload.st_name,
+        managerName: payload.su_name,
+        managerSurname: payload.su_surname,
+        village: payload.village,
+        district: payload.district,
+        province: payload.province,
+        regisDate: payload.regis_date,
+        logo: payload.logo,
+        phone: payload.phone,
+        status: payload.status,
+      };
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchGetAllStadiums.pending, (state, { meta }) => {
       state.allStadiumsLoading = true;
@@ -124,4 +158,5 @@ const allStadiumsSlice = createSlice({
   },
 });
 
+export const { onShowStadiumdetails } = allStadiumsSlice.actions;
 export default allStadiumsSlice.reducer;

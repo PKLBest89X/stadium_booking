@@ -50,7 +50,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const PaymentDetails = React.memo(({ data }) => {
+const WaterPayment = React.memo(({ data }) => {
   const classes = useStyles();
   // const { paymentDetailsData } = useShallowEqualSelector(
   //   (state) => state.paymentDetails
@@ -58,8 +58,7 @@ const PaymentDetails = React.memo(({ data }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(-1);
   const emptyRows =
-    rowsPerPage -
-    Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
   return (
     <>
       <TableContainer className={classes.customScrollbar}>
@@ -71,25 +70,19 @@ const PaymentDetails = React.memo(({ data }) => {
           <TableHead>
             <TableRow>
               <TableCell align="center">
-                <Typography variant="h5">ຊື່ສະໜາມ</Typography>
+                <Typography variant="h5">ເຄື່ອງດື່ມ</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h5">ເວລາ</Typography>
+                <Typography variant="h5">ຈຳນວນ</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h5">ມື້ຈອງ</Typography>
-              </TableCell>
-              {/* <TableCell align="center">
                 <Typography variant="h5">ລາຄາ</Typography>
-              </TableCell> */}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? data.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
+              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : data
             ).map((row, index) => (
               <TableRow key={index}>
@@ -105,26 +98,18 @@ const PaymentDetails = React.memo(({ data }) => {
                     justifyContent="center"
                   >
                     <Box>
-                      <Typography variant="h5">{row.std_name} </Typography>
+                      <Typography variant="h5">{row.stw_name} </Typography>
                     </Box>
                   </Box>
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
-                  <Typography variant="h5">
-                    {`${row.td_start.slice(0, 2)} ໂມງ - ${row.td_end.slice(
-                      0,
-                      2
-                    )} ໂມງ`}
-                  </Typography>
+                  <Box>
+                    <Typography variant="h5">{row.qty} </Typography>
+                  </Box>
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
-                  <Typography variant="h5">
-                    {moment(row.kickoff_date).format("DD/MM/YYYY")}
-                  </Typography>
-                </TableCell>
-                {/* <TableCell style={{ width: 100 }} align="center">
                   <NumberFormat
-                    value={row.sp_price}
+                    value={row.price}
                     displayType={"text"}
                     thousandSeparator={true}
                     suffix={" ກີບ"}
@@ -134,7 +119,7 @@ const PaymentDetails = React.memo(({ data }) => {
                       </Typography>
                     )}
                   />
-                </TableCell> */}
+                </TableCell>
               </TableRow>
             ))}
 
@@ -150,4 +135,4 @@ const PaymentDetails = React.memo(({ data }) => {
   );
 });
 
-export default PaymentDetails;
+export default WaterPayment;

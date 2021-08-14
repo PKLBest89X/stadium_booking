@@ -11,10 +11,11 @@ import {
   Button,
 } from "@material-ui/core";
 import moment from "moment";
+import NumberFormat from "react-number-format";
 
-const Information = React.memo(() => {
-  const { reportBookingInfo } = useShallowEqualSelector(
-    (state) => state.reportBooking
+const Summary = React.memo(() => {
+  const { reportSummaryPayment } = useShallowEqualSelector(
+    (state) => state.reportPayment
   );
   return (
     <div>
@@ -23,7 +24,7 @@ const Information = React.memo(() => {
           <CardHeader
             title={
               <Typography variant="h4" color="textSecondary">
-                ລາຍລະອຽດ
+                ລາຍລະອຽດການຊຳລະເງິນ
               </Typography>
             }
           />
@@ -43,10 +44,10 @@ const Information = React.memo(() => {
                 mt={2}
               >
                 <Typography variant="h4" color="textSecondary">
-                  ລູກຄ້າ:{" "}
+                  ບິນເລກທີ:{" "}
                 </Typography>
                 <Typography variant="h4" color="textSecondary">
-                  {`${reportBookingInfo.customerName} ${reportBookingInfo.customerSurname}`}
+                  {reportSummaryPayment.paymentId}
                 </Typography>
               </Box>
               <Box
@@ -57,10 +58,10 @@ const Information = React.memo(() => {
                 mt={2}
               >
                 <Typography variant="h4" color="textSecondary">
-                  ປະເພດການຈອງ:{" "}
+                  ມື້ຊຳລະເງິນ:{" "}
                 </Typography>
                 <Typography variant="h4" color="textSecondary">
-                  {`${reportBookingInfo.customerType}`}
+                  {moment(reportSummaryPayment.paymentDate).format("DD/MM/YYYY")}
                 </Typography>
               </Box>
               <Box
@@ -71,10 +72,10 @@ const Information = React.memo(() => {
                 mt={2}
               >
                 <Typography variant="h4" color="textSecondary">
-                  ເບີໂທ:{" "}
+                  ບໍລິການໂດຍ:{" "}
                 </Typography>
                 <Typography variant="h4" color="textSecondary">
-                  {`${reportBookingInfo.customerTel}`}
+                  {`${reportSummaryPayment.employee}`}
                 </Typography>
               </Box>
               <Box
@@ -85,11 +86,19 @@ const Information = React.memo(() => {
                 mt={2}
               >
                 <Typography variant="h4" color="textSecondary">
-                  ມື້ຈອງ:{" "}
+                  ລວມລາຄາເດີ່ນ:{" "}
                 </Typography>
-                <Typography variant="h4" color="textSecondary">
-                  {`${moment(reportBookingInfo.bookingDate).format("MM-DD-YYYY, h:mm:ss a")}`}
-                </Typography>
+                <NumberFormat
+                  value={reportSummaryPayment.totalStadium}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  suffix={" ກີບ"}
+                  renderText={(value) => (
+                    <Typography variant="h4" color="textSecondary">
+                      {value}
+                    </Typography>
+                  )}
+                />
               </Box>
               <Box
                 display="flex"
@@ -99,11 +108,41 @@ const Information = React.memo(() => {
                 mt={2}
               >
                 <Typography variant="h4" color="textSecondary">
-                  ຍົກເລີກກ່ອນ:{" "}
+                  ລວມລາຄານ້ຳ:{" "}
                 </Typography>
+                <NumberFormat
+                  value={reportSummaryPayment.totalWater}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  suffix={" ກີບ"}
+                  renderText={(value) => (
+                    <Typography variant="h4" color="textSecondary">
+                      {value}
+                    </Typography>
+                  )}
+                />
+              </Box>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={2}
+                mt={2}
+              >
                 <Typography variant="h4" color="textSecondary">
-                  {`${moment(reportBookingInfo.bookingCancel).format("MM-DD-YYYY, h:mm:ss a")}`}
+                  ລວມທັງໝົດ:{" "}
                 </Typography>
+                <NumberFormat
+                  value={reportSummaryPayment.total}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  suffix={" ກີບ"}
+                  renderText={(value) => (
+                    <Typography variant="h4" color="textSecondary">
+                      {value}
+                    </Typography>
+                  )}
+                />
               </Box>
             </Box>
           </CardContent>
@@ -113,4 +152,4 @@ const Information = React.memo(() => {
   );
 });
 
-export default Information;
+export default Summary;

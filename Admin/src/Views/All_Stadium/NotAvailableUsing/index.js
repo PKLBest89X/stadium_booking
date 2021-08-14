@@ -21,6 +21,8 @@ import { fetchAuthSuperAdmin } from "../../../middlewares/fetchAuth";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import { useDispatch } from "react-redux";
 import NonStadiums from "../NonStadiums";
+import { onPopupOpen } from "../../../Slices/Features/Popup/popupSlice";
+import { onShowStadiumdetails } from "../../../Slices/allStadiumsSlice";
 
 const useStyles = makeStyles((theme) => ({
   cardLayout: {
@@ -78,13 +80,20 @@ const NotAvailableUsing = React.memo(() => {
   );
 
   useEffect(() => {
-    const superAdminToken = JSON.parse(localStorage.getItem("accessSuperAdminToken"));
+    const superAdminToken = JSON.parse(
+      localStorage.getItem("accessSuperAdminToken")
+    );
     if (superAdminToken && superAdminToken.token) {
       dispatch(fetchAuthSuperAdmin(superAdminToken.token));
     }
   }, [dispatch]);
 
   useEffect(() => dispatch(fetchGetNotAvailableStadiums()), [dispatch]);
+
+  const onGetCurrentPayment = (payload) => {
+    dispatch(onShowStadiumdetails(payload));
+    dispatch(onPopupOpen("showStadiumDetails"));
+  };
 
   return (
     <ReportContainerLayout>
@@ -160,7 +169,11 @@ const NotAvailableUsing = React.memo(() => {
                             "DD/MM/YYYY"
                           )}`}</Typography>
                         </Box>
-                        <Button color="primary" variant="contained">
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          onClick={() => onGetCurrentPayment(items)}
+                        >
                           ລາຍລະອຽດ
                         </Button>
                       </Box>

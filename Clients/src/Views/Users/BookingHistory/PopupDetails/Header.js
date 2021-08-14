@@ -18,8 +18,8 @@ import {
       color: "red",
     },
     avatar: {
-      height: 100,
-      width: 100,
+      height: 200,
+      width: 200,
     },
   }));
 
@@ -39,11 +39,6 @@ const BillHeader = React.memo(() => {
             className={classes.avatar}
             src={`/assets/images/adminPics/stadiumPics/icons/${bookingInfo.stadiumLogo}`}
           />
-        </Box>
-        <Box marginLeft=".5rem">
-          <Typography variant="h2" color="textPrimary">
-            {`${bookingInfo.stadiumName}`}
-          </Typography>
         </Box>
       </Box>
       {/* <Box

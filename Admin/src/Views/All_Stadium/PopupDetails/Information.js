@@ -1,5 +1,5 @@
 import React from "react";
-import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
+import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import {
   Box,
   CardHeader,
@@ -13,9 +13,7 @@ import {
 import moment from "moment";
 
 const Information = React.memo(() => {
-  const { bookingInfo } = useShallowEqualSelector(
-    (state) => state.bookingHistory
-  );
+  const { stadiumInfo } = useShallowEqualSelector((state) => state.allStadiums);
   return (
     <div>
       <Box mt={3}>
@@ -46,7 +44,79 @@ const Information = React.memo(() => {
                   ເດີ່ນ:{" "}
                 </Typography>
                 <Typography variant="h4" color="textSecondary">
-                  {`${bookingInfo.stadiumName}`}
+                  {`${stadiumInfo.stadiumName}`}
+                </Typography>
+              </Box>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={2}
+                mt={2}
+              >
+                <Typography variant="h4" color="textSecondary">
+                  ເຈົ້າຂອງເດີ່ນ:{" "}
+                </Typography>
+                <Typography variant="h4" color="textSecondary">
+                  {`${stadiumInfo.managerName} ${stadiumInfo.managerSurname}`}
+                </Typography>
+              </Box>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={2}
+                mt={2}
+              >
+                <Typography variant="h4" color="textSecondary">
+                  ບ້ານ:{" "}
+                </Typography>
+                <Typography variant="h4" color="textSecondary">
+                  {`${stadiumInfo.village}`}
+                </Typography>
+              </Box>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={2}
+                mt={2}
+              >
+                <Typography variant="h4" color="textSecondary">
+                  ເມືອງ:{" "}
+                </Typography>
+                <Typography variant="h4" color="textSecondary">
+                  {`${stadiumInfo.district}`}
+                </Typography>
+              </Box>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={2}
+                mt={2}
+              >
+                <Typography variant="h4" color="textSecondary">
+                  ແຂວງ:{" "}
+                </Typography>
+                <Typography variant="h4" color="textSecondary">
+                  {`${stadiumInfo.province}`}
+                </Typography>
+              </Box>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={2}
+                mt={2}
+              >
+                <Typography variant="h4" color="textSecondary">
+                  ມື້ລົງທະບຽນ:{" "}
+                </Typography>
+                <Typography variant="h4" color="textSecondary">
+                  {`${moment(stadiumInfo.regisDate).format(
+                    "DD-MM-YYYY"
+                  )}`}
                 </Typography>
               </Box>
               <Box
@@ -60,35 +130,7 @@ const Information = React.memo(() => {
                   ເບີໂທເດີ່ນ:{" "}
                 </Typography>
                 <Typography variant="h4" color="textSecondary">
-                  {`${bookingInfo.stadiumTel}`}
-                </Typography>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                mb={2}
-                mt={2}
-              >
-                <Typography variant="h4" color="textSecondary">
-                  ມື້ຈອງ:{" "}
-                </Typography>
-                <Typography variant="h4" color="textSecondary">
-                  {`${moment(bookingInfo.bookingDate).format("MM-DD-YYYY, h:mm:ss a")}`}
-                </Typography>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                mb={2}
-                mt={2}
-              >
-                <Typography variant="h4" color="textSecondary">
-                  ຍົກເລີກກ່ອນ:{" "}
-                </Typography>
-                <Typography variant="h4" color="textSecondary">
-                  {`${moment(bookingInfo.bookingCancel).format("MM-DD-YYYY, h:mm:ss a")}`}
+                  {`${stadiumInfo.phone}`}
                 </Typography>
               </Box>
             </Box>

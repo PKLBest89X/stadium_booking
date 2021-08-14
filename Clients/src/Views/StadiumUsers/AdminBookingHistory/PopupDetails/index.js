@@ -39,8 +39,8 @@ const PopupDetails = React.memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { showBooking, showOtherBooking, otherBookingState, bookingInfo } =
-    useShallowEqualSelector((state) => state.bookingHistory);
+  const { showReportBooking, showOtherReportBooking, otherReportBookingState, reportBookingInfo } =
+    useShallowEqualSelector((state) => state.reportBooking);
 
   const { messageAlert, messageState } = useShallowEqualSelector(
     (state) => state.notification
@@ -91,7 +91,7 @@ const PopupDetails = React.memo(() => {
         <Box padding="1rem">
           <Box display="block" justifyContent="center" alignItems="center">
             <Box>
-              <Header stadiumData={bookingInfo} />
+              <Header stadiumData={reportBookingInfo} />
             </Box>
             <Box mt={3} mb={3}>
               <Information />
@@ -103,19 +103,19 @@ const PopupDetails = React.memo(() => {
                 </Box>
                 <Divider />
                 <Box>
-                  <Details data={showBooking} />
+                  <Details data={showReportBooking} />
                 </Box>
               </Paper>
             </Box>
-            {otherBookingState === true && (
+            {otherReportBookingState === true && (
               <Box mt={3}>
                 <Paper>
                   <Box padding="1rem">
-                    <Typography variant="h4">{`ອີກ ${showOtherBooking.length} ລາຍການທີ່ຈອງຮ່ວມກັນ`}</Typography>
+                    <Typography variant="h4">{`ອີກ ${showOtherReportBooking.length} ລາຍການທີ່ຈອງຮ່ວມກັນ`}</Typography>
                   </Box>
                   <Divider />
                   <Box>
-                    <OtherDetails data={showOtherBooking} />
+                    <OtherDetails data={showOtherReportBooking} />
                   </Box>
                 </Paper>
               </Box>
@@ -123,24 +123,6 @@ const PopupDetails = React.memo(() => {
           </Box>
         </Box>
       </div>
-      {alertCantCancel}
-      <Box
-        display="flex"
-        width="100%"
-        justifyContent="flex-end"
-        alignItems="center"
-      >
-        <Box mt={3}>
-          <Button
-            type="submit"
-            color="primary"
-            variant="contained"
-            onClick={() => cancel(bookingInfo)}
-          >
-            ຍົກເລີກການຈອງ
-          </Button>
-        </Box>
-      </Box>
     </>
   );
 });

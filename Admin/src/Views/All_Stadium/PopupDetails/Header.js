@@ -1,49 +1,38 @@
 import React from "react";
 import {
-    Paper,
-    Typography,
-    Box,
-    Button,
-    Divider,
-    Avatar,
-  } from "@material-ui/core";
+  Paper,
+  Typography,
+  Box,
+  Button,
+  Divider,
+  Avatar,
+} from "@material-ui/core";
 
-  import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
-  import moment from "moment";
-  import { makeStyles } from "@material-ui/core/styles";
+import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
+import moment from "moment";
+import { makeStyles } from "@material-ui/core/styles";
 
-
-  const useStyles = makeStyles(() => ({
-    text: {
-      color: "red",
-    },
-    avatar: {
-      height: 100,
-      width: 100,
-    },
-  }));
+const useStyles = makeStyles(() => ({
+  text: {
+    color: "red",
+  },
+  avatar: {
+    height: 200,
+    width: 200,
+  },
+}));
 
 const BillHeader = React.memo(() => {
-    const classes = useStyles();
-    const { bookingInfo } = useShallowEqualSelector((state) => state.bookingHistory);
+  const classes = useStyles();
+  const { stadiumInfo } = useShallowEqualSelector((state) => state.allStadiums);
   return (
     <>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        mb={2}
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
         <Box marginRight=".5rem">
           <Avatar
             className={classes.avatar}
-            src={`/assets/images/adminPics/stadiumPics/icons/${bookingInfo.stadiumLogo}`}
+            src={`/assets/images/adminPics/stadiumPics/icons/${stadiumInfo.logo}`}
           />
-        </Box>
-        <Box marginLeft=".5rem">
-          <Typography variant="h2" color="textPrimary">
-            {`${bookingInfo.stadiumName}`}
-          </Typography>
         </Box>
       </Box>
       {/* <Box

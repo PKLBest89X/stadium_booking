@@ -13,8 +13,8 @@ import {
 import moment from "moment";
 
 const Information = React.memo(() => {
-  const { bookingInfo } = useShallowEqualSelector(
-    (state) => state.bookingHistory
+  const { reportPaymentInfo } = useShallowEqualSelector(
+    (state) => state.reportPayment
   );
   return (
     <div>
@@ -43,24 +43,10 @@ const Information = React.memo(() => {
                 mt={2}
               >
                 <Typography variant="h4" color="textSecondary">
-                  ເດີ່ນ:{" "}
+                  ລູກຄ້າ:{" "}
                 </Typography>
                 <Typography variant="h4" color="textSecondary">
-                  {`${bookingInfo.stadiumName}`}
-                </Typography>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                mb={2}
-                mt={2}
-              >
-                <Typography variant="h4" color="textSecondary">
-                  ເບີໂທເດີ່ນ:{" "}
-                </Typography>
-                <Typography variant="h4" color="textSecondary">
-                  {`${bookingInfo.stadiumTel}`}
+                  {`${reportPaymentInfo.customerName} ${reportPaymentInfo.customerSurname}`}
                 </Typography>
               </Box>
               <Box
@@ -71,10 +57,10 @@ const Information = React.memo(() => {
                 mt={2}
               >
                 <Typography variant="h4" color="textSecondary">
-                  ມື້ຈອງ:{" "}
+                  ປະເພດການຈອງ:{" "}
                 </Typography>
                 <Typography variant="h4" color="textSecondary">
-                  {`${moment(bookingInfo.bookingDate).format("MM-DD-YYYY, h:mm:ss a")}`}
+                  {`${reportPaymentInfo.customerType}`}
                 </Typography>
               </Box>
               <Box
@@ -85,10 +71,10 @@ const Information = React.memo(() => {
                 mt={2}
               >
                 <Typography variant="h4" color="textSecondary">
-                  ຍົກເລີກກ່ອນ:{" "}
+                  ເບີໂທ:{" "}
                 </Typography>
                 <Typography variant="h4" color="textSecondary">
-                  {`${moment(bookingInfo.bookingCancel).format("MM-DD-YYYY, h:mm:ss a")}`}
+                  {`${reportPaymentInfo.customerTel}`}
                 </Typography>
               </Box>
             </Box>

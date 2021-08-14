@@ -93,8 +93,6 @@ const SummarizePayment = forwardRef(
                   display="flex"
                   justifyContent="space-between"
                   alignItems="center"
-                  height="100%"
-                  width="100%"
                   mb={2}
                   mt={2}
                 >
@@ -109,8 +107,6 @@ const SummarizePayment = forwardRef(
                   display="flex"
                   justifyContent="space-between"
                   alignItems="center"
-                  height="100%"
-                  width="100%"
                   mb={2}
                   mt={2}
                 >
@@ -125,8 +121,6 @@ const SummarizePayment = forwardRef(
                   display="flex"
                   justifyContent="space-between"
                   alignItems="center"
-                  height="100%"
-                  width="100%"
                   mb={2}
                   mt={2}
                 >
@@ -149,8 +143,6 @@ const SummarizePayment = forwardRef(
                   display="flex"
                   justifyContent="space-between"
                   alignItems="center"
-                  height="100%"
-                  width="100%"
                   mb={2}
                   mt={2}
                 >
@@ -173,8 +165,6 @@ const SummarizePayment = forwardRef(
                   display="flex"
                   justifyContent="space-between"
                   alignItems="center"
-                  height="100%"
-                  width="100%"
                   mb={2}
                   mt={2}
                 >
@@ -197,8 +187,6 @@ const SummarizePayment = forwardRef(
                   display="flex"
                   justifyContent="space-between"
                   alignItems="center"
-                  height="100%"
-                  width="100%"
                   mb={2}
                   mt={2}
                 >
@@ -225,8 +213,6 @@ const SummarizePayment = forwardRef(
                   display="flex"
                   justifyContent="space-between"
                   alignItems="center"
-                  height="100%"
-                  width="100%"
                   mb={2}
                   mt={2}
                 >

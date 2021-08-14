@@ -29,6 +29,7 @@ const initialState = {
     customerSurname: "",
     customerType: "",
     customerTel: "",
+    customerProfile: "",
   },
 };
 
@@ -47,6 +48,7 @@ const reportBookingSlice = createSlice({
           customerSurname: payload.c_surname,
           customerType: "ໂທຈອງ",
           customerTel: payload.c_phone,
+          customerProfile: payload.profile
         };
       } else {
         state.reportBookingInfo = {
@@ -58,6 +60,7 @@ const reportBookingSlice = createSlice({
           customerSurname: payload.c_surname,
           customerType: "ຈອງຜ່ານເວັບ",
           customerTel: payload.c_phone,
+          customerProfile: payload.profile
         };
       }
       state.showReportBooking = state.reportBookingData.filter(

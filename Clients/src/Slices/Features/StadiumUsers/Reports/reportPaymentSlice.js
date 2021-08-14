@@ -32,10 +32,12 @@ const initialState = {
   allTimesByStadiumsNonAccount: [],
   stadiumsSelectedNonAccount: "",
   filterByDateDataNonAccount: moment(Date.now()).format("YYYY-MM-DD"),
-  showReportBooking: [],
-  otherReportBookingState: null,
-  showOtherReportBooking: [],
-  reportBookingInfo: {
+  showReportPayment: [],
+  otherReportPaymentState: null,
+  showOtherReportPayment: [],
+  otherWithWaterState: null,
+  showReportWater: [],
+  reportPaymentInfo: {
     bookingId: "",
     bookingDate: "",
     bookingCancel: "",
@@ -43,6 +45,14 @@ const initialState = {
     customerSurname: "",
     customerType: "",
     customerTel: "",
+  },
+  reportSummaryPayment: {
+    paymentId: "",
+    paymentDate: "",
+    employee: "",
+    totalWater: "",
+    totalStadium: "",
+    total: "",
   },
 };
 
@@ -52,44 +62,59 @@ const reportPaymentSlice = createSlice({
   reducers: {
     onShowReportPayment: (state, { payload }) => {
       if (payload.profile === "ໂທຈອງ") {
-        state.reportBookingInfo = {
-          ...state.reportBookingInfo,
+        state.reportPaymentInfo = {
+          ...state.reportPaymentInfo,
           bookingId: payload.b_id,
-          bookingDate: payload.booking_date,
-          bookingCancel: payload.booking_timecancel,
           customerName: payload.c_name,
           customerSurname: payload.c_surname,
           customerType: "ໂທຈອງ",
           customerTel: payload.c_phone,
+          customerProfile: payload.profile,
         };
       } else {
-        state.reportBookingInfo = {
-          ...state.reportBookingInfo,
+        state.reportPaymentInfo = {
+          ...state.reportPaymentInfo,
           bookingId: payload.b_id,
-          bookingDate: payload.booking_date,
-          bookingCancel: payload.booking_timecancel,
           customerName: payload.c_name,
           customerSurname: payload.c_surname,
           customerType: "ຈອງຜ່ານເວັບ",
           customerTel: payload.c_phone,
+          customerProfile: payload.profile,
         };
       }
-      state.showReportBooking = state.reportPaymentData.filter(
+
+      //////////////////ສ່ວນຂອງການສະຫຼຸບລວມລາຄາການຊຳລະ
+      let foundReportPayment = state.reportPaymentData.find(
+        (items) => items.bp_id === payload.bp_id
+      );
+      state.reportSummaryPayment = {
+        ...state.reportSummaryPayment,
+        paymentId: foundReportPayment.bp_id,
+        paymentDate: foundReportPayment.payment_date,
+        employee: foundReportPayment.su_name,
+        totalWater: foundReportPayment.total_drinkingprice,
+        totalStadium: foundReportPayment.total_stadiumprice,
+        total: foundReportPayment.total,
+      };
+
+      state.showReportPayment = state.reportStadiumsData.filter(
         (items) =>
+          items.bp_id === payload.bp_id &&
           items.b_id === payload.b_id &&
           items.std_id === payload.std_id &&
           items.td_id === payload.td_id &&
           items.kickoff_date === payload.kickoff_date
       );
       let otherDataSameBooking = [];
-      otherDataSameBooking = state.reportPaymentData.filter(
-        (items) => items.b_id === payload.b_id
+      otherDataSameBooking = state.reportStadiumsData.filter(
+        (items) => items.bp_id === payload.bp_id && items.b_id === payload.b_id
       );
 
-      state.showOtherReportBooking = otherDataSameBooking.filter(
+      state.showOtherReportPayment = otherDataSameBooking.filter(
         (items1) =>
-          !state.showReportBooking.some(
+          !state.showReportPayment.some(
             (items2) =>
+              items1.bp_id === items2.bp_id &&
               items1.b_id === items2.b_id &&
               items1.std_id === items2.std_id &&
               items1.td_id === items2.td_id &&
@@ -97,10 +122,21 @@ const reportPaymentSlice = createSlice({
           )
       );
 
-      if (state.showOtherReportBooking.length > 0) {
-        state.otherReportBookingState = true;
+      if (state.showOtherReportPayment.length > 0) {
+        state.otherReportPaymentState = true;
       } else {
-        state.otherReportBookingState = false;
+        state.otherReportPaymentState = false;
+      }
+
+      ////////////////////////ສຳລັບບິນທີ່ມີຄ່ານ້ຳນຳກັນ
+      state.showReportWater = state.reportWaterData.filter(
+        (items) => items.bp_id === payload.bp_id
+      );
+
+      if (state.showReportWater.length > 0) {
+        state.otherWithWaterState = true;
+      } else {
+        state.otherWithWaterState = false;
       }
     },
 

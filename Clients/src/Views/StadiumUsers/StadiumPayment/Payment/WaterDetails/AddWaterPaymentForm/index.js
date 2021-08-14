@@ -25,6 +25,8 @@ import { useDispatch } from "react-redux";
 import { onPopupClose } from "../../../../../../Slices/Features/Popup/popupSlice";
 import { onMessageOpen } from "../../../../../../Slices/Features/Notification/NotificationSlice";
 
+import NonDrink from "./NonDrink";
+
 const useStyles = makeStyles((theme) => ({
   toolbarLayout: {
     position: "sticky",
@@ -105,7 +107,11 @@ const AddWaterPayment = React.memo(({ watersData }) => {
   if (messageAlert === "emptySelectedWater" && messageState === true) {
     alertEmptySelectedWater = (
       <Box display="flex" alignItems="center">
-        <Typography className={classes.textColor} variant="h5" color="secondary">
+        <Typography
+          className={classes.textColor}
+          variant="h5"
+          color="secondary"
+        >
           ເລືອກເຄື່ອງດື່ມກັນ!
         </Typography>
       </Box>
@@ -122,59 +128,66 @@ const AddWaterPayment = React.memo(({ watersData }) => {
         </Box>
         <Divider />
       </Box>
-      <Card elevation={10} className={classes.toolbarLayout}>
-        <div className={classes.toolbarContainer}>
-          <Box>
-            <form onSubmit={onSaveQtyWater}>
-              <TextField
-                variant="standard"
-                type="number"
-                label="ຈຳນວນ"
-                required
-                InputProps={{
-                  inputProps: {
-                    min: 0,
-                  },
-                }}
-                name="getMoney"
-                value={addQtyWater}
-                onChange={(event) =>
-                  dispatch(onAddQtyWater(event.target.value))
-                }
-              />
-              <IconButton type="submit">
-                <AddIcon />
-              </IconButton>
-              {alertEmptySelectedWater}
-            </form>
+      {watersData.length > 0 ? (
+        <>
+          <Card elevation={10} className={classes.toolbarLayout}>
+            <div className={classes.toolbarContainer}>
+              <Box>
+                <form onSubmit={onSaveQtyWater}>
+                  <TextField
+                    variant="standard"
+                    type="number"
+                    label="ຈຳນວນ"
+                    required
+                    InputProps={{
+                      inputProps: {
+                        min: 0,
+                      },
+                    }}
+                    name="getMoney"
+                    value={addQtyWater}
+                    onChange={(event) =>
+                      dispatch(onAddQtyWater(event.target.value))
+                    }
+                  />
+                  <IconButton type="submit">
+                    <AddIcon />
+                  </IconButton>
+                  {alertEmptySelectedWater}
+                </form>
+              </Box>
+              <Paper component="form" className={classes.root}>
+                <InputBase
+                  className={classes.input}
+                  placeholder="ຄົ້ນຫາ..."
+                  inputProps={{ "aria-label": "search" }}
+                />
+                <IconButton
+                  type="submit"
+                  className={classes.iconButton}
+                  aria-label="search"
+                  onClick={(event) => {
+                    event.preventDefault();
+                  }}
+                >
+                  <SearchIcon />
+                </IconButton>
+              </Paper>
+            </div>
+          </Card>
+          <Box mt={3}>
+            <div className={classes.contentContainer}>
+              {watersData.map((items, index) => {
+                return (
+                  <WaterLists data={items} key={index} indexCount={index} />
+                );
+              })}
+            </div>
           </Box>
-          <Paper component="form" className={classes.root}>
-            <InputBase
-              className={classes.input}
-              placeholder="ຄົ້ນຫາ..."
-              inputProps={{ "aria-label": "search" }}
-            />
-            <IconButton
-              type="submit"
-              className={classes.iconButton}
-              aria-label="search"
-              onClick={(event) => {
-                event.preventDefault();
-              }}
-            >
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-        </div>
-      </Card>
-
-      <Box mt={3}>
-        <div className={classes.contentContainer}>
-          {watersData.map((items, index) => {
-            return <WaterLists data={items} key={index} indexCount={index} />;
-          })}
-        </div>
-      </Box>
+        </>
+      ) : (
+        <NonDrink />
+      )}
     </>
   );
 });

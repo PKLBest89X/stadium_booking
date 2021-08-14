@@ -207,7 +207,11 @@ const ReportBookingUnPaid = React.memo(() => {
                             </Box>
                           </Box>
                         </Box>
-                        <Button color="primary" variant="contained">
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          onClick={() => onGetCurrentPayment(items)}
+                        >
                           ລາຍລະອຽດ
                         </Button>
                       </Box>

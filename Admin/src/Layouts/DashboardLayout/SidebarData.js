@@ -22,7 +22,7 @@ export const SidebarData = [
   },
   {
     title: "ບັນຊີຂອງຂ້ອຍ",
-    path: "account",
+    path: "/account",
     icon: <AccountCircle />,
   },
 ];

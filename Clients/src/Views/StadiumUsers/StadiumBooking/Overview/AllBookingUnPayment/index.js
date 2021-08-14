@@ -112,7 +112,7 @@ const BookingListUnCheckout = React.memo(() => {
                         <Box>
                           <Avatar
                             className={classes.avatar}
-                            src={`/assets/images/userPics/usersProfile/${items.profile}`}
+                            src={`/assets/images/usersPics/usersProfile/${items.profile}`}
                           />
                         </Box>
                       </Box>

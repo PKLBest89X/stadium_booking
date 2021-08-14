@@ -17,12 +17,12 @@ import {
       color: "red",
     },
     avatar: {
-      height: 100,
-      width: 100,
+      height: 200,
+      width: 200,
     },
   }));
 
-const BillHeader = ({ stadiumData }) => {
+const BillHeader = ({ profile }) => {
     const classes = useStyles();
   return (
     <>
@@ -35,49 +35,10 @@ const BillHeader = ({ stadiumData }) => {
         <Box marginRight=".5rem">
           <Avatar
             className={classes.avatar}
-            src={`/assets/images/adminPics/stadiumPics/icons/${stadiumData.logo}`}
+            src={`/assets/images/usersPics/usersProfile/${profile.customerProfile}`}
           />
         </Box>
-        <Box marginLeft=".5rem">
-          <Typography variant="h2" color="textPrimary">
-            {`${stadiumData.st_name}`}
-          </Typography>
-        </Box>
       </Box>
-      {/* <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        mb={2}
-        mt={2}
-      >
-        <Typography variant="h5" color="textPrimary">
-          {`ເລກທີ: ${paymentId}`}
-        </Typography>
-      </Box> */}
-
-      {/* <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        mb={2}
-        mt={2}
-      >
-        <Typography variant="h5" color="textPrimary">
-          {`ທີ່ຢູ່: ${stadiumData.village}, ${stadiumData.district}, ${stadiumData.province}`}
-        </Typography>
-      </Box>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        mb={2}
-        mt={2}
-      >
-        <Typography variant="h5" color="textPrimary">
-          {`ເບີໂທ: ${stadiumData.phone}`}
-        </Typography>
-      </Box> */}
     </>
   );
 };

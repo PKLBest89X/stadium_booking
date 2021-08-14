@@ -29,7 +29,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useHistory, useRouteMatch, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { onPopupOpen } from "../../../../Slices/Features/Popup/popupSlice";
-import { onShowReportBooking } from "../../../../Slices/Features/StadiumUsers/Reports/reportBookingSlice";
+import { onShowReportPayment } from "../../../../Slices/Features/StadiumUsers/Reports/reportPaymentSlice";
 import moment from "moment";
 import ReportContainerLayout from "../../../../Components/ReportContainerLayout";
 
@@ -121,9 +121,14 @@ const ReportAllPayment = React.memo(() => {
       await dispatch(fetchGetPaymentByAdmin(stadiumId_Admin));
       await dispatch(fetchGetStadiumsPaymentByAdmin(stadiumId_Admin));
       await dispatch(fetchGetWaterPaymentByAdmin(stadiumId_Admin));
-    }
+    };
     fetchingPaymentDetails();
-  }, [dispatch, stadiumId_Admin])
+  }, [dispatch, stadiumId_Admin]);
+
+  const onGetCurrentPayment = (payload) => {
+    dispatch(onShowReportPayment(payload));
+    dispatch(onPopupOpen("showReportPaymentInfo"));
+  };
 
   return (
     <ReportContainerLayout>
@@ -206,7 +211,11 @@ const ReportAllPayment = React.memo(() => {
                             </Box>
                           </Box>
                         </Box>
-                        <Button color="primary" variant="contained">
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          onClick={() => onGetCurrentPayment(items)}
+                        >
                           ລາຍລະອຽດ
                         </Button>
                       </Box>
@@ -216,7 +225,7 @@ const ReportAllPayment = React.memo(() => {
               </div>
             );
           })}
-          {reportStadiumsSuccess === false && <NonPaymenthistory />}
+        {reportStadiumsSuccess === false && <NonPaymenthistory />}
       </Box>
     </ReportContainerLayout>
   );

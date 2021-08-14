@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Typography, Box, Button, Divider } from "@material-ui/core";
@@ -53,9 +53,6 @@ const PopupDetails = React.memo(() => {
     (state) => state.notification
   );
 
-  const { stadiumData } = useShallowEqualSelector((state) => state.stadium);
-  const stateRef = useRef(stadiumData);
-
   const dispatch = useDispatch();
 
   //ການເອົາຂໍ້ມູນເດີ່ນ
@@ -67,10 +64,6 @@ const PopupDetails = React.memo(() => {
     return () => dispatch(onMessageClose());
   }, [dispatch]);
 
-  useMemo(
-    () => stadiumData.forEach((items) => (stateRef.current = items)),
-    [stadiumData]
-  );
 
   let alertCantCancel = null;
   if (messageAlert === "alertCantCancelBooking" && messageState === true) {
@@ -113,7 +106,7 @@ const PopupDetails = React.memo(() => {
         <Box padding="1rem">
           <Box display="block" justifyContent="center" alignItems="center">
             <Box>
-              <Header stadiumData={stateRef.current} />
+              <Header profile={information} />
             </Box>
             <Box mt={3} mb={3}>
               <Information />

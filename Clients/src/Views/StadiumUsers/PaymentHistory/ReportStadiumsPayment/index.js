@@ -29,7 +29,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useHistory, useRouteMatch, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { onPopupOpen } from "../../../../Slices/Features/Popup/popupSlice";
-import { onShowReportBooking } from "../../../../Slices/Features/StadiumUsers/Reports/reportBookingSlice";
+import { onShowReportPayment } from "../../../../Slices/Features/StadiumUsers/Reports/reportPaymentSlice";
 import moment from "moment";
 import ReportContainerLayout from "../../../../Components/ReportContainerLayout";
 import { onLoadAdminOnlyStadiumsPayment } from "../../../../Slices/Features/StadiumUsers/Reports/reportPaymentSlice";
@@ -127,6 +127,11 @@ const ReportStadiumsPayment = React.memo(() => {
     fetchingPaymentDetails();
   }, [dispatch, stadiumId_Admin]);
 
+  const onGetCurrentPayment = (payload) => {
+    dispatch(onShowReportPayment(payload));
+    dispatch(onPopupOpen("showReportPaymentInfo"));
+  };
+
   return (
     <ReportContainerLayout>
       <Box padding="1rem">
@@ -208,7 +213,7 @@ const ReportStadiumsPayment = React.memo(() => {
                             </Box>
                           </Box>
                         </Box>
-                        <Button color="primary" variant="contained">
+                        <Button color="primary" variant="contained" onClick={() => onGetCurrentPayment(items)}>
                           ລາຍລະອຽດ
                         </Button>
                       </Box>

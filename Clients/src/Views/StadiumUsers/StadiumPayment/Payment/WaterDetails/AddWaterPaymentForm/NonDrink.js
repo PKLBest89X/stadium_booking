@@ -10,8 +10,8 @@ const useStyles = makeStyles(() => ({
     flex: 1,
   },
   contentContainer: {
-    paddingTop: "140px",
-    paddingBottom: "140px",
+    paddingTop: "100px",
+    paddingBottom: "100px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -37,7 +37,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const NonStadiums = () => {
+const NonDrink = () => {
   const classes = useStyles();
   let history = useHistory();
 
@@ -45,12 +45,12 @@ const NonStadiums = () => {
     history.push("/booking-history");
   };
   return (
-    <div className={classes.componentContainer}>
+    <div className={classes.componentContainer}>  
       <div className={classes.contentContainer}>
         <InfoIcon className={classes.bookingIcon} />
         <div className={classes.textContainer}>
           <Typography variant="h3" color="textSecondary">
-            ບໍ່ມີຂໍ້ມູນດັ່ງກ່າວ!!
+            ບໍ່ມີເຄື່ອງດື່ມ!!
           </Typography>
         </div>
       </div>
@@ -58,4 +58,4 @@ const NonStadiums = () => {
   );
 };
 
-export default NonStadiums;
+export default NonDrink;

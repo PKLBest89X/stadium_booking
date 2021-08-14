@@ -34,6 +34,7 @@ const initialState = {
     customerSurname: "",
     customerType: "",
     customerTel: "",
+    customerProfile: "",
   },
 };
 
@@ -52,6 +53,7 @@ const preBookingNonAccountSlice = createSlice({
           customerSurname: payload.c_surname,
           customerType: "ໂທຈອງ",
           customerTel: payload.c_phone,
+          customerProfile: payload.profile
         };
       } else {
         state.information = {
@@ -63,6 +65,7 @@ const preBookingNonAccountSlice = createSlice({
           customerSurname: payload.c_surname,
           customerType: "ຈອງຜ່ານເວັບ",
           customerTel: payload.c_phone,
+          customerProfile: payload.profile
         };
       }
       state.showBookingDetails = state.preBookingNonAccountDetailsData.filter(
