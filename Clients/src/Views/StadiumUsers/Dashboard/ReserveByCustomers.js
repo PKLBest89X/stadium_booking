@@ -16,6 +16,7 @@ import {
 import LaptopMacIcon from "@material-ui/icons/LaptopMac";
 import PhoneIcon from "@material-ui/icons/Phone";
 import TabletIcon from "@material-ui/icons/Tablet";
+import NonTotalBooking from "./NonTotalBooking";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -27,16 +28,21 @@ const ReserveByCustomers = ({ className, ...rest }) => {
   const classes = useStyles();
   const theme = useTheme();
 
+  const totalBooking = {
+    onWeb: 2,
+    onTel: 2,
+  };
+
   const devices = [
     {
       title: "ຈອງຜ່ານເວັບໄຊ",
-      value: 2,
+      value: totalBooking.onWeb,
       icon: LaptopMacIcon,
       color: colors.indigo[500],
     },
     {
       title: "ໂທຈອງ",
-      value: 2,
+      value: totalBooking.onTel,
       icon: TabletIcon,
       color: colors.red[600],
     },
@@ -82,9 +88,15 @@ const ReserveByCustomers = ({ className, ...rest }) => {
         <CardHeader title="ການຈອງຂອງເດີ່ນ" />
         <Divider />
         <CardContent>
-          <Box height={300} position="relative" mt={3} mb={3}>
-            <Doughnut data={data} options={options} />
-          </Box>
+          {(totalBooking.onWeb > 0 || totalBooking.onTel > 0) && (
+            <Box height={300} position="relative" mt={3} mb={3}>
+              <Doughnut data={data} options={options} />
+            </Box>
+          )}
+
+          {totalBooking.onWeb === 0 && totalBooking.onTel === 0 && (
+            <NonTotalBooking />
+          )}
           <Box display="flex" justifyContent="center" mt={2}>
             {devices.map(({ color, icon: Icon, title, value }) => (
               <Box key={title} p={1} textAlign="center">

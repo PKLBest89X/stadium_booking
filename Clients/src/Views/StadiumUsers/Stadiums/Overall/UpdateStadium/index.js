@@ -312,6 +312,17 @@ const UpdateStadium = ({ stadiumData }) => {
                 variant="outlined"
                 value={stadiumState.phone}
                 onChange={onStadiumPhoneChange}
+                InputProps={{
+                  inputProps: { maxLength: 10, min: 0 },
+                }}
+                onInput={(e) => {
+                  e.target.value = Math.max(
+                    0,
+                    parseInt(e.target.value)
+                  )
+                    .toString()
+                    .slice(0, 8);
+                }}
                 required
               />
               <TextField

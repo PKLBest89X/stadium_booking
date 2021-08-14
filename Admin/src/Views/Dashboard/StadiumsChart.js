@@ -13,8 +13,9 @@ import {
   makeStyles,
   useTheme,
 } from "@material-ui/core";
-import CheckIcon from '@material-ui/icons/Check';
-import ClearIcon from '@material-ui/icons/Clear';
+import CheckIcon from "@material-ui/icons/Check";
+import ClearIcon from "@material-ui/icons/Clear";
+import NonTotalStadium from "./NonTotalStadium";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -26,16 +27,21 @@ const StadiumsChart = ({ className, ...rest }) => {
   const classes = useStyles();
   const theme = useTheme();
 
+  const totalStadium = {
+    yes: 3,
+    no: 0,
+  };
+
   const devices = [
     {
       title: "ພ້ອມໃຊ້ງານ",
-      value: 3,
+      value: totalStadium.yes,
       icon: CheckIcon,
       color: colors.indigo[500],
     },
     {
       title: "ບໍ່ພ້ອມໃຊ້ງານ",
-      value: 0,
+      value: totalStadium.no,
       icon: ClearIcon,
       color: colors.red[600],
     },
@@ -81,9 +87,14 @@ const StadiumsChart = ({ className, ...rest }) => {
         <CardHeader title="ພາບລວມເດີ່ນທັງໝົດ" />
         <Divider />
         <CardContent>
-          <Box height={300} position="relative">
-            <Doughnut data={data} options={options} />
-          </Box>
+          {(totalStadium.yes > 0 || totalStadium.no > 0) && (
+            <Box height={300} position="relative">
+              <Doughnut data={data} options={options} />
+            </Box>
+          )}
+          {totalStadium.yes === 0 && totalStadium.no === 0 && (
+            <NonTotalStadium />
+          )}
           <Box display="flex" justifyContent="center" mt={2}>
             {devices.map(({ color, icon: Icon, title, value }) => (
               <Box key={title} p={1} textAlign="center">
