@@ -121,6 +121,7 @@ const RoutesComponents = ({ ...rest }) => {
           <Redirect to="/404" />
         </Route>
 
+        <Redirect to="/401"/>
         <Redirect to="/login" />
         <Redirect to="/register" />
         <Redirect to="/admin/login" />

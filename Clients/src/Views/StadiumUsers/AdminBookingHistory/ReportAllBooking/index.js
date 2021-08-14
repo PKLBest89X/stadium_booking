@@ -20,6 +20,7 @@ import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 
 import { fetchGetBookingByAdmin } from "../../../../middlewares/stadiumUser/fetchReport/fetchBookingReport";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 import { useHistory, useRouteMatch, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -89,10 +90,17 @@ const ReportAllBooking = React.memo(() => {
   useEffect(() => {
     const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
     if (adminToken && adminToken.token) {
-      dispatch(fetchAuthAdmin(adminToken.token));
-      dispatch(userNow("admin"));
+      const authRequest = async () => {
+        const getReponse = await dispatch(fetchAuthAdmin(adminToken.token));
+        const result = unwrapResult(getReponse);
+        if (result.role === "staff") {
+          history.replace("/401");
+        }
+        dispatch(userNow("admin"));
+      };
+      authRequest();
     }
-  }, [dispatch]);
+  }, [dispatch, history]);
 
   useEffect(() => {
     dispatch(fetchCheckStadium(stadiumId_Admin));

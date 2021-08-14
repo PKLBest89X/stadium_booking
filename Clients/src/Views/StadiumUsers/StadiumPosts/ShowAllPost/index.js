@@ -26,6 +26,8 @@ import SwiperCore, { Keyboard, Navigation, Pagination } from "swiper/core";
 import "swiper/swiper.scss";
 import "./swiper.css";
 
+import { unwrapResult } from "@reduxjs/toolkit";
+
 const useStyles = makeStyles((theme) => ({
   pageContainer: {
     padding: "2rem",
@@ -62,10 +64,17 @@ const StadiumPosts = React.memo(({ ...rest }) => {
   useEffect(() => {
     const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
     if (adminToken && adminToken.token) {
-      dispatch(fetchAuthAdmin(adminToken.token));
-      dispatch(userNow("admin"));
+      const authRequest = async () => {
+        const getReponse = await dispatch(fetchAuthAdmin(adminToken.token));
+        const result = unwrapResult(getReponse);
+        if (result.role === "staff") {
+          history.replace("/401");
+        }
+        dispatch(userNow("admin"));
+      };
+      authRequest();
     }
-  }, [dispatch]);
+  }, [dispatch, history]);
 
   useEffect(() => {
     dispatch(fetchCheckStadium(stadiumId_Admin));

@@ -5,6 +5,7 @@ import theme from "./Theme";
 import MainLayout from "./Layouts/index";
 import GlobalStyles from "./Components/GlobalStyles";
 import NotFoundView from "./Views/Errors/NotFoundView";
+import NoPermission from './Views/Errors/NoPermission';
 import DefaultLayout from "./Layouts/DefaultLayout";
 import UserLoginView from "./Views/Users/Auth/UserLoginView";
 import UserRegisterView from "./Views/Users/Auth/UserRegisterView";
@@ -21,6 +22,10 @@ const App = () => {
             <Route path="/404" exact>
               <DefaultLayout />
               <NotFoundView />
+            </Route>
+            <Route path="/401" exact>
+              <DefaultLayout />
+              <NoPermission />
             </Route>
             <Route path="/login" exact>
               <DefaultLayout />

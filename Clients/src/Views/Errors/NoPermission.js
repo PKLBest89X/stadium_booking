@@ -11,11 +11,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NotFoundView = () => {
+const NoPermission = () => {
   const classes = useStyles();
 
   return (
-    <PageLayout title="404">
+    <PageLayout title="No permission">
       <Box
         display="flex"
         flexDirection="column"
@@ -25,10 +25,10 @@ const NotFoundView = () => {
         <Container maxWidth="md">
           <Box mt={3}>
             <Typography align="center" color="textPrimary" variant="h1">
-              404: ໜ້າຕ່າງທີ່ທ່ານຄົ້ນຫາ ແມ່ນບໍ່ມີ!!
+              401: ທ່ານບໍ່ມີສິດທິໃນການເຂົ້າເຖິງໜ້າຕ່າງນີ້!!
             </Typography>
             <Typography align="center" color="textPrimary" variant="subtitle2">
-              ທ່ານລອງຄົ້ນຫາທີ່ສິ່ງທ່ານຢາກຄົ້ນໃຫ້ຖືກຕ້ອງດ້ວຍ.
+              ກະລຸນາກັບຄືນສູ່ໜ້າຕ່າງທີ່ເຂົ້າເຖິງໄດ້.
             </Typography>
           </Box>
 
@@ -36,7 +36,7 @@ const NotFoundView = () => {
             <img
               alt="Under development"
               className={classes.image}
-              src="/assets/images/errors/404-error.jpg"
+              src="/assets/images/errors/no_Permission.jpg"
             />
           </Box>
         </Container>
@@ -45,4 +45,4 @@ const NotFoundView = () => {
   );
 };
 
-export default NotFoundView;
+export default NoPermission;

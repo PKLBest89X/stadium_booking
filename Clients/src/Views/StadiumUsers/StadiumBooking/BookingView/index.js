@@ -9,7 +9,8 @@ import { fetchGetStadium } from "../../../../middlewares/stadiumUser/fetchCRUDSt
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Paper, Typography, Divider, Box } from "@material-ui/core";
+import { Paper, Typography, Divider, Box, IconButton } from "@material-ui/core";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import {
   onLoadCurrentSaveSelectedDataNonAccount,
@@ -206,10 +207,18 @@ const BookingView = React.memo(({ ...rest }) => {
         <div className={classes.pageContainer}>
           <div className={classes.root}>
             <form onSubmit={onConfirmBooking}>
-              <Box mb={3}>
+              <Box
+                mb={3}
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
                 <Typography color="textPrimary" variant="h2">
                   ຈອງເດີ່ນເຕະບານ
                 </Typography>
+                <IconButton color="primary" onClick={() => history.goBack()}>
+                  <ArrowBackIcon />
+                </IconButton>
               </Box>
               <Divider />
               <Box mt={3}>

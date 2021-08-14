@@ -18,6 +18,8 @@ import { Box, Divider, Grid, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import UpdateStadium from "./UpdateStadium";
 
+import { unwrapResult } from "@reduxjs/toolkit";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -50,10 +52,17 @@ const Overall = () => {
   useEffect(() => {
     const adminToken = JSON.parse(localStorage.getItem("accessAdminToken"));
     if (adminToken && adminToken.token) {
-      dispatch(fetchAuthAdmin(adminToken.token));
-      dispatch(userNow("admin"));
+      const authRequest = async () => {
+        const getReponse = await dispatch(fetchAuthAdmin(adminToken.token));
+        const result = unwrapResult(getReponse);
+        if (result.role === "staff") {
+          history.replace("/401");
+        }
+        dispatch(userNow("admin"));
+      };
+      authRequest();
     }
-  }, [dispatch]);
+  }, [dispatch, history]);
 
   useEffect(() => {
     dispatch(fetchCheckStadium(stadiumId_Admin));

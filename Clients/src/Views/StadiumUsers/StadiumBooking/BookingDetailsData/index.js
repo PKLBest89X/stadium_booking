@@ -12,7 +12,15 @@ import DateFnsUtils from "@date-io/date-fns";
 import "date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 
-import { Box, Button, Typography, Paper, Divider } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Typography,
+  Paper,
+  Divider,
+  IconButton,
+} from "@material-ui/core";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { fetchGetStadiumsToBookingNonAccount } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
@@ -210,10 +218,18 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
           <form onSubmit={onAddBookingDetails}>
             <Paper>
               <Box padding="1rem">
-                <Box mb={2}>
+                <Box
+                  mb={2}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
                   <Typography variant="h4" color="textSecondary">
                     ເລືອກຕາມສະໜາມ
                   </Typography>
+                  <IconButton color="primary" onClick={() => history.goBack()}>
+                    <ArrowBackIcon />
+                  </IconButton>
                 </Box>
                 <Divider />
                 <Box mt={3}>
