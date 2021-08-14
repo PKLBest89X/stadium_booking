@@ -40,11 +40,11 @@ const DashboardView = ({ ...rest }) => {
           <Grid item lg={6} sm={6} xl={6} xs={12}>
             <TotalStadiums />
           </Grid>
-          <Grid item lg={8} md={8} xl={9} xs={12}>
+          <Grid item lg={6} md={12} xl={6} xs={12}>
             <ListAllStadiums />
             <LatestStadiumOwner />
           </Grid>
-          <Grid item lg={4} md={4} xl={3} xs={12}>
+          <Grid item lg={6} md={12} xl={6} xs={12}>
             <StadiumsChart />
           </Grid>
         </Grid>
