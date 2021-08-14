@@ -82,7 +82,7 @@ const ReserveByCustomers = ({ className, ...rest }) => {
         <CardHeader title="ການຈອງຂອງເດີ່ນ" />
         <Divider />
         <CardContent>
-          <Box height={300} position="relative">
+          <Box height={300} position="relative" mt={3} mb={3}>
             <Doughnut data={data} options={options} />
           </Box>
           <Box display="flex" justifyContent="center" mt={2}>

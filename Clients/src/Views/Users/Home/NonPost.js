@@ -37,7 +37,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const NonPaymenthistory = () => {
+const NonPost = () => {
   const classes = useStyles();
   let history = useHistory();
 
@@ -45,12 +45,12 @@ const NonPaymenthistory = () => {
     history.push("/booking-history");
   };
   return (
-    <div className={classes.componentContainer}>
+    <div className={classes.componentContainer}>  
       <div className={classes.contentContainer}>
         <InfoIcon className={classes.bookingIcon} />
         <div className={classes.textContainer}>
           <Typography variant="h3" color="textSecondary">
-            ບໍ່ມີລາຍການທີ່ຄົ້ນຫາ!!
+            ບໍ່ມີ Post ໃນຕອນ໊!!
           </Typography>
         </div>
       </div>
@@ -58,4 +58,4 @@ const NonPaymenthistory = () => {
   );
 };
 
-export default NonPaymenthistory;
+export default NonPost;

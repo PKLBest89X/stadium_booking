@@ -24,7 +24,7 @@ router.get("/get_employee/:st_id", async (req, res) => {
     if (result[0].length > 0) {
       return res.send(result[0]);
     } else {
-      return res.status(400).send("Not found data!!");
+      return res.status(304).send("Not found data!!");
     }
   });
 }); // ສະແດງພະນັກງານທັງໝົດຂອງເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||

@@ -1,22 +1,58 @@
 import React from "react";
-import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
+import { IconButton, Typography, Box } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
+import { Card, CardMedia } from "@material-ui/core";
+import moment from "moment";
 
 const useStyles = makeStyles(() => ({
-  img: {
-    display: "block",
-    width: "100%",
-    height: "calc(100vw / 3 - 1px)",
-    objectFit: "cover",
+  avatar: {
+    width: 64,
+    height: 64,
+    boxShadow: ".5px .5px 3px .5px rgba(0, 0, 0, .5)",
+    cursor: "pointer",
   },
+  ItemsContainer: {
+    transition: "200ms ease-in-out",
+  },
+  media: {
+    height: 0,
+    paddingTop: "56.25%", // 16:9
+    borderRadius: "0px 0px 5px 5px",
+  },
+  cardContent: {
+    display: "block",
+  },
+
 }));
-const ListStadiumItems = ({ items }) => {
+
+const ListStadiumItems  = ({ getitems }) => {
   const classes = useStyles();
   return (
-    <div>
-      <Paper>
-        <img className={classes.img} src={`/assets/images/adminPics/stadiumDetailsPics/${items.picture}`} alt={items.std_name} />
-      </Paper>
+    <div className={classes.ItemsContainer}>
+      <Card className={classes.root} elevation={10}>
+        <CardMedia
+          className={classes.media}
+          image={`/assets/images/adminPics/stadiumDetailsPics/${getitems.picture}`}
+          title={getitems.std_name}
+        />
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={1} mt={1}>
+          <Box paddingLeft="1rem">
+            <Typography
+              gutterBottom
+              variant="h4"
+              component="h2"
+              color="textPrimary"
+              noWrap
+            >
+              {getitems.std_name}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {`ເພີ່ມເມື່ອ: ${moment(getitems.regisDate).format('DD/MM/YYYY')}`}
+            </Typography>
+          </Box>
+        </Box>
+      </Card>
     </div>
   );
 };

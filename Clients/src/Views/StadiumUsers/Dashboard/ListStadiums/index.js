@@ -1,19 +1,23 @@
 import React, { useEffect } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import { makeStyles } from "@material-ui/core/styles";
 import ListStadiumItems from "./ListStadiumItems";
-import Carousel from "react-material-ui-carousel";
-import {
-  handleNext,
-  handleBack,
-  handleStepChange,
-} from "../../../../Slices/Features/StadiumUsers/Reports/reportReserveSlice";
+import { Box, Paper, Typography, Divider } from "@material-ui/core";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper.min.css";
+import "swiper/components/pagination/pagination.min.css";
+import "swiper/components/navigation/navigation.min.css";
+import SwiperCore, { Keyboard, Navigation, Pagination } from "swiper/core";
+// Import Swiper styles
+import "swiper/swiper.scss";
+import "./swiper1.css";
+
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import { fetchGetStadiumDetails } from "../../../../middlewares/stadiumUser/fetchCRUDStadium/fetchStadiumDetails";
+import NonStadiums from "./NonStadiums";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,12 +40,9 @@ const useStyles = makeStyles((theme) => ({
 
 const ListStadiums = React.memo(() => {
   const classes = useStyles();
+  SwiperCore.use([Keyboard, Navigation, Pagination]);
   const { stadiumId_Admin } = useParams();
-  const theme = useTheme();
-  const { activeStep } = useShallowEqualSelector(
-    (state) => state.reportReserve
-  );
-  const { stadiumsData } = useShallowEqualSelector(
+  const { stadiumsData, stadiumsSuccess } = useShallowEqualSelector(
     (state) => state.stadiumDetails
   );
   const dispatch = useDispatch();
@@ -50,17 +51,50 @@ const ListStadiums = React.memo(() => {
     dispatch(fetchGetStadiumDetails(stadiumId_Admin));
   }, [dispatch, stadiumId_Admin]);
 
-  const onSlide = (step) => {
-    dispatch(handleStepChange(step));
-  };
-
   return (
     <div className={classes.root}>
-      <Carousel animation="slide" autoPlay={false} timeout={500}>
-        {stadiumsData.map((item, index) => (
-          <ListStadiumItems key={index} items={item} />
-        ))}
-      </Carousel>
+      <Box>
+        <Paper>
+          <Box padding="1rem">
+            <Typography color="textPrimary" variant="h5">
+              ສະໜາມທັງໝົດ
+            </Typography>
+          </Box>
+          <Divider />
+          {stadiumsSuccess === true && (
+            <Swiper
+              spaceBetween={20}
+              observeParents={true}
+              simulateTouch={false}
+              centeredSlides={true}
+              observer={true}
+              slidesPerView={1}
+              navigation={true}
+              keyboard={{ enabled: true }}
+              pagination={{
+                clickable: true,
+              }}
+              breakpoints={{
+                600: {
+                  slidesPerView: 2,
+                },
+                960: {
+                  slidesPerView: 3,
+                },
+              }}
+            >
+              {stadiumsData.map((items, index) => {
+                return (
+                  <SwiperSlide key={index}>
+                    <ListStadiumItems key={index} getitems={items} />
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          )}
+          {stadiumsSuccess === false && <NonStadiums />}
+        </Paper>
+      </Box>
     </div>
   );
 });

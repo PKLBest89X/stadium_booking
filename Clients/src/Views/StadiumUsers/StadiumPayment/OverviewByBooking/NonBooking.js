@@ -37,7 +37,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const NonPaymenthistory = () => {
+const NonBooking = () => {
   const classes = useStyles();
   let history = useHistory();
 
@@ -58,4 +58,4 @@ const NonPaymenthistory = () => {
   );
 };
 
-export default NonPaymenthistory;
+export default NonBooking;

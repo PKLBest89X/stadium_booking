@@ -12,6 +12,7 @@ import {
 } from "../../../../../Slices/Features/Popup/popupSlice";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Divider } from "@material-ui/core";
+import NonPost from "./NonPost";
 
 import { fetchFeedPostOfStadium } from "../../../../../middlewares/user/fetchFeedPost/fetchFeedPost";
 import AllPostItems from "./AllPostItems";
@@ -81,11 +82,14 @@ const ShowAllPostOfStadium = React.memo(({ getTabChange, ...rest }) => {
           </Box>
           <Divider />
           <Box mt={3}>
-            <div className={classes.contentContainer}>
-              {postOfStadiumData.map((items) => {
-                return <AllPostItems key={items.pt_id} getitems={items} />;
-              })}
-            </div>
+            {postOfStadiumSuccess === true && (
+              <div className={classes.contentContainer}>
+                {postOfStadiumData.map((items) => {
+                  return <AllPostItems key={items.pt_id} getitems={items} />;
+                })}
+              </div>
+            )}
+            {postOfStadiumSuccess === false && <NonPost />}
           </Box>
         </div>
       </div>

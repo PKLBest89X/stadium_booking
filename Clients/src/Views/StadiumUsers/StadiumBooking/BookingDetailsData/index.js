@@ -34,6 +34,8 @@ import NotificationAlert from "../../../../Components/NotificationAlert";
 import DatePickerBooking from "./DatePickerBooking";
 import StadiumsToPick from "./StadiumsToPick";
 import TimesAndPrice from "./TimesAndPrice";
+import NonTimes from "./NonTimes";
+import NonStadiums from "./NonStadiums";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
@@ -218,6 +220,9 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
                   {bookingStadiumsNonAccountSuccess === true && (
                     <StadiumsToPick stadiums={bookingStadiumsNonAccountData} />
                   )}
+                  {bookingStadiumsNonAccountSuccess === false && (
+                    <NonStadiums />
+                  )}
                 </Box>
               </Box>
             </Paper>
@@ -241,6 +246,7 @@ const BookingDetailsData = React.memo(({ ...rest }) => {
                 }
               />
             )}
+            {bookingTimesNonAccountSuccess === false && <NonTimes />}
 
             <Box mt={3}>
               <Button

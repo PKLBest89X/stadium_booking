@@ -31,6 +31,8 @@ import TimesAndPrice from "./TimesAndPrice";
 import NotificationAlert from "../../../../../Components/NotificationAlert";
 import { onNotiOpen } from "../../../../../Slices/Features/Notification/NotificationSlice";
 import { onTabOpen } from "../../../../../Slices/Features/Popup/popupSlice";
+import NonTimes from "./NonTimes";
+import NonStadiums from "./NonStadiums";
 
 const Booking = React.memo(() => {
   const { bookingId, stadiumId } = useParams();
@@ -104,7 +106,7 @@ const Booking = React.memo(() => {
     return () => dispatch(onClearTimes());
   }, [dispatch, stadiumId]);
 
-  useEffect(() => dispatch(onTabOpen("tabBackToOverviewBooking")))
+  useEffect(() => dispatch(onTabOpen("tabBackToOverviewBooking")));
 
   //ການ fetching ເອົາຂໍ້ມູນການຈອງທີ່ຈອງແລ້ວ ແຕ່ຍັງບໍ່ຈ່າຍ
 
@@ -207,6 +209,7 @@ const Booking = React.memo(() => {
                 {bookingStadiumsSuccess === true && (
                   <StadiumsToPick stadiums={bookingStadiumsData} />
                 )}
+                {bookingStadiumsSuccess === false && <NonStadiums />}
               </Box>
             </Box>
           </Paper>
@@ -227,6 +230,8 @@ const Booking = React.memo(() => {
               }
             />
           )}
+
+          {bookingTimesSuccess === false && <NonTimes />}
 
           <Box mt={3}>
             <Button type="submit" fullWidth color="primary" variant="contained">

@@ -14,6 +14,7 @@ import { fetchGetAllBookingDetails } from "../../../../middlewares/stadiumUser/f
 import NotificationAlert from "../../../../Components/NotificationAlert";
 import BookingListUnCheckout from "./BookingListUnCheckout";
 import PaymentNavbarControl from "./PaymentNavbarControl";
+import NonBooking from "./NonBooking";
 
 const OverviewByBooking = React.memo(({ ...rest }) => {
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
@@ -21,9 +22,8 @@ const OverviewByBooking = React.memo(({ ...rest }) => {
     (state) => state.notification
   );
 
-  const { getAllBookingDetailsData } = useShallowEqualSelector(
-    (state) => state.prePayment
-  );
+  const { getAllBookingDetailsData, getAllBookingDetailsSuccess } =
+    useShallowEqualSelector((state) => state.prePayment);
 
   const { stadiumId_Admin } = useParams();
   const history = useHistory();
@@ -55,7 +55,6 @@ const OverviewByBooking = React.memo(({ ...rest }) => {
     dispatch(fetchGetAllBooking(stadiumId_Admin));
   }, [dispatch, stadiumId_Admin]);
 
-
   let alertSuccessPayment = null;
   if (notiName === "successPayment" && notiState === true) {
     alertSuccessPayment = (
@@ -80,9 +79,12 @@ const OverviewByBooking = React.memo(({ ...rest }) => {
           </Typography>
         </Box>
         <Divider />
-        <Box padding="1rem" display="flex" justifyContent="center">
-          <BookingListUnCheckout bookingBillData={getAllBookingDetailsData} />
-        </Box>
+        {getAllBookingDetailsSuccess === true && (
+          <Box padding="1rem" display="flex" justifyContent="center">
+            <BookingListUnCheckout bookingBillData={getAllBookingDetailsData} />
+          </Box>
+        )}
+        {getAllBookingDetailsSuccess === false && <NonBooking />}
       </PageLayout>
     </>
   );

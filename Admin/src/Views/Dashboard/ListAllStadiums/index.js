@@ -1,14 +1,6 @@
 import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Paper,
-  Box,
-  Typography,
-  Toolbar,
-  Divider,
-  IconButton,
-} from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
+import { Paper, Box } from "@material-ui/core";
 
 import StadiumsItems from "./StadiumsItems";
 

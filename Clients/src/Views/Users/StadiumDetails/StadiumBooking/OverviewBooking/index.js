@@ -29,6 +29,7 @@ import "date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DatePickerBooking from "./DatePickerBooking";
 import EventIcon from "@material-ui/icons/Event";
+import NonBooking from "./NonBooking";
 
 import {
   fetchBookingList,
@@ -37,7 +38,10 @@ import {
 } from "../../../../../middlewares/user/fetchBooking/fetchBooking";
 import BookingListUnCheckout from "./BookingListUnCheckout";
 import StadiumsCard from "./StadiumsCard";
-import { onPopupOpen, onTabOpen } from "../../../../../Slices/Features/Popup/popupSlice";
+import {
+  onPopupOpen,
+  onTabOpen,
+} from "../../../../../Slices/Features/Popup/popupSlice";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper.min.css";
@@ -54,9 +58,8 @@ const StadiumBooking = React.memo(({ getTabChange, ...rest }) => {
   const classes = useStyles();
   SwiperCore.use([Keyboard, Navigation, Pagination]);
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { preBookingDetailsData, preStadiumsData } = useShallowEqualSelector(
-    (state) => state.preBooking
-  );
+  const { preBookingDetailsData, preStadiumsData, preBookingDetailsSuccess } =
+    useShallowEqualSelector((state) => state.preBooking);
   const { stadiumId } = useParams();
   const { url } = useRouteMatch();
   const history = useHistory();
@@ -175,9 +178,12 @@ const StadiumBooking = React.memo(({ getTabChange, ...rest }) => {
         </Box>
       </Box>
       <Divider />
-      <Box display="flex" justifyItems="center" mt={2}>
-        <BookingListUnCheckout bookingBillData={preBookingDetailsData} />
-      </Box>
+      {preBookingDetailsSuccess === true && (
+        <Box display="flex" justifyItems="center" mt={2}>
+          <BookingListUnCheckout bookingBillData={preBookingDetailsData} />
+        </Box>
+      )}
+      {preBookingDetailsSuccess === false && <NonBooking />}
     </ChildPageLayout>
   );
 });

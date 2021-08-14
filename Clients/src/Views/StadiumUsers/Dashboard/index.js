@@ -14,9 +14,9 @@ import TotalReserves from "./TotalReserves";
 import TotalProfit from "./TotalProfit";
 import ListStadiums from "./ListStadiums";
 import ReserveByCustomers from "./ReserveByCustomers";
-import LastPayments from "./LastPayments";
 import LastReserves from "./LastReserves";
 import { fetchCheckStadium } from '../../../middlewares/fetchCheckValidData/fetchCheckValidData';
+
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
@@ -64,17 +64,12 @@ const DashboardView = ({ ...rest }) => {
           <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalProfit />
           </Grid>
-          <Grid item lg={8} md={12} xl={9} xs={12}>
+          <Grid item lg={6} md={12} xl={6} xs={12}>
             <ListStadiums />
-          </Grid>
-          <Grid item lg={4} md={12} xl={3} xs={12}>
-            <ReserveByCustomers />
-          </Grid>
-          <Grid item lg={4} md={6} xl={3} xs={12}>
-            <LastPayments />
-          </Grid>
-          <Grid item lg={8} md={12} xl={9} xs={12}>
             <LastReserves />
+          </Grid>
+          <Grid item lg={6} md={12} xl={6} xs={12}>
+            <ReserveByCustomers />
           </Grid>
         </Grid>
       </div>

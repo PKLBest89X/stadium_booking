@@ -10,16 +10,15 @@ const useStyles = makeStyles(() => ({
     flex: 1,
   },
   contentContainer: {
-    paddingTop: "140px",
-    paddingBottom: "140px",
+    padding: '1rem 0px',
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
   },
   bookingIcon: {
-    width: "120px",
-    height: "120px",
+    width: "50px",
+    height: "50px",
   },
   textContainer: {
     display: "flex",
@@ -37,7 +36,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const NonPaymenthistory = () => {
+const NonBookingUnpaid = () => {
   const classes = useStyles();
   let history = useHistory();
 
@@ -45,12 +44,12 @@ const NonPaymenthistory = () => {
     history.push("/booking-history");
   };
   return (
-    <div className={classes.componentContainer}>
+    <div className={classes.componentContainer}>  
       <div className={classes.contentContainer}>
         <InfoIcon className={classes.bookingIcon} />
         <div className={classes.textContainer}>
-          <Typography variant="h3" color="textSecondary">
-            ບໍ່ມີລາຍການທີ່ຄົ້ນຫາ!!
+          <Typography variant="h5" color="textSecondary">
+            ບໍ່ມີລາຍການດັ່ງກ່າວ!!
           </Typography>
         </div>
       </div>
@@ -58,4 +57,4 @@ const NonPaymenthistory = () => {
   );
 };
 
-export default NonPaymenthistory;
+export default NonBookingUnpaid;
