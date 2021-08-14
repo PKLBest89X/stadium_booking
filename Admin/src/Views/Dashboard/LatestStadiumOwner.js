@@ -25,6 +25,7 @@ import { fetchGetAllStadiumOwner } from "../../middlewares/fetchStadiumOwner";
 import { useDispatch } from "react-redux";
 import { useShallowEqualSelector } from "../../Components/useShallowEqualSelector";
 import moment from "moment";
+import NonStadiumOwner from "./NonStadiumOwner";
 
 const useStyles = makeStyles({
   root: {
@@ -76,36 +77,39 @@ const LatestStadiumOwner = React.memo(({ className, ...rest }) => {
         }
       />
       <Divider />
-      <List>
-        {sortStadiumOwner(stadiumOwnerData).map((items, i) => (
-          <ListItem
-            divider={i < sortStadiumOwner(stadiumOwnerData).length - 1}
-            key={i}
-          >
-            <ListItemAvatar>
-              <Avatar
-                alt="ເຈົ້າຂອງເດີ່ນ"
-                className={classes.image}
-                src={`/assets/images/adminPics/adminProfile/${items.picture}`}
-              />
-            </ListItemAvatar>
-            <ListItemText>
-              <Typography
-                gutterBottom
-                variant="h4"
-                component="h2"
-                color="textPrimary"
-                noWrap
-              >
-                {items.su_name}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                {`ມື້ເພີ່ມ: ${moment(items.regis_date).format("DD/MM/YYYY")}`}
-              </Typography>
-            </ListItemText>
-          </ListItem>
-        ))}
-      </List>
+      {stadiumOwnerSuccess === true && (
+        <List>
+          {sortStadiumOwner(stadiumOwnerData).map((items, i) => (
+            <ListItem
+              divider={i < sortStadiumOwner(stadiumOwnerData).length - 1}
+              key={i}
+            >
+              <ListItemAvatar>
+                <Avatar
+                  alt="ເຈົ້າຂອງເດີ່ນ"
+                  className={classes.image}
+                  src={`/assets/images/adminPics/adminProfile/${items.picture}`}
+                />
+              </ListItemAvatar>
+              <ListItemText>
+                <Typography
+                  gutterBottom
+                  variant="h4"
+                  component="h2"
+                  color="textPrimary"
+                  noWrap
+                >
+                  {items.su_name}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  {`ມື້ເພີ່ມ: ${moment(items.regis_date).format("DD/MM/YYYY")}`}
+                </Typography>
+              </ListItemText>
+            </ListItem>
+          ))}
+        </List>
+      )}
+      {stadiumOwnerSuccess === false && <NonStadiumOwner />}
     </Card>
   );
 });
