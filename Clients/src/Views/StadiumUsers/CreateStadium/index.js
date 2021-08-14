@@ -273,6 +273,17 @@ const CreateStadium = () => {
               value={createStadium.phone}
               onChange={onStadiumPhoneChange}
               required
+              InputProps={{
+                inputProps: { maxLength: 10, min: 0 },
+              }}
+              onInput={(e) => {
+                e.target.value = Math.max(
+                  0,
+                  parseInt(e.target.value)
+                )
+                  .toString()
+                  .slice(0, 8);
+              }}
             />
             <TextField
               fullWidth

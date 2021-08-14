@@ -10,8 +10,8 @@ const useStyles = makeStyles(() => ({
     flex: 1,
   },
   contentContainer: {
-    paddingTop: "100px",
-    paddingBottom: "100px",
+    paddingTop: "80px",
+    paddingBottom: "80px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
