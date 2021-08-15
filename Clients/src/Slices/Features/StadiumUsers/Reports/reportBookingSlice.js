@@ -12,12 +12,10 @@ const initialState = {
   reportBookingSuccess: null,
   reportBookingError: null,
   reportBookingRequestId: undefined,
-  foundUnCheckoutNonAccount: [],
-  filterResultNonAccount: [],
-  filterResultByStadiumsNonAccount: [],
-  allTimesByStadiumsNonAccount: [],
-  stadiumsSelectedNonAccount: "",
   filterByDateDataNonAccount: moment(Date.now()).format("YYYY-MM-DD"),
+  showByDateData: moment(Date.now()).format("YYYY-MM-DD"),
+  searchTyping: "",
+  resultSearchAndSeletedDate: [],
   showReportBooking: [],
   otherReportBookingState: null,
   showOtherReportBooking: [],
@@ -51,7 +49,7 @@ const reportBookingSlice = createSlice({
           customerSurname: payload.c_surname,
           customerType: "ໂທຈອງ",
           customerTel: payload.c_phone,
-          customerProfile: payload.profile
+          customerProfile: payload.profile,
         };
       } else {
         state.reportBookingInfo = {
@@ -63,7 +61,7 @@ const reportBookingSlice = createSlice({
           customerSurname: payload.c_surname,
           customerType: "ຈອງຜ່ານເວັບ",
           customerTel: payload.c_phone,
-          customerProfile: payload.profile
+          customerProfile: payload.profile,
         };
       }
       state.showReportBooking = state.reportBookingData.filter(
@@ -151,40 +149,109 @@ const reportBookingSlice = createSlice({
       }
     },
 
-    onFilterBookingForPayment: (state, { payload }) => {
-      if (state.filterByDateDataNonAccount !== payload.dateData) {
-        state.filterByDateDataNonAccount = payload.dateData;
-      }
-
-      if (state.stadiumsSelectedNonAccount !== payload.stadiumId) {
-        state.stadiumsSelectedNonAccount = payload.stadiumId;
-      }
-      state.foundUnCheckoutNonAccount = state.bookingHistoryData.filter(
-        (items) =>
-          moment(items.kickoff_date).format("YYYY-MM-DD") ===
-          state.filterByDateDataNonAccount
-      );
-
-      if (state.foundUnCheckoutNonAccount.length > 0) {
-        state.filterResultNonAccount = state.reportBookingData.filter(
-          (items1) =>
-            !state.foundUnCheckoutNonAccount.some(
-              (items2) =>
-                items1.std_id === items2.std_id && items1.td_id === items2.td_id
-            )
+    onFilterBookingHistoryByDate: (state, { payload }) => {
+      state.showByDateData = payload;
+      if (state.reportBookingData.length > 0) {
+        state.resultSearchAndSeletedDate = state.reportBookingData.filter(
+          (items) =>
+            moment(items.booking_date).format("YYYY-MM-DD") ===
+            state.showByDateData
         );
-        if (state.stadiumsSelectedNonAccount !== "") {
-          state.filterResultByStadiumsNonAccount =
-            state.filterResultNonAccount.filter(
-              (items) => items.std_id === state.stadiumsSelectedNonAccount
-            );
+        if (state.resultSearchAndSeletedDate.length > 0) {
+          state.reportBookingSuccess = true;
+        } else {
+          state.reportBookingSuccess = false;
         }
+      }
+      /////ສຳລັບການຈອງທີ່ຊຳລະແລ້ວ
+      if (state.reportPaidData.length > 0) {
+        state.resultSearchAndSeletedDate = state.reportPaidData.filter(
+          (items) =>
+            moment(items.booking_date).format("YYYY-MM-DD") ===
+            state.showByDateData
+        );
+        if (state.resultSearchAndSeletedDate.length > 0) {
+          state.reportPaidSuccess = true;
+        } else {
+          state.reportPaidSuccess = false;
+        }
+      }
+
+      //////////ສຳລັບການຈອງທີ່ບໍ່ໄດ້ຊຳລະ
+
+      if (state.reportUnPaidData.length > 0) {
+        state.resultSearchAndSeletedDate = state.reportUnPaidData.filter(
+          (items) =>
+            moment(items.booking_date).format("YYYY-MM-DD") ===
+            state.showByDateData
+        );
+        if (state.resultSearchAndSeletedDate.length > 0) {
+          state.reportUnPaidSuccess = true;
+        } else {
+          state.reportUnPaidSuccess = false;
+        }
+      }
+    },
+    onSearchAllBookingHistory: (state, { payload }) => {
+      state.searchTyping = payload;
+      if (state.reportBookingData.length > 0) {
+        let arraySearch = [];
+        arraySearch = state.reportBookingData.filter(
+          (items) =>
+            items.c_name.toUpperCase().includes(payload.toUpperCase()) ||
+            items.std_name.toUpperCase().includes(payload.toUpperCase())
+        );
+        if (arraySearch.length > 0) {
+          state.reportBookingSuccess = true;
+          state.resultSearchAndSeletedDate = arraySearch;
+        } else {
+          state.reportBookingSuccess = false;
+          state.resultSearchAndSeletedDate = [];
+        }
+      }
+
+      ////////////////////// /////ສຳລັບການຈອງທີ່ຊຳລະແລ້ວ
+
+      if (state.reportPaidData.length > 0) {
+        let arraySearch = [];
+        arraySearch = state.reportPaidData.filter(
+          (items) =>
+            items.c_name.toUpperCase().includes(payload.toUpperCase()) ||
+            items.std_name.toUpperCase().includes(payload.toUpperCase())
+        );
+        if (arraySearch.length > 0) {
+          state.reportPaidSuccess = true;
+          state.resultSearchAndSeletedDate = arraySearch;
+        } else {
+          state.reportPaidSuccess = false;
+          state.resultSearchAndSeletedDate = [];
+        }
+      }
+
+      ////////////////////// /////ສຳລັບການຈອງທີ່ຊຳລະແລ້ວ
+
+      if (state.reportUnPaidData.length > 0) {
+        let arraySearch = [];
+        arraySearch = state.reportUnPaidData.filter(
+          (items) =>
+            items.c_name.toUpperCase().includes(payload.toUpperCase()) ||
+            items.std_name.toUpperCase().includes(payload.toUpperCase())
+        );
+        if (arraySearch.length > 0) {
+          state.reportUnPaidSuccess = true;
+          state.resultSearchAndSeletedDate = arraySearch;
+        } else {
+          state.reportUnPaidSuccess = false;
+          state.resultSearchAndSeletedDate = [];
+        }
+      }
+    },
+    onClearResultSearchAndSeletedDate: (state, { payload }) => {
+      state.resultSearchAndSeletedDate = [];
+      if (state.reportBookingData.length > 0) {
+        state.reportBookingSuccess = true;
       } else {
-        if (state.stadiumsSelectedNonAccount !== "") {
-          state.allTimesByStadiumsNonAccount = state.reportBookingData.filter(
-            (items) => items.std_id === state.stadiumsSelectedNonAccount
-          );
-        }
+        state.reportBookingSuccess = false;
       }
     },
   },
@@ -244,5 +311,8 @@ export const {
   onShowReportBooking,
   onLoadAdminBookingPaid,
   onLoadAdminBookingUnPaid,
+  onFilterBookingHistoryByDate,
+  onSearchAllBookingHistory,
+  onClearResultSearchAndSeletedDate,
 } = reportBookingSlice.actions;
 export default reportBookingSlice.reducer;
