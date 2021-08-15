@@ -7,7 +7,7 @@ import {
   Grid,
   Button,
   Divider,
-  colors
+  colors,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NonBookingHistory from "../NonBookingHistory";
@@ -81,9 +81,11 @@ const ReportAllBooking = React.memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { reportBookingData, reportBookingSuccess } = useShallowEqualSelector(
-    (state) => state.reportBooking
-  );
+  const {
+    reportBookingData,
+    reportBookingSuccess,
+    resultSearchAndSeletedDate,
+  } = useShallowEqualSelector((state) => state.reportBooking);
   const { stadiumId_Admin } = useParams();
   let history = useHistory();
 
@@ -120,7 +122,6 @@ const ReportAllBooking = React.memo(() => {
     dispatch(onShowReportBooking(payload));
     dispatch(onPopupOpen("showReportBookingInfo"));
   };
-  
 
   return (
     <ReportContainerLayout>
@@ -132,7 +133,10 @@ const ReportAllBooking = React.memo(() => {
       <Divider />
       <Box padding="1rem">
         {reportBookingSuccess === true &&
-          reportBookingData.map((items, index) => {
+          (resultSearchAndSeletedDate.length > 0
+            ? resultSearchAndSeletedDate
+            : reportBookingData
+          ).map((items, index) => {
             return (
               <div className={classes.cardContainer} key={index}>
                 <Card elevation={10}>
@@ -203,7 +207,11 @@ const ReportAllBooking = React.memo(() => {
                             </Box>
                           </Box>
                         </Box>
-                        <Button color="primary" variant="contained" onClick={() => onGetCurrentPayment(items)}>
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          onClick={() => onGetCurrentPayment(items)}
+                        >
                           ລາຍລະອຽດ
                         </Button>
                       </Box>
@@ -213,7 +221,7 @@ const ReportAllBooking = React.memo(() => {
               </div>
             );
           })}
-          {reportBookingSuccess === false && <NonBookingHistory />}
+        {reportBookingSuccess === false && <NonBookingHistory />}
       </Box>
     </ReportContainerLayout>
   );

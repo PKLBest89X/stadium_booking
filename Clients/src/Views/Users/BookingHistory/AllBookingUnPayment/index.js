@@ -70,9 +70,8 @@ const useStyles = makeStyles((theme) => ({
 const AllBookingUnPayment = React.memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { userUnPaidData, userUnPaidSuccess } = useShallowEqualSelector(
-    (state) => state.bookingHistory
-  );
+  const { userUnPaidData, userUnPaidSuccess, resultSearchAndSeletedDate } =
+    useShallowEqualSelector((state) => state.bookingHistory);
 
   useEffect(() => {
     let userToken = JSON.parse(localStorage.getItem("accessUserToken"));
@@ -110,7 +109,10 @@ const AllBookingUnPayment = React.memo(() => {
       <Divider />
       <Box padding="1rem">
         {userUnPaidSuccess === true &&
-          userUnPaidData.map((items, index) => {
+          (resultSearchAndSeletedDate.length > 0
+            ? resultSearchAndSeletedDate
+            : userUnPaidData
+          ).map((items, index) => {
             return (
               <div className={classes.cardContainer} key={index}>
                 <Card elevation={10}>

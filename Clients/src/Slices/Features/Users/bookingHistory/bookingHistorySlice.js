@@ -31,12 +31,9 @@ const initialState = {
   bookingHistoryDetailsSuccess: null,
   bookingHistoryDetailsError: null,
   bookingHistoryDetailsRequestId: undefined,
-  foundUnCheckoutNonAccount: [],
-  filterResultNonAccount: [],
-  filterResultByStadiumsNonAccount: [],
-  allTimesByStadiumsNonAccount: [],
-  stadiumsSelectedNonAccount: "",
-  filterByDateDataNonAccount: moment(Date.now()).format("YYYY-MM-DD"),
+  showByDateData: moment(Date.now()).format("YYYY-MM-DD"),
+  searchTyping: "",
+  resultSearchAndSeletedDate: [],
   showBooking: [],
   otherBookingState: null,
   showOtherBooking: [],
@@ -95,9 +92,7 @@ const bookingHistorySlice = createSlice({
     },
     onCancelBooking: (state, { payload }) => {
       let afterDeleted = [];
-      afterDeleted = state.cancelData.filter(
-        (items) => items.b_id !== payload
-      );
+      afterDeleted = state.cancelData.filter((items) => items.b_id !== payload);
       if (afterDeleted.length > 0) {
         state.cancelData = afterDeleted;
         state.bookingHistoryDetailsSuccess = true;
@@ -109,7 +104,9 @@ const bookingHistorySlice = createSlice({
       }
     },
     onLoadUserBookingPaid: (state, { payload }) => {
-      state.userPaidData = state.bookingHistoryDetailsData.filter((items) => items.sub_status === payload);
+      state.userPaidData = state.bookingHistoryDetailsData.filter(
+        (items) => items.sub_status === payload
+      );
       if (state.userPaidData.length > 0) {
         state.userPaidSuccess = true;
       } else {
@@ -117,48 +114,113 @@ const bookingHistorySlice = createSlice({
       }
     },
     onLoadUserBookingUnPaid: (state, { payload }) => {
-      state.userUnPaidData = state.bookingHistoryDetailsData.filter((items) => items.sub_status === payload);
+      state.userUnPaidData = state.bookingHistoryDetailsData.filter(
+        (items) => items.sub_status === payload
+      );
       if (state.userUnPaidData.length > 0) {
         state.userUnPaidSuccess = true;
       } else {
         state.userUnPaidSuccess = false;
       }
     },
-    onFilterBookingForPayment: (state, { payload }) => {
-      if (state.filterByDateDataNonAccount !== payload.dateData) {
-        state.filterByDateDataNonAccount = payload.dateData;
+    onFilterBookingHistoryByDate: (state, { payload }) => {
+      state.showByDateData = payload;
+      if (state.bookingHistoryDetailsData.length > 0) {
+        state.resultSearchAndSeletedDate =
+          state.bookingHistoryDetailsData.filter(
+            (items) =>
+              moment(items.booking_date).format("YYYY-MM-DD") ===
+              state.showByDateData
+          );
+        if (state.resultSearchAndSeletedDate.length > 0) {
+          state.bookingHistoryDetailsSuccess = true;
+        } else {
+          state.bookingHistoryDetailsSuccess = false;
+        }
       }
-
-      if (state.stadiumsSelectedNonAccount !== payload.stadiumId) {
-        state.stadiumsSelectedNonAccount = payload.stadiumId;
-      }
-      state.foundUnCheckoutNonAccount = state.bookingHistoryData.filter(
-        (items) =>
-          moment(items.kickoff_date).format("YYYY-MM-DD") ===
-          state.filterByDateDataNonAccount
-      );
-
-      if (state.foundUnCheckoutNonAccount.length > 0) {
-        state.filterResultNonAccount = state.bookingHistoryDetailsData.filter(
-          (items1) =>
-            !state.foundUnCheckoutNonAccount.some(
-              (items2) =>
-                items1.std_id === items2.std_id && items1.td_id === items2.td_id
-            )
+      /////ສຳລັບການຈອງທີ່ຊຳລະແລ້ວ
+      if (state.userPaidData.length > 0) {
+        state.resultSearchAndSeletedDate = state.userPaidData.filter(
+          (items) =>
+            moment(items.booking_date).format("YYYY-MM-DD") ===
+            state.showByDateData
         );
-        if (state.stadiumsSelectedNonAccount !== "") {
-          state.filterResultByStadiumsNonAccount =
-            state.filterResultNonAccount.filter(
-              (items) => items.std_id === state.stadiumsSelectedNonAccount
-            );
+        if (state.resultSearchAndSeletedDate.length > 0) {
+          state.userPaidSuccess = true;
+        } else {
+          state.userPaidSuccess = false;
         }
+      }
+
+      //////////ສຳລັບການຈອງທີ່ບໍ່ໄດ້ຊຳລະ
+
+      if (state.userUnPaidData.length > 0) {
+        state.resultSearchAndSeletedDate = state.userUnPaidData.filter(
+          (items) =>
+            moment(items.booking_date).format("YYYY-MM-DD") ===
+            state.showByDateData
+        );
+        if (state.resultSearchAndSeletedDate.length > 0) {
+          state.userUnPaidSuccess = true;
+        } else {
+          state.userUnPaidSuccess = false;
+        }
+      }
+    },
+    onSearchAllBookingHistory: (state, { payload }) => {
+      state.searchTyping = payload;
+      if (state.bookingHistoryDetailsData.length > 0) {
+        let arraySearch = [];
+        arraySearch = state.bookingHistoryDetailsData.filter((items) =>
+          items.st_name.toUpperCase().includes(payload.toUpperCase())
+        );
+        if (arraySearch.length > 0) {
+          state.bookingHistoryDetailsSuccess = true;
+          state.resultSearchAndSeletedDate = arraySearch;
+        } else {
+          state.bookingHistoryDetailsSuccess = false;
+          state.resultSearchAndSeletedDate = [];
+        }
+      }
+
+      ////////////////////// /////ສຳລັບການຈອງທີ່ຊຳລະແລ້ວ
+
+      if (state.userPaidData.length > 0) {
+        let arraySearch = [];
+        arraySearch = state.userPaidData.filter((items) =>
+          items.st_name.toUpperCase().includes(payload.toUpperCase())
+        );
+        if (arraySearch.length > 0) {
+          state.userPaidSuccess = true;
+          state.resultSearchAndSeletedDate = arraySearch;
+        } else {
+          state.userPaidSuccess = false;
+          state.resultSearchAndSeletedDate = [];
+        }
+      }
+
+      ////////////////////// /////ສຳລັບການຈອງທີ່ຊຳລະແລ້ວ
+
+      if (state.userUnPaidData.length > 0) {
+        let arraySearch = [];
+        arraySearch = state.userUnPaidData.filter((items) =>
+          items.st_name.toUpperCase().includes(payload.toUpperCase())
+        );
+        if (arraySearch.length > 0) {
+          state.userUnPaidSuccess = true;
+          state.resultSearchAndSeletedDate = arraySearch;
+        } else {
+          state.userUnPaidSuccess = false;
+          state.resultSearchAndSeletedDate = [];
+        }
+      }
+    },
+    onClearResultSearchAndSeletedDate: (state, { payload }) => {
+      state.resultSearchAndSeletedDate = [];
+      if (state.bookingHistoryDetailsData.length > 0) {
+        state.bookingHistoryDetailsSuccess = true;
       } else {
-        if (state.stadiumsSelectedNonAccount !== "") {
-          state.allTimesByStadiumsNonAccount =
-            state.bookingHistoryDetailsData.filter(
-              (items) => items.std_id === state.stadiumsSelectedNonAccount
-            );
-        }
+        state.bookingHistoryDetailsSuccess = false;
       }
     },
   },
@@ -242,6 +304,13 @@ const bookingHistorySlice = createSlice({
   },
 });
 
-export const { onShowBookingHistory, onCancelBooking, onLoadUserBookingPaid, onLoadUserBookingUnPaid } =
-  bookingHistorySlice.actions;
+export const {
+  onShowBookingHistory,
+  onCancelBooking,
+  onLoadUserBookingPaid,
+  onLoadUserBookingUnPaid,
+  onFilterBookingHistoryByDate,
+  onSearchAllBookingHistory,
+  onClearResultSearchAndSeletedDate,
+} = bookingHistorySlice.actions;
 export default bookingHistorySlice.reducer;

@@ -17,7 +17,7 @@ import { useDispatch } from "react-redux";
 import { fetchAuthUser } from "../../../../middlewares/fetchAuth/fetchUser";
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 
-import { fetchGetHistoryDetailsByUser } from '../../../../middlewares/user/fetchBookingHistory/fetchBookingHistory';
+import { fetchGetHistoryDetailsByUser } from "../../../../middlewares/user/fetchBookingHistory/fetchBookingHistory";
 
 import ReportContainerLayout from "../../../../Components/ReportContainerLayout";
 import { onShowBookingHistory } from "../../../../Slices/Features/Users/bookingHistory/bookingHistorySlice";
@@ -68,9 +68,11 @@ const useStyles = makeStyles((theme) => ({
 const AllBooking = React.memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { bookingHistoryDetailsData, bookingHistoryDetailsSuccess } = useShallowEqualSelector(
-    (state) => state.bookingHistory
-  );
+  const {
+    bookingHistoryDetailsData,
+    bookingHistoryDetailsSuccess,
+    resultSearchAndSeletedDate,
+  } = useShallowEqualSelector((state) => state.bookingHistory);
 
   useEffect(() => {
     let userToken = JSON.parse(localStorage.getItem("accessUserToken"));
@@ -104,7 +106,10 @@ const AllBooking = React.memo(() => {
       <Divider />
       <Box padding="1rem">
         {bookingHistoryDetailsSuccess === true &&
-          bookingHistoryDetailsData.map((items, index) => {
+          (resultSearchAndSeletedDate.length > 0
+            ? resultSearchAndSeletedDate
+            : bookingHistoryDetailsData
+          ).map((items, index) => {
             return (
               <div className={classes.cardContainer} key={index}>
                 <Card elevation={10}>

@@ -50,7 +50,7 @@ const NonBookingHistory = () => {
         <InfoIcon className={classes.bookingIcon} />
         <div className={classes.textContainer}>
           <Typography variant="h3" color="textSecondary">
-            ບໍ່ມີການຈອງທີ່ຍົກເລີກໄດ້!!
+            ບໍ່ມີຂໍ້ມູນດັ່ງກ່າວ!!
           </Typography>
         </div>
       </div>

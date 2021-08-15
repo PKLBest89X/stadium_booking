@@ -82,9 +82,8 @@ const ReportBookingUnPaid = React.memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { reportUnPaidData, reportUnPaidSuccess } = useShallowEqualSelector(
-    (state) => state.reportBooking
-  );
+  const { reportUnPaidData, reportUnPaidSuccess, resultSearchAndSeletedDate } =
+    useShallowEqualSelector((state) => state.reportBooking);
   const { stadiumId_Admin } = useParams();
   let history = useHistory();
 
@@ -136,7 +135,10 @@ const ReportBookingUnPaid = React.memo(() => {
       <Divider />
       <Box padding="1rem">
         {reportUnPaidSuccess === true &&
-          reportUnPaidData.map((items, index) => {
+          (resultSearchAndSeletedDate.length > 0
+            ? resultSearchAndSeletedDate
+            : reportUnPaidData
+          ).map((items, index) => {
             return (
               <div className={classes.cardContainer} key={index}>
                 <Card elevation={10}>

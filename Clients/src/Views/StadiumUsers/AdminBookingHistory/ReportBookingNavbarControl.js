@@ -20,6 +20,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import AdjustIcon from "@material-ui/icons/Adjust";
 import NumberFormat from "react-number-format";
+import { useDispatch } from "react-redux";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper.min.css";
@@ -31,6 +32,12 @@ import "swiper/swiper.scss";
 import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 
 import { useHistory, useParams } from "react-router-dom";
+import {
+  onClearResultSearchAndSeletedDate,
+  onSearchAllBookingHistory,
+} from "../../../Slices/Features/StadiumUsers/Reports/reportBookingSlice";
+import moment from "moment";
+import { onFilterBookingHistoryByDate } from "../../../Slices/Features/StadiumUsers/Reports/reportBookingSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,13 +60,19 @@ function getRandomNumber(min, max) {
 const ReportBookingNavbarControl = React.memo(() => {
   const classes = useStyles();
   let history = useHistory();
+  const dispatch = useDispatch();
   const { stadiumId_Admin } = useParams();
   const [selectedDays, setSelectedDays] = useState([1, 2, 15]);
   const [date, changeDate] = useState(new Date());
   const [selectedDate, handleDateChange] = useState(new Date());
 
-  const { reportBookingAllValue, reportBookingOnWeb, reportBookingOnPhone } =
-    useShallowEqualSelector((state) => state.reportBooking);
+  const {
+    reportBookingAllValue,
+    reportBookingOnWeb,
+    reportBookingOnPhone,
+    showByDateData,
+    searchTyping,
+  } = useShallowEqualSelector((state) => state.reportBooking);
 
   const handleMonthChange = async () => {
     SwiperCore.use([Keyboard, Navigation, Pagination]);
@@ -77,24 +90,30 @@ const ReportBookingNavbarControl = React.memo(() => {
     history.push(
       `/admin/stadium/${stadiumId_Admin}/booking-history/${pathName}`
     );
+    dispatch(onClearResultSearchAndSeletedDate());
   };
 
   return (
     <NavigationLayout>
       <Box mb={2}>
-        <Paper component="form" className={classes.root}>
+        <Paper
+          component="form"
+          className={classes.root}
+          onSubmit={(event) => event.preventDefault()}
+        >
           <InputBase
             className={classes.input}
             placeholder="ຄົ້ນຫາຕາມຊື່ລູກຄ້າ, ສະໜາມ..."
             inputProps={{ "aria-label": "search" }}
+            value={searchTyping}
+            onChange={(event) =>
+              dispatch(onSearchAllBookingHistory(event.target.value))
+            }
           />
           <IconButton
             type="submit"
             className={classes.iconButton}
             aria-label="search"
-            onClick={(event) => {
-              event.preventDefault();
-            }}
           >
             <SearchIcon />
           </IconButton>
@@ -111,7 +130,17 @@ const ReportBookingNavbarControl = React.memo(() => {
           <Typography gutterBottom variant="h5" color="textSecondary">
             ເລືອກຕາມມື້ຈອງ
           </Typography>
-          <Button color="primary" variant="outlined">
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={() =>
+              dispatch(
+                onFilterBookingHistoryByDate(
+                  moment(Date.now()).format("YYYY-MM-DD")
+                )
+              )
+            }
+          >
             today
           </Button>
         </Box>
@@ -127,8 +156,14 @@ const ReportBookingNavbarControl = React.memo(() => {
               disableToolbar={true}
               format="MM/dd/yyyy"
               openTo="date"
-              value={date}
-              onChange={changeDate}
+              value={showByDateData}
+              onChange={(date) => {
+                dispatch(
+                  onFilterBookingHistoryByDate(
+                    moment(date).format("YYYY-MM-DD")
+                  )
+                );
+              }}
             />
           </MuiPickersUtilsProvider>
         </Box>

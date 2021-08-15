@@ -82,9 +82,8 @@ const ReportBookingPaid = React.memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { reportPaidData, reportPaidSuccess } = useShallowEqualSelector(
-    (state) => state.reportBooking
-  );
+  const { reportPaidData, reportPaidSuccess, resultSearchAndSeletedDate } =
+    useShallowEqualSelector((state) => state.reportBooking);
   const { stadiumId_Admin } = useParams();
   let history = useHistory();
 
@@ -136,7 +135,10 @@ const ReportBookingPaid = React.memo(() => {
       <Divider />
       <Box padding="1rem">
         {reportPaidSuccess === true &&
-          reportPaidData.map((items, index) => {
+          (resultSearchAndSeletedDate.length > 0
+            ? resultSearchAndSeletedDate
+            : reportPaidData
+          ).map((items, index) => {
             return (
               <div className={classes.cardContainer} key={index}>
                 <Card elevation={10}>
@@ -207,7 +209,11 @@ const ReportBookingPaid = React.memo(() => {
                             </Box>
                           </Box>
                         </Box>
-                        <Button color="primary" variant="contained" onClick={() => onGetCurrentPayment(items)}>
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          onClick={() => onGetCurrentPayment(items)}
+                        >
                           ລາຍລະອຽດ
                         </Button>
                       </Box>

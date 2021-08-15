@@ -27,6 +27,13 @@ import { useShallowEqualSelector } from "../../../Components/useShallowEqualSele
 import { fetchAddBookingNonAccount } from "../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
 import NavigationLayout from "../../../Components/NavigationLayout";
 
+import {
+  onClearResultSearchAndSeletedDate,
+  onFilterBookingHistoryByDate,
+  onSearchAllBookingHistory,
+} from "../../../Slices/Features/Users/bookingHistory/bookingHistorySlice";
+import moment from "moment";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "2px 4px",
@@ -60,6 +67,10 @@ const BookingNavbarControl = React.memo(() => {
   );
   const stateRef = useRef(bookingNonAccountData);
 
+  const { showByDateData, searchTyping } = useShallowEqualSelector(
+    (state) => state.bookingHistory
+  );
+
   useMemo(
     () => bookingNonAccountData.forEach((items) => (stateRef.current = items)),
     [bookingNonAccountData]
@@ -77,24 +88,30 @@ const BookingNavbarControl = React.memo(() => {
 
   const RoutesButton = (pathName) => {
     history.push(`/booking-history/${pathName}`);
+    dispatch(onClearResultSearchAndSeletedDate());
   };
 
   return (
     <NavigationLayout>
       <Box mb={2}>
-        <Paper component="form" className={classes.root}>
+        <Paper
+          component="form"
+          className={classes.root}
+          onSubmit={(event) => event.preventDefault()}
+        >
           <InputBase
             className={classes.input}
-            placeholder="ຄົ້ນຫາຕາມຊື່ເດີ່ນ, ມື້ຈອງ..."
+            placeholder="ຄົ້ນຫາຕາມຊື່ເດີ່ນ..."
             inputProps={{ "aria-label": "search" }}
+            value={searchTyping}
+            onChange={(event) =>
+              dispatch(onSearchAllBookingHistory(event.target.value))
+            }
           />
           <IconButton
             type="submit"
             className={classes.iconButton}
             aria-label="search"
-            onClick={(event) => {
-              event.preventDefault();
-            }}
           >
             <SearchIcon />
           </IconButton>
@@ -111,7 +128,17 @@ const BookingNavbarControl = React.memo(() => {
           <Typography gutterBottom variant="h5" color="textSecondary">
             ເລືອກຕາມວັນ
           </Typography>
-          <Button color="primary" variant="outlined">
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={() =>
+              dispatch(
+                onFilterBookingHistoryByDate(
+                  moment(Date.now()).format("YYYY-MM-DD")
+                )
+              )
+            }
+          >
             today
           </Button>
         </Box>
@@ -125,10 +152,16 @@ const BookingNavbarControl = React.memo(() => {
               id="date-picker-dialog"
               label="ຄົ້ນຫາຕາມວັນ"
               disableToolbar={true}
-              format="MM/dd/yyyy"
+              format="dd/MM/yyyy"
               openTo="date"
-              value={date}
-              onChange={changeDate}
+              value={showByDateData}
+              onChange={(date) => {
+                dispatch(
+                  onFilterBookingHistoryByDate(
+                    moment(date).format("YYYY-MM-DD")
+                  )
+                );
+              }}
             />
           </MuiPickersUtilsProvider>
         </Box>

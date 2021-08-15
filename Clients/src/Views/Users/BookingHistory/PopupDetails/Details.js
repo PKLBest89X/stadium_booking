@@ -81,7 +81,7 @@ const PaymentDetails = React.memo(({ data }) => {
                 <Typography variant="h5">ເວລາ</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h5">ມື້ຈອງ</Typography>
+                <Typography variant="h5">ມື້ເຕະ</Typography>
               </TableCell>
               <TableCell align="center">
                 <Typography variant="h5">ສະຖານະ</Typography>
