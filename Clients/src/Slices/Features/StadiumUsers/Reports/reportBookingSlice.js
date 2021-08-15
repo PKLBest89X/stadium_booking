@@ -31,6 +31,9 @@ const initialState = {
     customerTel: "",
     customerProfile: "",
   },
+  reportBookingAllValue: 0,
+  reportBookingOnWeb: 0,
+  reportBookingOnPhone: 0,
 };
 
 const reportBookingSlice = createSlice({
@@ -99,6 +102,23 @@ const reportBookingSlice = createSlice({
       );
       if (state.reportPaidData.length > 0) {
         state.reportPaidSuccess = true;
+        if (state.reportPaidData.length > 0) {
+          state.reportBookingAllValue = state.reportPaidData.length;
+        }
+        let onPhone = [];
+        onPhone = state.reportPaidData.filter(
+          (items) => items.profile === "ໂທຈອງ"
+        );
+        if (onPhone.length > 0) {
+          state.reportBookingOnPhone = onPhone.length;
+        }
+        let onWeb = [];
+        onWeb = state.reportPaidData.filter(
+          (items) => items.profile !== "ໂທຈອງ"
+        );
+        if (onWeb.length > 0) {
+          state.reportBookingOnWeb = onWeb.length;
+        }
       } else {
         state.reportPaidSuccess = false;
       }
@@ -109,6 +129,23 @@ const reportBookingSlice = createSlice({
       );
       if (state.reportUnPaidData.length > 0) {
         state.reportUnPaidSuccess = true;
+        if (state.reportUnPaidData.length > 0) {
+          state.reportBookingAllValue = state.reportUnPaidData.length;
+        }
+        let onPhone = [];
+        onPhone = state.reportUnPaidData.filter(
+          (items) => items.profile === "ໂທຈອງ"
+        );
+        if (onPhone.length > 0) {
+          state.reportBookingOnPhone = onPhone.length;
+        }
+        let onWeb = [];
+        onWeb = state.reportUnPaidData.filter(
+          (items) => items.profile !== "ໂທຈອງ"
+        );
+        if (onWeb.length > 0) {
+          state.reportBookingOnWeb = onWeb.length;
+        }
       } else {
         state.reportUnPaidSuccess = false;
       }
@@ -169,6 +206,23 @@ const reportBookingSlice = createSlice({
         state.reportBookingSuccess = true;
         state.reportBookingData = [];
         state.reportBookingData = action.payload;
+        if (state.reportBookingData.length > 0) {
+          state.reportBookingAllValue = state.reportBookingData.length;
+        }
+        let onPhone = [];
+        onPhone = state.reportBookingData.filter(
+          (items) => items.profile === "ໂທຈອງ"
+        );
+        if (onPhone.length > 0) {
+          state.reportBookingOnPhone = onPhone.length;
+        }
+        let onWeb = [];
+        onWeb = state.reportBookingData.filter(
+          (items) => items.profile !== "ໂທຈອງ"
+        );
+        if (onWeb.length > 0) {
+          state.reportBookingOnWeb = onWeb.length;
+        }
       }
     });
     builder.addCase(fetchGetBookingByAdmin.rejected, (state, action) => {

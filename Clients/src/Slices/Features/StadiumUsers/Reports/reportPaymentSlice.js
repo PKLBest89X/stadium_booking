@@ -54,6 +54,8 @@ const initialState = {
     totalStadium: "",
     total: "",
   },
+  reportPaymentAllValue: 0,
+  reportPaymentAllTotal: 0,
 };
 
 const reportPaymentSlice = createSlice({
@@ -146,6 +148,17 @@ const reportPaymentSlice = createSlice({
       );
       if (state.stadiumsWithWaterData.length > 0) {
         state.stadiumsWithWaterState = true;
+        let filterWithStadiumOnly = [];
+        filterWithStadiumOnly = state.reportPaymentData.filter((items1) =>
+          state.stadiumsWithWaterData.some((items2) => items1.bp_id === items2.bp_id)
+        );
+        if (filterWithStadiumOnly.length > 0) {
+          state.reportPaymentAllValue = filterWithStadiumOnly.length;
+          state.reportPaymentAllTotal = filterWithStadiumOnly.reduce(
+            (sum, item) => sum + item.total,
+            0
+          );
+        }
       } else {
         state.stadiumsWithWaterState = false;
       }
@@ -157,6 +170,17 @@ const reportPaymentSlice = createSlice({
       );
       if (state.stadiumsOnlyData.length > 0) {
         state.stadiumsOnly = true;
+        let filterWithStadiumOnly = [];
+        filterWithStadiumOnly = state.reportPaymentData.filter((items1) =>
+          state.stadiumsOnlyData.some((items2) => items1.bp_id === items2.bp_id)
+        );
+        if (filterWithStadiumOnly.length > 0) {
+          state.reportPaymentAllValue = filterWithStadiumOnly.length;
+          state.reportPaymentAllTotal = filterWithStadiumOnly.reduce(
+            (sum, item) => sum + item.total,
+            0
+          );
+        }
       } else {
         state.stadiumsOnly = false;
       }
@@ -217,6 +241,13 @@ const reportPaymentSlice = createSlice({
         state.reportPaymentSuccess = true;
         state.reportPaymentData = [];
         state.reportPaymentData = action.payload;
+        if (state.reportPaymentData.length > 0) {
+          state.reportPaymentAllValue = state.reportPaymentData.length;
+          state.reportPaymentAllTotal = state.reportPaymentData.reduce(
+            (sum, items) => sum + items.total,
+            0
+          );
+        }
       }
     });
     builder.addCase(fetchGetPaymentByAdmin.rejected, (state, action) => {

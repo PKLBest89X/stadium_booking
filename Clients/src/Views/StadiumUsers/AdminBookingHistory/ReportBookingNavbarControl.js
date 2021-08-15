@@ -28,6 +28,7 @@ import "swiper/components/navigation/navigation.min.css";
 import SwiperCore, { Keyboard, Navigation, Pagination } from "swiper/core";
 // Import Swiper styles
 import "swiper/swiper.scss";
+import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 
 import { useHistory, useParams } from "react-router-dom";
 
@@ -57,6 +58,9 @@ const ReportBookingNavbarControl = React.memo(() => {
   const [date, changeDate] = useState(new Date());
   const [selectedDate, handleDateChange] = useState(new Date());
 
+  const { reportBookingAllValue, reportBookingOnWeb, reportBookingOnPhone } =
+    useShallowEqualSelector((state) => state.reportBooking);
+
   const handleMonthChange = async () => {
     SwiperCore.use([Keyboard, Navigation, Pagination]);
 
@@ -70,7 +74,9 @@ const ReportBookingNavbarControl = React.memo(() => {
   };
 
   const RoutesButton = (pathName) => {
-    history.push(`/admin/stadium/${stadiumId_Admin}/booking-history/${pathName}`);
+    history.push(
+      `/admin/stadium/${stadiumId_Admin}/booking-history/${pathName}`
+    );
   };
 
   return (
@@ -96,10 +102,18 @@ const ReportBookingNavbarControl = React.memo(() => {
       </Box>
 
       <Paper>
-        <Box padding="1rem">
+        <Box
+          padding="1rem"
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Typography gutterBottom variant="h5" color="textSecondary">
-            ເລືອກຕາມວັນລົງທະບຽນ
+            ເລືອກຕາມມື້ຈອງ
           </Typography>
+          <Button color="primary" variant="outlined">
+            today
+          </Button>
         </Box>
         <Divider />
         <Box display="flex" justifyContent="center" alignItems="center">
@@ -146,7 +160,7 @@ const ReportBookingNavbarControl = React.memo(() => {
                 ການຈອງທັງໝົດ:{" "}
               </Typography>
               <Typography variant="h5" color="textPrimary">
-                {`4 ລາຍການ`}
+                {`${reportBookingAllValue} ລາຍການ`}
               </Typography>
             </Box>
             <Box
@@ -162,7 +176,7 @@ const ReportBookingNavbarControl = React.memo(() => {
                 ຈອງຜ່ານເວັບ:{" "}
               </Typography>
               <Typography variant="h5" color="textPrimary">
-                {`3 ລາຍການ`}
+                {`${reportBookingOnWeb} ລາຍການ`}
               </Typography>
             </Box>
             <Box
@@ -178,7 +192,7 @@ const ReportBookingNavbarControl = React.memo(() => {
                 ໂທຈອງ:{" "}
               </Typography>
               <Typography variant="h5" color="textPrimary">
-                {`1 ລາຍການ`}
+                {`${reportBookingOnPhone} ລາຍການ`}
               </Typography>
             </Box>
           </Box>

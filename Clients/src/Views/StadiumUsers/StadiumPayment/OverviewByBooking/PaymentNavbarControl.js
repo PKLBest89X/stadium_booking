@@ -14,14 +14,9 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
-import LocalDrinkIcon from "@material-ui/icons/LocalDrink";
 
 import { useDispatch } from "react-redux";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useRouteMatch, useParams, useHistory } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
-import { fetchAddPayment } from "../../../../middlewares/stadiumUser/fetchPayment/fetchPayment";
-import { onSellOnlyWater } from "../../../../Slices/Features/StadiumUsers/Payment/paymentDetailsSlice";
 import NavigationLayout from "../../../../Components/NavigationLayout";
 
 const useStyles = makeStyles((theme) => ({
@@ -49,11 +44,10 @@ const PaymentNavbarControl = React.memo(() => {
   const [selectedDate, handleDateChange] = useState(new Date());
 
   const dispatch = useDispatch();
-  const { stadiumId_Admin } = useParams();
-  let history = useHistory();
-  const { url } = useRouteMatch();
   const { paymentData } = useShallowEqualSelector((state) => state.payment);
   const stateRef = useRef(paymentData);
+
+  const { bookingAllValue, bookingOnWeb, bookingOnPhone } = useShallowEqualSelector((state) => state.prePayment);
 
   useMemo(
     () => paymentData.forEach((items) => (stateRef.current = items)),
@@ -69,26 +63,6 @@ const PaymentNavbarControl = React.memo(() => {
       }, 1000);
     });
   };
-
-  const onGetCurrentPayment = useCallback(async () => {
-    try {
-      const staffToken = JSON.parse(localStorage.getItem("accessAdminToken"));
-      if (staffToken && staffToken.token) {
-        const dataRequest = {
-          stadiumId: stadiumId_Admin,
-          token: staffToken.token,
-        };
-        const addPaymentRequest = await dispatch(fetchAddPayment(dataRequest));
-        const getResult = unwrapResult(addPaymentRequest);
-        if (getResult.status !== 400) {
-          history.push(`${url}/${stateRef.current.bp_id}`);
-          dispatch(onSellOnlyWater());
-        }
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }, [dispatch, history, url, stadiumId_Admin]);
 
   return (
     <NavigationLayout>
@@ -113,10 +87,18 @@ const PaymentNavbarControl = React.memo(() => {
       </Box>
 
       <Paper>
-        <Box padding="1rem">
+        <Box
+          padding="1rem"
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Typography gutterBottom variant="h5" color="textSecondary">
             ເລືອກຕາມວັນ
           </Typography>
+          <Button color="primary" variant="outlined">
+            today
+          </Button>
         </Box>
         <Divider />
         <Box display="flex" justifyContent="center" alignItems="center">
@@ -163,7 +145,7 @@ const PaymentNavbarControl = React.memo(() => {
                 ທັງໝົດ:{" "}
               </Typography>
               <Typography variant="h5" color="textPrimary">
-                {`4 ລາຍການ`}
+                {`${bookingAllValue} ລາຍການ`}
               </Typography>
             </Box>
             <Box
@@ -179,7 +161,7 @@ const PaymentNavbarControl = React.memo(() => {
                 ຈອງຜ່ານເວັບ:{" "}
               </Typography>
               <Typography variant="h5" color="textPrimary">
-                {`3 ລາຍການ`}
+                {`${bookingOnWeb} ລາຍການ`}
               </Typography>
             </Box>
             <Box
@@ -195,7 +177,7 @@ const PaymentNavbarControl = React.memo(() => {
                 ໂທຈອງ:{" "}
               </Typography>
               <Typography variant="h5" color="textPrimary">
-                {`1 ລາຍການ`}
+                {`${bookingOnPhone} ລາຍການ`}
               </Typography>
             </Box>
           </Box>

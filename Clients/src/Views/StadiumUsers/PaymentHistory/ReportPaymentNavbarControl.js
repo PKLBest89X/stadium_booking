@@ -20,6 +20,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import AdjustIcon from "@material-ui/icons/Adjust";
 import NumberFormat from "react-number-format";
+import { useShallowEqualSelector } from '../../../Components/useShallowEqualSelector';
 
 import { useHistory, useParams } from "react-router-dom";
 
@@ -48,6 +49,8 @@ const ReportPaymentNavbarControl = React.memo(() => {
   const [selectedDays, setSelectedDays] = useState([1, 2, 15]);
   const [date, changeDate] = useState(new Date());
   const [selectedDate, handleDateChange] = useState(new Date());
+
+  const { reportPaymentAllValue, reportPaymentAllTotal } = useShallowEqualSelector((state) => state.reportPayment);
 
   const handleMonthChange = async () => {
     // just select random days to simulate server side based data
@@ -88,10 +91,18 @@ const ReportPaymentNavbarControl = React.memo(() => {
       </Box>
 
       <Paper>
-        <Box padding="1rem">
+        <Box
+          padding="1rem"
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Typography gutterBottom variant="h5" color="textSecondary">
             ເລືອກຕາມວັນລົງທະບຽນ
           </Typography>
+          <Button color="primary" variant="outlined">
+            today
+          </Button>
         </Box>
         <Divider />
         <Box display="flex" justifyContent="center" alignItems="center">
@@ -138,7 +149,7 @@ const ReportPaymentNavbarControl = React.memo(() => {
                 ຈຳນວນບິນຊຳລະ:{" "}
               </Typography>
               <Typography variant="h5" color="textPrimary">
-                {`3 ລາຍການ`}
+                {`${reportPaymentAllValue} ລາຍການ`}
               </Typography>
             </Box>
             <Box
@@ -154,7 +165,7 @@ const ReportPaymentNavbarControl = React.memo(() => {
                 ລາຄາທັງໝົດ:{" "}
               </Typography>
               <NumberFormat
-                value={752000}
+                value={reportPaymentAllTotal}
                 displayType={"text"}
                 thousandSeparator={true}
                 suffix={" ກີບ"}

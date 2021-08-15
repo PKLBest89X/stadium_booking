@@ -29,6 +29,9 @@ const initialState = {
     customerType: "",
     customerTel: "",
   },
+  bookingAllValue: 0,
+  bookingOnWeb: 0,
+  bookingOnPhone: 0,
 };
 
 const prePaymentSlice = createSlice({
@@ -151,6 +154,23 @@ const prePaymentSlice = createSlice({
         state.getAllBookingDetailsSuccess = true;
         state.getAllBookingDetailsData = [];
         state.getAllBookingDetailsData = action.payload;
+        if (state.getAllBookingDetailsData.length > 0) {
+          state.bookingAllValue = state.getAllBookingDetailsData.length;
+        }
+        let onPhone = [];
+        onPhone = state.getAllBookingDetailsData.filter(
+          (items) => items.profile === "ໂທຈອງ"
+        );
+        if (onPhone.length > 0) {
+          state.bookingOnPhone = onPhone.length;
+        }
+        let onWeb = [];
+        onWeb = state.getAllBookingDetailsData.filter(
+          (items) => items.profile !== "ໂທຈອງ"
+        );
+        if (onWeb.length > 0) {
+          state.bookingOnWeb = onWeb.length;
+        }
       }
     });
     builder.addCase(fetchGetAllBookingDetails.rejected, (state, action) => {
