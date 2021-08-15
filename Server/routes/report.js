@@ -20,9 +20,9 @@ router.use(cors());
 
 const db = mysql.createConnection(dbconfig.db);
 
-router.get("/following_number/:st_id", (req,res) => {
+router.get("/following_number/:st_id", async (req,res) => {
     const stadium_id = req.params.st_id;
-    db.query("call report_stadium_following(?)", [stadium_id], (err, result) => {
+    await db.query("call report_stadium_following(?)", [stadium_id], (err, result) => {
         if (err) {
             res.status(400)
             console.log(err);
@@ -33,8 +33,9 @@ router.get("/following_number/:st_id", (req,res) => {
     })
 }) // ລາຍງານຈໍານວນຄົນຕິດຕາມຂອງເດີ່ນນັ້ນ
 
-router.get("/customer_number", (req,res) => {
-    db.query("call report_customer_count()", (err, result) => {
+router.get("/customer_number/:stadiumId", async (req,res) => {
+    const stadiumId = req.params.stadiumId
+    await db.query("call report_employee_count(?)", [stadiumId], (err, result) => {
         if (err) {
             res.status(400)
             console.log(err);
@@ -45,9 +46,9 @@ router.get("/customer_number", (req,res) => {
     })
 }) // ລາຍງານຈໍານວນຜູ້ໃຊ້
 
-router.get("/reserve_number/:st_id", (req,res) => {
+router.get("/reserve_number/:st_id", async (req,res) => {
     const stadium_id = req.params.st_id;
-    db.query("call report_reserve_count(?)", [stadium_id], (err, result) => {
+    await db.query("call report_reserve_count(?)", [stadium_id], (err, result) => {
         if (err) {
             res.status(400)
             console.log(err);
@@ -58,9 +59,9 @@ router.get("/reserve_number/:st_id", (req,res) => {
     })
 })  // ລາຍງານຈໍານວການຈອງທັງໝົດຂອງເດີ່ນນັ້ນ
 
-router.get("/today_income/:st_id", (req,res) => {
+router.get("/today_income/:st_id", async (req,res) => {
     const stadium_id = req.params.st_id;
-    db.query("call report_stadium_date_income(?)", [stadium_id], (err, result) => {
+    await db.query("call report_stadium_date_income(?)", [stadium_id], (err, result) => {
         if (err) {
             res.status(400)
             console.log(err);

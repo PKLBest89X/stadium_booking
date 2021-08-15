@@ -169,7 +169,7 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
     const phone = req.body.phone
     
     db.query("select MAX(st_id) as mid from tbstadium", (err,result) => {
-        if(result[0] === null){
+        if(result[0].mid === null){
             const stadium_id = "st00000001";
             if(!req.files){
                 res.status(500)
