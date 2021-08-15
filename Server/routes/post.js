@@ -17,11 +17,15 @@ const db = mysql.createConnection(dbconfig.db);
 router.get("/feedPost", (req, res) => {
   db.query("call timeline()", (err, result) => {
     if (err) {
-      res.status(400).send(err);
       console.log(err);
-    } else {
-      res.status(200).send(result[0]);
-    }
+      return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+  }
+
+  if (result[0].length > 0) {
+      return res.send(result[0])
+  } else {
+      return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+  }
   });
 }); //ສະແດງໂພສຢູ່ໜ້າ home user
 
@@ -29,11 +33,15 @@ router.get("/feedPostOfStadium/:stadiumId", (req, res) => {
   const stadiumId = req.params.stadiumId;
   db.query("call timeline_postOfStadium(?)", [stadiumId], (err, result) => {
     if (err) {
-      res.status(400).send(err);
       console.log(err);
-    } else {
-      res.status(200).send(result[0]);
-    }
+      return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+  }
+
+  if (result[0].length > 0) {
+      return res.send(result[0])
+  } else {
+      return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+  }
   });
 }); //ສະແດງໂພສຢູ່ໜ້າ home user
 
