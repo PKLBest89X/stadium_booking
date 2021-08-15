@@ -13,6 +13,7 @@ import {
 } from "@material-ui/core";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import PeopleIcon from "@material-ui/icons/PeopleOutlined";
+import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,8 +33,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TotalFollowers = ({ className, ...rest }) => {
+const TotalFollowers = React.memo(({ className, ...rest }) => {
   const classes = useStyles();
+  const { countFollowerData } = useShallowEqualSelector((state) => state.countFollower);
 
   return (
     <Card className={clsx(classes.root, className)} elevation={10} {...rest}>
@@ -45,7 +47,7 @@ const TotalFollowers = ({ className, ...rest }) => {
             </Typography>
             <Box paddingTop="1rem">
               <Typography color="textSecondary" variant="h3">
-                2 ຄົນ
+                {`${countFollowerData} ຄົນ`}
               </Typography>
             </Box>
           </Grid>
@@ -77,7 +79,7 @@ const TotalFollowers = ({ className, ...rest }) => {
       </CardContent>
     </Card>
   );
-};
+});
 
 TotalFollowers.propTypes = {
   className: PropTypes.string,

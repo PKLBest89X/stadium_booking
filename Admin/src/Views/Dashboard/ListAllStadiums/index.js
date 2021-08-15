@@ -56,7 +56,7 @@ const ListAllStadiums = React.memo(() => {
         <Paper>
           <Box padding="1rem">
             <Typography color="textPrimary" variant="h5">
-              ສະໜາມທັງໝົດ
+              ເດີ່ນທັງໝົດ
             </Typography>
           </Box>
           <Divider />

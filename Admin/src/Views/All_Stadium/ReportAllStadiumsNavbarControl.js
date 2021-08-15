@@ -82,10 +82,18 @@ const ReportAllStadiumsNavbarControl = React.memo(() => {
       </Box>
 
       <Paper>
-        <Box padding="1rem">
+        <Box
+          padding="1rem"
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Typography gutterBottom variant="h5" color="textSecondary">
             ເລືອກຕາມວັນລົງທະບຽນ
           </Typography>
+          <Button color="primary" variant="outlined">
+            today
+          </Button>
         </Box>
         <Divider />
         <Box display="flex" justifyContent="center" alignItems="center">

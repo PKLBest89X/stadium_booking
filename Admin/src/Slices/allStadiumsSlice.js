@@ -21,6 +21,11 @@ const initialState = {
   notAvailableData: [],
   notAvailableError: null,
   notAvailbleRequestId: undefined,
+  allStadiumCount: 0,
+  allStadiumCountType: {
+    available: 0,
+    notAvailable: 0,
+  },
   stadiumInfo: {
     stadiumId: "",
     stadiumName: "",
@@ -75,6 +80,19 @@ const allStadiumsSlice = createSlice({
         state.allStadiumsRequestId = undefined;
         state.allStadiumsData = [];
         state.allStadiumsData = action.payload;
+        state.allStadiumCount = state.allStadiumsData.length;
+        let filterAvailable = state.allStadiumsData.filter(
+          (items) => items.status === "ດຳເນີນການ"
+        );
+        if (filterAvailable.length > 0) {
+          state.allStadiumCountType.available = filterAvailable.length;
+        }
+        let filterNotAvailable = state.allStadiumsData.filter(
+          (items) => items.status === "ບໍ່ພ້ອມໃຊ້ງານ"
+        );
+        if (filterNotAvailable.length > 0) {
+          state.allStadiumCountType.notAvailable = filterNotAvailable.length;
+        }
       }
     });
     builder.addCase(fetchGetAllStadiums.rejected, (state, action) => {

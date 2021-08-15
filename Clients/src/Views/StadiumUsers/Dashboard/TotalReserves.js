@@ -13,6 +13,7 @@ import {
   colors,
 } from "@material-ui/core";
 import InsertChartIcon from "@material-ui/icons/InsertChartOutlined";
+import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -25,8 +26,11 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const TotalReserves = ({ className, ...rest }) => {
+const TotalReserves = React.memo(({ className, ...rest }) => {
   const classes = useStyles();
+  const { countBookingNumber } = useShallowEqualSelector(
+    (state) => state.countBooking
+  );
 
   return (
     <Card className={clsx(classes.root, className)} elevation={10} {...rest}>
@@ -38,7 +42,7 @@ const TotalReserves = ({ className, ...rest }) => {
             </Typography>
             <Box paddingTop="1rem">
               <Typography color="textSecondary" variant="h3">
-                4 ລາຍການ
+                {`${countBookingNumber} ລາຍການ`}
               </Typography>
             </Box>
           </Grid>
@@ -57,7 +61,7 @@ const TotalReserves = ({ className, ...rest }) => {
       </CardContent>
     </Card>
   );
-};
+});
 
 TotalReserves.propTypes = {
   className: PropTypes.string,

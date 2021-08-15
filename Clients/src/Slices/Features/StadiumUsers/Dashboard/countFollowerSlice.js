@@ -4,7 +4,7 @@ import { fetchCountFollower } from "../../../../middlewares/stadiumUser/fetchDas
 const initialState = {
   countFollowerLoading: false,
   countFollowerSuccess: null,
-  countFollowerData: [],
+  countFollowerData: 0,
   countFollowerError: null,
   countFollowerRequestId: undefined,
 };
@@ -12,7 +12,11 @@ const initialState = {
 const countFollowerSlice = createSlice({
   name: "countFollower",
   initialState,
-  reducers: {},
+  reducers: {
+    onSetCountFollower: (state, { payload }) => {
+      state.countFollowerData = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchCountFollower.pending, (state, { meta }) => {
       state.countFollowerLoading = true;
@@ -29,8 +33,6 @@ const countFollowerSlice = createSlice({
         state.countFollowerLoading = false;
         state.countFollowerSuccess = true;
         state.countFollowerRequestId = undefined;
-        state.countFollowerData = [];
-        state.countFollowerData = action.payload;
       }
     });
     builder.addCase(fetchCountFollower.rejected, (state, action) => {
@@ -48,4 +50,5 @@ const countFollowerSlice = createSlice({
   },
 });
 
+export const { onSetCountFollower } = countFollowerSlice.actions;
 export default countFollowerSlice.reducer;

@@ -13,7 +13,8 @@ import {
 } from "@material-ui/core";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
-import GroupIcon from '@material-ui/icons/Group';
+import GroupIcon from "@material-ui/icons/Group";
+import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,8 +34,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TotalEmployees = ({ className, ...rest }) => {
+const TotalEmployees = React.memo(({ className, ...rest }) => {
   const classes = useStyles();
+  const { countEmployeeData } = useShallowEqualSelector(
+    (state) => state.countEmployee
+  );
 
   return (
     <Card className={clsx(classes.root, className)} elevation={10} {...rest}>
@@ -46,7 +50,7 @@ const TotalEmployees = ({ className, ...rest }) => {
             </Typography>
             <Box paddingTop="1rem">
               <Typography color="textSecondary" variant="h3">
-                10 ຄົນ
+                {`${countEmployeeData} ຄົນ`}
               </Typography>
             </Box>
           </Grid>
@@ -78,7 +82,7 @@ const TotalEmployees = ({ className, ...rest }) => {
       </CardContent>
     </Card>
   );
-};
+});
 
 TotalEmployees.propTypes = {
   className: PropTypes.string,

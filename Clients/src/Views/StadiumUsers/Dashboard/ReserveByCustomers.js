@@ -17,6 +17,7 @@ import LaptopMacIcon from "@material-ui/icons/LaptopMac";
 import PhoneIcon from "@material-ui/icons/Phone";
 import TabletIcon from "@material-ui/icons/Tablet";
 import NonTotalBooking from "./NonTotalBooking";
+import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -24,25 +25,21 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const ReserveByCustomers = ({ className, ...rest }) => {
+const ReserveByCustomers = React.memo(({ className, ...rest }) => {
   const classes = useStyles();
   const theme = useTheme();
-
-  const totalBooking = {
-    onWeb: 2,
-    onTel: 2,
-  };
+  const { countBookingType } = useShallowEqualSelector((state) => state.countBooking);
 
   const devices = [
     {
       title: "ຈອງຜ່ານເວັບໄຊ",
-      value: totalBooking.onWeb,
+      value: countBookingType.web,
       icon: LaptopMacIcon,
       color: colors.indigo[500],
     },
     {
       title: "ໂທຈອງ",
-      value: totalBooking.onTel,
+      value: countBookingType.phone,
       icon: TabletIcon,
       color: colors.red[600],
     },
@@ -88,13 +85,13 @@ const ReserveByCustomers = ({ className, ...rest }) => {
         <CardHeader title="ການຈອງຂອງເດີ່ນ" />
         <Divider />
         <CardContent>
-          {(totalBooking.onWeb > 0 || totalBooking.onTel > 0) && (
+          {(countBookingType.web > 0 || countBookingType.phone > 0) && (
             <Box height={300} position="relative" mt={3} mb={3}>
               <Doughnut data={data} options={options} />
             </Box>
           )}
 
-          {totalBooking.onWeb === 0 && totalBooking.onTel === 0 && (
+          {countBookingType.web === 0 && countBookingType.phone === 0 && (
             <NonTotalBooking />
           )}
           <Box display="flex" justifyContent="center" mt={2}>
@@ -114,7 +111,7 @@ const ReserveByCustomers = ({ className, ...rest }) => {
       </Card>
     </Box>
   );
-};
+});
 
 ReserveByCustomers.propTypes = {
   className: PropTypes.string,

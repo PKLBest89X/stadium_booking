@@ -7,6 +7,11 @@ const initialState = {
   countBookingData: [],
   countBookingError: null,
   countBookingRequestId: undefined,
+  countBookingNumber: 0,
+  countBookingType: {
+    web: 0,
+    phone: 0,
+  },
 };
 
 const countBookingSlice = createSlice({
@@ -31,6 +36,19 @@ const countBookingSlice = createSlice({
         state.countBookingRequestId = undefined;
         state.countBookingData = [];
         state.countBookingData = action.payload;
+        state.countBookingNumber = state.countBookingData.length;
+        let filterByWebType = state.countBookingData.filter(
+          (items) => items.profile !== "ໂທຈອງ"
+        );
+        if (filterByWebType.length > 0) {
+          state.countBookingType.web = filterByWebType.length;
+        }
+        let filterByPhoneType = state.countBookingData.filter(
+          (items) => items.profile === "ໂທຈອງ"
+        );
+        if (filterByPhoneType.length > 0) {
+          state.countBookingType.phone = filterByPhoneType.length;
+        }
       }
     });
     builder.addCase(fetchCountBooking.rejected, (state, action) => {

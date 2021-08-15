@@ -12,7 +12,8 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
-import SportsSoccerIcon from '@material-ui/icons/SportsSoccer';
+import SportsSoccerIcon from "@material-ui/icons/SportsSoccer";
+import { useShallowEqualSelector } from "../../Components/useShallowEqualSelector";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,9 +33,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TotalStadiums = ({ className, ...rest }) => {
+const TotalStadiums = React.memo(({ className, ...rest }) => {
   const classes = useStyles();
-
+  const { allStadiumCount } = useShallowEqualSelector(
+    (state) => state.allStadiums
+  );
   return (
     <Card className={clsx(classes.root, className)} elevation={10} {...rest}>
       <CardContent>
@@ -45,7 +48,7 @@ const TotalStadiums = ({ className, ...rest }) => {
             </Typography>
             <Box paddingTop="1rem">
               <Typography color="textSecondary" variant="h3">
-                3 ເດີ່ນ
+                {`${allStadiumCount} ເດີ່ນ`}
               </Typography>
             </Box>
           </Grid>
@@ -77,7 +80,7 @@ const TotalStadiums = ({ className, ...rest }) => {
       </CardContent>
     </Card>
   );
-};
+});
 
 TotalStadiums.propTypes = {
   className: PropTypes.string,

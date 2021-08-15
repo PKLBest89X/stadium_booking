@@ -43,6 +43,11 @@ import paymentSlice from '../Slices/Features/StadiumUsers/Payment/paymentSlice';
 import paymentDetailsSlice from '../Slices/Features/StadiumUsers/Payment/paymentDetailsSlice';
 import getDrinksSlice from '../Slices/Features/StadiumUsers/Payment/getDrinksSlice';
 
+import countBookingSlice from '../Slices/Features/StadiumUsers/Dashboard/countBookingSlice';
+import countEmployeeSlice from "../Slices/Features/StadiumUsers/Dashboard/countEmployeeSlice";
+import countFollowerSlice from '../Slices/Features/StadiumUsers/Dashboard/countFollowerSlice';
+import countIncomeSlice from '../Slices/Features/StadiumUsers/Dashboard/countIncomeSlice';
+
 const store = configureStore({
   reducer: {
     registerUser: registerUserSlice,
@@ -81,6 +86,10 @@ const store = configureStore({
     getDrinks: getDrinksSlice,
     reportBooking: reportBookingSlice,
     reportPayment: reportPaymentSlice,
+    countBooking: countBookingSlice,
+    countEmployee: countEmployeeSlice,
+    countFollower: countFollowerSlice,
+    countIncome: countIncomeSlice,
   }, 
 });
 

@@ -11,6 +11,7 @@ const initialState = {
   stadiumOwnerError: null,
   stadiumOwnerSuccess: null,
   stadiumOwnerRequestId: undefined,
+  allStadiumOwnerCount: 0,
 };
 
 const crudStadiumOwnerSlice = createSlice({
@@ -37,6 +38,7 @@ const crudStadiumOwnerSlice = createSlice({
         state.stadiumOwnerRequestId = undefined;
         state.stadiumOwnerData = [];
         state.stadiumOwnerData = action.payload;
+        state.allStadiumOwnerCount = state.stadiumOwnerData.length;
         state.stadiumOwnerDataSortByDate = [];
         let slicePayload = action.payload.slice(0, 6);
         let newSort = slicePayload.sort(

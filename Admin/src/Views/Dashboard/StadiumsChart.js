@@ -16,6 +16,7 @@ import {
 import CheckIcon from "@material-ui/icons/Check";
 import ClearIcon from "@material-ui/icons/Clear";
 import NonTotalStadium from "./NonTotalStadium";
+import { useShallowEqualSelector } from "../../Components/useShallowEqualSelector";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -23,25 +24,21 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const StadiumsChart = ({ className, ...rest }) => {
+const StadiumsChart = React.memo(({ className, ...rest }) => {
   const classes = useStyles();
   const theme = useTheme();
-
-  const totalStadium = {
-    yes: 3,
-    no: 0,
-  };
+  const { allStadiumCountType } = useShallowEqualSelector((state) => state.allStadiums);
 
   const devices = [
     {
       title: "ພ້ອມໃຊ້ງານ",
-      value: totalStadium.yes,
+      value: allStadiumCountType.available,
       icon: CheckIcon,
       color: colors.indigo[500],
     },
     {
       title: "ບໍ່ພ້ອມໃຊ້ງານ",
-      value: totalStadium.no,
+      value: allStadiumCountType.notAvailable,
       icon: ClearIcon,
       color: colors.red[600],
     },
@@ -87,12 +84,12 @@ const StadiumsChart = ({ className, ...rest }) => {
         <CardHeader title="ພາບລວມເດີ່ນທັງໝົດ" />
         <Divider />
         <CardContent>
-          {(totalStadium.yes > 0 || totalStadium.no > 0) && (
+          {(allStadiumCountType.available > 0 || allStadiumCountType.notAvailable > 0) && (
             <Box height={300} position="relative">
               <Doughnut data={data} options={options} />
             </Box>
           )}
-          {totalStadium.yes === 0 && totalStadium.no === 0 && (
+          {allStadiumCountType.available === 0 && allStadiumCountType.notAvailable && (
             <NonTotalStadium />
           )}
           <Box display="flex" justifyContent="center" mt={2}>
@@ -114,7 +111,7 @@ const StadiumsChart = ({ className, ...rest }) => {
       </Card>
     </Box>
   );
-};
+});
 
 StadiumsChart.propTypes = {
   className: PropTypes.string,

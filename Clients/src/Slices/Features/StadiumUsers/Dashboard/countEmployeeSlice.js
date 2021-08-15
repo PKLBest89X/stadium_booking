@@ -4,7 +4,7 @@ import { fetchCountEmployee } from "../../../../middlewares/stadiumUser/fetchDas
 const initialState = {
   countEmployeeLoading: false,
   countEmployeeSuccess: null,
-  countEmployeeData: [],
+  countEmployeeData: 0,
   countEmployeeError: null,
   countEmployeeRequestId: undefined,
 };
@@ -12,7 +12,11 @@ const initialState = {
 const countEmployeeSlice = createSlice({
   name: "countEmployee",
   initialState,
-  reducers: {},
+  reducers: {
+    onSetCountEmployee: (state, { payload }) => {
+      state.countEmployeeData = payload;
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchCountEmployee.pending, (state, { meta }) => {
       state.countEmployeeLoading = true;
@@ -29,8 +33,6 @@ const countEmployeeSlice = createSlice({
         state.countEmployeeLoading = false;
         state.countEmployeeSuccess = true;
         state.countEmployeeRequestId = undefined;
-        state.countEmployeeData = [];
-        state.countEmployeeData = action.payload;
       }
     });
     builder.addCase(fetchCountEmployee.rejected, (state, action) => {
@@ -48,4 +50,5 @@ const countEmployeeSlice = createSlice({
   },
 });
 
+export const { onSetCountEmployee } = countEmployeeSlice.actions;
 export default countEmployeeSlice.reducer;

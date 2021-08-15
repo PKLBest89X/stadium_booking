@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchCountBooking } from "../../../../middlewares/stadiumUser/fetchDashboard/fetchDashboard";
+import { fetchCountIncome } from "../../../../middlewares/stadiumUser/fetchDashboard/fetchDashboard";
+import moment from "moment";
 
 const initialState = {
   countIncomeLoading: false,
   countIncomeSuccess: null,
   countIncomeData: [],
+  countIncomeValue: 0,
   countIncomeError: null,
   countIncomeRequestId: undefined,
 };
@@ -31,6 +33,12 @@ const countIncomeSlice = createSlice({
         state.countIncomeRequestId = undefined;
         state.countIncomeData = [];
         state.countIncomeData = action.payload;
+        if (state.countIncomeData.length > 0) {
+          state.countIncomeValue = state.countIncomeData.reduce(
+            (sum, items) => sum + items.total,
+            0
+          );
+        }
       }
     });
     builder.addCase(fetchCountIncome.rejected, (state, action) => {

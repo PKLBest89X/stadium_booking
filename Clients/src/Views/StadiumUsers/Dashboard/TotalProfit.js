@@ -1,6 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
+import { useShallowEqualSelector } from "../../../Components/useShallowEqualSelector";
 import {
   Avatar,
   Card,
@@ -12,6 +13,7 @@ import {
   colors,
 } from "@material-ui/core";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
+import NumberFormat from "react-number-format";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -24,8 +26,11 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const TotalProfit = ({ className, ...rest }) => {
+const TotalProfit = React.memo(({ className, ...rest }) => {
   const classes = useStyles();
+  const { countIncomeValue } = useShallowEqualSelector(
+    (state) => state.countIncome
+  );
 
   return (
     <Card className={clsx(classes.root, className)} elevation={10} {...rest}>
@@ -33,12 +38,20 @@ const TotalProfit = ({ className, ...rest }) => {
         <Grid container justify="space-between" spacing={3}>
           <Grid item>
             <Typography color="textSecondary" gutterBottom variant="h6">
-              ລາຍຮັບມື້ນີ້
+              ລວມການຊຳລະ
             </Typography>
             <Box paddingTop="1rem">
-              <Typography color="textSecondary" variant="h3">
-                556,000 ກີບ
-              </Typography>
+              <NumberFormat
+                value={countIncomeValue}
+                displayType={"text"}
+                thousandSeparator={true}
+                suffix={" ກີບ"}
+                renderText={(value) => (
+                  <Typography variant="h4" color="textSecondary">
+                    {value}
+                  </Typography>
+                )}
+              />
             </Box>
           </Grid>
           <Grid item>
@@ -50,7 +63,7 @@ const TotalProfit = ({ className, ...rest }) => {
       </CardContent>
     </Card>
   );
-};
+});
 
 TotalProfit.propTypes = {
   className: PropTypes.string,
