@@ -3,5 +3,5 @@ module.exports.db = {
     user: 'root',
     host: 'localhost',
     password: 'phoum1234',
-    database: 'dbfinal'
+    database: 'std_web_final'
 }
