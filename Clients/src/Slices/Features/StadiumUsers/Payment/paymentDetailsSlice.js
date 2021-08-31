@@ -1,10 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  fetchAddBookingFieldsNonAccount,
-  fetchAddUserNonAccount,
-  fetchConfirmBookingNonAccount,
-} from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
-import {
   fetchAddPaymentFields,
   fetchAddPaymentWaters,
   fetchUpdateBookingStatus,
@@ -34,6 +29,12 @@ const initialState = {
   paymentDetailsError: null,
   paymentDetailsRequestId: undefined,
   onlyWater: null,
+  updateLoading: false,
+  updateError: null,
+  updateSucces: null,
+  updateDetailsLoading: false,
+  updateDetailsSuccess: null,
+  updateDetailsError: null,
 };
 
 const paymentDetailsSlice = createSlice({
@@ -292,72 +293,91 @@ const paymentDetailsSlice = createSlice({
         state.selectedWaterState = false;
         state.totalWaterPrice = 0;
         state.baseTotal = state.totalStadiumPrice + state.totalWaterPrice;
-        state.total = state.totalStadiumPrice + state.totalWaterPrice - state.totalDeposit;
+        state.total =
+          state.totalStadiumPrice + state.totalWaterPrice - state.totalDeposit;
       }
     },
     onSaveGetMoney: (state, { payload }) => {
       state.getMoney = parseInt(payload);
       state.thonMoney =
         parseInt(payload) -
-        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice) - parseInt(state.totalDeposit));
+        (parseInt(state.totalStadiumPrice) +
+          parseInt(state.totalWaterPrice) -
+          parseInt(state.totalDeposit));
     },
   },
   extraReducers: (builder) => {
     //ການສົ່ງ request ໃນການເພີ່ມລາຍລະອຽດການຈອງເດີ່ນ
-    builder.addCase(
-      fetchAddBookingFieldsNonAccount.pending,
-      (state, action) => {
-        state.paymentDetailsLoading = true;
-      }
-    );
-    builder.addCase(
-      fetchAddBookingFieldsNonAccount.fulfilled,
-      (state, action) => {
-        state.paymentDetailsSuccess = true;
-        state.paymentDetailsLoading = false;
-      }
-    );
-    builder.addCase(
-      fetchAddBookingFieldsNonAccount.rejected,
-      (state, action) => {
-        state.paymentDetailsLoading = false;
-        state.paymentDetailsSuccess = false;
-        state.paymentDetailsError = action.payload;
-      }
-    );
-
-    //ການສົ່ງ request ໃນການເພີ່ມຂໍ້ມູນຂອງລູກຄ້າບໍ່ມີບັນຊີ
-    builder.addCase(fetchAddUserNonAccount.pending, (state, action) => {
+    builder.addCase(fetchAddPaymentFields.pending, (state, action) => {
       state.paymentDetailsLoading = true;
     });
-    builder.addCase(fetchAddUserNonAccount.fulfilled, (state, action) => {
+    builder.addCase(fetchAddPaymentFields.fulfilled, (state, action) => {
       state.paymentDetailsSuccess = true;
       state.paymentDetailsLoading = false;
     });
-    builder.addCase(fetchAddUserNonAccount.rejected, (state, action) => {
+    builder.addCase(fetchAddPaymentFields.rejected, (state, action) => {
       state.paymentDetailsLoading = false;
       state.paymentDetailsSuccess = false;
       state.paymentDetailsError = action.payload;
     });
 
-    //ການສົ່ງ request ໃນການເຢືນຢັນການຈອງເດີ່ນໃຫ້ລູກຄ້າບໍ່ມີບັນຊີ
-    builder.addCase(fetchConfirmBookingNonAccount.pending, (state, action) => {
+    //ການສົ່ງ request ໃນການເພີ່ມຂໍ້ມູນຊຳລະເຄື່ອງດື່ມ
+    builder.addCase(fetchAddPaymentWaters.pending, (state, action) => {
       state.paymentDetailsLoading = true;
     });
-    builder.addCase(
-      fetchConfirmBookingNonAccount.fulfilled,
-      (state, action) => {
-        state.paymentDetailsSuccess = true;
-        state.paymentDetailsLoading = false;
-        state.totalStadiumPrice = 0;
-        state.paymentDetailsSelected = [];
-        state.paymentDetailsData = [];
-        state.waterDetailsData = [];
-        state.waterDetailsData = [];
-        state.selectedPaymentState = false;
-      }
-    );
-    builder.addCase(fetchConfirmBookingNonAccount.rejected, (state, action) => {
+    builder.addCase(fetchAddPaymentWaters.fulfilled, (state, action) => {
+      state.paymentDetailsSuccess = true;
+      state.paymentDetailsLoading = false;
+    });
+    builder.addCase(fetchAddPaymentWaters.rejected, (state, action) => {
+      state.paymentDetailsLoading = false;
+      state.paymentDetailsSuccess = false;
+      state.paymentDetailsError = action.payload;
+    });
+
+    //ການສົ່ງ request ໃນການ update ສະຖານະຂອງການຈອງ
+    builder.addCase(fetchUpdateBookingStatus.pending, (state, action) => {
+      state.updateLoading = true;
+    });
+    builder.addCase(fetchUpdateBookingStatus.fulfilled, (state, action) => {
+      state.updateSucces = true;
+      state.updateLoading = false;
+    });
+    builder.addCase(fetchUpdateBookingStatus.rejected, (state, action) => {
+      state.updateLoading = false;
+      state.updateSucces = false;
+      state.updateError = action.payload;
+    });
+
+    //ການສົ່ງ request ໃນການ update ສະຖານະລາຍລະອຽດການຈອງ
+    builder.addCase(fetchUpdateBookingSubStatus.pending, (state, action) => {
+      state.updateDetailsLoading = true;
+    });
+    builder.addCase(fetchUpdateBookingSubStatus.fulfilled, (state, action) => {
+      state.updateDetailsSuccess = true;
+      state.updateDetailsLoading = false;
+    });
+    builder.addCase(fetchUpdateBookingSubStatus.rejected, (state, action) => {
+      state.updateDetailsLoading = false;
+      state.updateDetailsSuccess = false;
+      state.updateDetailsError = action.payload;
+    });
+
+    //ການສົ່ງ request ໃນການເຢືນຢັນການຊຳລະເງິນ
+    builder.addCase(fetchConfirmPayment.pending, (state, action) => {
+      state.paymentDetailsLoading = true;
+    });
+    builder.addCase(fetchConfirmPayment.fulfilled, (state, action) => {
+      state.paymentDetailsSuccess = true;
+      state.paymentDetailsLoading = false;
+      state.totalStadiumPrice = 0;
+      state.paymentDetailsSelected = [];
+      state.paymentDetailsData = [];
+      state.waterDetailsData = [];
+      state.waterDetailsData = [];
+      state.selectedPaymentState = false;
+    });
+    builder.addCase(fetchConfirmPayment.rejected, (state, action) => {
       state.paymentDetailsLoading = false;
       state.paymentDetailsSuccess = false;
       state.paymentDetailsError = action.payload;
