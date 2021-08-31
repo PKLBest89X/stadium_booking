@@ -13,6 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useShallowEqualSelector } from "../../../../../Components/useShallowEqualSelector";
 import { useHistory, useRouteMatch, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   cardLayout: {
@@ -95,7 +96,16 @@ const BookingListUnCheckout = React.memo(({ bookingBillData }) => {
                       <Typography
                         variant="h6"
                         color="textSecondary"
-                      >{`ຈອງ: ${items.td_start.slice(0, 5)} ໂມງ - ${items.td_end.slice(0, 5)} ໂມງ`}</Typography>
+                      >{`ຈອງ: ${items.td_start.slice(
+                        0,
+                        5
+                      )} ໂມງ - ${items.td_end.slice(0, 5)} ໂມງ`}</Typography>
+                      <Typography
+                        variant="h6"
+                        color="textSecondary"
+                      >{`ມື້ເຕະ: ${moment(items.kickoff_date).format(
+                        "DD/MM/YYYY"
+                      )}`}</Typography>
                     </Box>
                     <Typography
                       gutterBottom
