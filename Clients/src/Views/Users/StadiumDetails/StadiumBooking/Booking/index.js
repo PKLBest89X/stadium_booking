@@ -1,4 +1,4 @@
-import React, { createRef, useCallback, useEffect } from "react";
+import React, { createRef, useCallback, useEffect, useRef, useMemo } from "react";
 import ChildPageLayout from "../../../../../Components/ChildPageLayout";
 import { fetchCheckBooking } from "../../../../../middlewares/fetchCheckValidData/fetchCheckValidBooking";
 import { fetchAuthUser } from "../../../../../middlewares/fetchAuth/fetchUser";
@@ -130,6 +130,15 @@ const Booking = React.memo(() => {
     filterByDate();
   }, [dispatch, stadiumId, filterByDateData]);
 
+  const { feedStadiumData } = useShallowEqualSelector(
+    (state) => state.feedStadium
+  );
+  const stateRef = useRef(feedStadiumData);
+  useMemo(
+    () => feedStadiumData.forEach((items) => (stateRef.current = items)),
+    [feedStadiumData]
+  );
+
   const onAddBookingDetails = useCallback(
     async (event) => {
       event.preventDefault();
@@ -150,7 +159,11 @@ const Booking = React.memo(() => {
         await dispatch(onShowAlertSameData(foundPreviousData));
         await dispatch(onNotiOpen("sameBookingAddList"));
       } else {
-        await dispatch(onSaveSelectedData(timeAndPriceSelected));
+        const saveRequest = {
+          percent_of_deposit: stateRef.current.percent_of_deposit,
+          timeAndPriceSelected
+        }
+        await dispatch(onSaveSelectedData(saveRequest));
         history.goBack();
       }
     },

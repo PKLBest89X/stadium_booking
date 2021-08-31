@@ -1,5 +1,13 @@
 import React, { useCallback, useRef, useMemo } from "react";
-import { Avatar, Box, Card, Typography, Grid, Button, colors } from "@material-ui/core";
+import {
+  Avatar,
+  Box,
+  Card,
+  Typography,
+  Grid,
+  Button,
+  colors,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { onShowCustomerInfo } from "../../../../Slices/Features/StadiumUsers/Payment/prePaymentSlice";
@@ -58,6 +66,15 @@ const useStyles = makeStyles((theme) => ({
     color: colors.red[600],
     width: 20,
     height: 20,
+  },
+  textActive: {
+    color: colors.green[600],
+  },
+  textPending: {
+    color: colors.yellow[800],
+  },
+  textVoid: {
+    color: colors.red[600],
   },
 }));
 
@@ -131,53 +148,80 @@ const BookingListUnCheckout = React.memo(({ bookingBillData }) => {
                     height="100%"
                     padding="0 1em"
                   >
-                        <Box>
-                          <Typography
-                            gutterBottom
-                            variant="h4"
-                            color="textPrimary"
-                          >
-                            {items.c_name}
+                    <Box>
+                      <Typography gutterBottom variant="h4" color="textPrimary">
+                        {items.c_name}
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        color="textSecondary"
+                      >{`ຈອງ: ${items.td_start.slice(
+                        0,
+                        5
+                      )} ໂມງ - ${items.td_end.slice(0, 5)} ໂມງ`}</Typography>
+                      <Box display="flex" alignItems="center">
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                        >{`ມື້ເຕະ: ${moment(items.kickoff_date).format(
+                          "DD/MM/YYYY"
+                        )}`}</Typography>
+                        <Box
+                          marginLeft=".5rem"
+                          display="flex"
+                          alignItems="center"
+                        >
+                          {items.paid_status === "ຈ່າຍແລ້ວ" ? (
+                            <CheckIcon className={classes.paid} />
+                          ) : (
+                            <ClearIcon className={classes.notYet} />
+                          )}
+                          {items.paid_status === "ຈ່າຍແລ້ວ" ? (
+                            <Typography variant="h6" color="textSecondary">
+                              ຈ່າຍແລ້ວ
+                            </Typography>
+                          ) : (
+                            <Typography variant="h6" color="textSecondary">
+                              ບໍ່ຈ່າຍ
+                            </Typography>
+                          )}
+                        </Box>
+                      </Box>
+                      <Box display="flex" alignItems="center">
+                        <Box marginRight=".5rem">
+                          <Typography variant="h6" color="textSecondary">
+                            ສະຖານະ:
                           </Typography>
+                        </Box>
+                        {items.approve_state === "void" && (
                           <Typography
                             variant="h6"
                             color="textSecondary"
-                          >{`ຈອງ: ${items.td_start.slice(
-                            0,
-                            5
-                          )} ໂມງ - ${items.td_end.slice(
-                            0,
-                            5
-                          )} ໂມງ`}</Typography>
-                          <Box display="flex" alignItems="center">
-                            <Typography
-                              variant="h6"
-                              color="textSecondary"
-                            >{`ມື້ເຕະ: ${moment(items.kickoff_date).format(
-                              "DD/MM/YYYY"
-                            )}`}</Typography>
-                            <Box
-                              marginLeft=".5rem"
-                              display="flex"
-                              alignItems="center"
-                            >
-                              {items.paid_status === "ຈ່າຍແລ້ວ" ? (
-                                <CheckIcon className={classes.paid} />
-                              ) : (
-                                <ClearIcon className={classes.notYet} />
-                              )}
-                              {items.paid_status === "ຈ່າຍແລ້ວ" ? (
-                                <Typography variant="h6" color="textSecondary">
-                                  ຈ່າຍແລ້ວ
-                                </Typography>
-                              ) : (
-                                <Typography variant="h6" color="textSecondary">
-                                  ບໍ່ຈ່າຍ
-                                </Typography>
-                              )}
-                            </Box>
-                          </Box>
-                        </Box>
+                            className={classes.textVoid}
+                          >
+                            ການຈອງໂມຄະ
+                          </Typography>
+                        )}
+                        {items.approve_state === "pending" && (
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            className={classes.textPending}
+                          >
+                            ລໍຖ້າອະນຸມັດ
+                          </Typography>
+                        )}
+                        {items.approve_state === "active" && (
+                          <Typography
+                            color="textSecondary"
+                            variant="h6"
+                            className={classes.textActive}
+                          >
+                            ອະນຸມັດແລ້ວ
+                          </Typography>
+                        )}
+                      </Box>
+                    </Box>
                     <Button
                       onClick={() => onGetCurrentPayment(items)}
                       color="primary"

@@ -73,7 +73,20 @@ const OverviewBooking = React.memo(({ ...rest }) => {
       <NotificationAlert notiTitle="ສຳເລັດ" intervalTimeout={10000}>
         <Box display="flex" alignItems="center">
           <Typography variant="h4" color="textSecondary">
-            ທານໄດ້ຍົກເລີກການຈອງສຳເລັດ!
+            ທ່ານໄດ້ຍົກເລີກການຈອງສຳເລັດ!
+          </Typography>
+        </Box>
+      </NotificationAlert>
+    );
+  }
+
+  let alertSuccessApproveBooking = null;
+  if (notiName === "successApproveBooking" && notiState === true) {
+    alertSuccessApproveBooking = (
+      <NotificationAlert notiTitle="ສຳເລັດ" intervalTimeout={10000}>
+        <Box display="flex" alignItems="center">
+          <Typography variant="h4" color="textSecondary">
+            ທ້ານໄດ້ອະນຸມັດການຈອງສຳເລັດ!
           </Typography>
         </Box>
       </NotificationAlert>
@@ -83,6 +96,7 @@ const OverviewBooking = React.memo(({ ...rest }) => {
   return (
     <>
       {showBookingHistoryInfo}
+      {alertSuccessApproveBooking}
       {alertSuccessCancelBookingNonAccount}
       <PageLayout title="Stadium Booking" {...rest}>
         <BookingNavbarControl />

@@ -188,7 +188,7 @@ const BookingNavbarControl = React.memo(() => {
               ການຈອງທັງໝົດຂອງຂ້ອຍ
             </Button>
             <Button
-              startIcon={<CheckCircleIcon />}
+              startIcon={<CancelIcon />}
               color="inherit"
               onClick={() => RoutesButton("available-canceling")}
             >
@@ -207,6 +207,27 @@ const BookingNavbarControl = React.memo(() => {
               onClick={() => RoutesButton("allBooking-unpaid")}
             >
               ການຈອງທີ່ຍັງບໍ່ໄດ້ຊຳລະຄ່າເດີ່ນ
+            </Button>
+            <Button
+              startIcon={<ListIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("active-booking")}
+            >
+              ການຈອງທີ່ໄດ້ອະນຸມັດແລ້ວ
+            </Button>
+            <Button
+              startIcon={<ListIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("pending-booking")}
+            >
+              ການຈອງທີ່ລໍຖ້າອະນຸມັດ
+            </Button>
+            <Button
+              startIcon={<ListIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("void-booking")}
+            >
+              ການຈອງທີ່ເປັນໂມຄະ
             </Button>
           </Box>
         </Box>

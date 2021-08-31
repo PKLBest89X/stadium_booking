@@ -194,8 +194,8 @@ router.post('/booking', verifyToken, async (req,res) => {
                   return res.status(400).send("ເກີດຂໍ້ຜິດພາດ!!");
               }
               if (result.length > 0) {
-                db.query("select b_id,booking_status,paid_status from tbbooking where c_id=? ORDER BY b_id DESC LIMIT 0, 1", [customer_id], (err,resu) => {
-                    if((resu[0].booking_status === "ຍັງບໍ່ຈອງ" && resu[0].paid_status === "ຍັງບໍ່ຈ່າຍ") || (resu[0].booking_status === "ຈອງແລ້ວ" && resu[0].paid_status === "ຍັງບໍ່ຈ່າຍ")){
+                db.query("select b_id,booking_status,paid_status,approve_state,booking_date,booking_timecancel from tbbooking where c_id=? ORDER BY b_id DESC LIMIT 0, 1", [customer_id], (err,resu) => {
+                    if((resu[0].booking_status === "ຍັງບໍ່ຈອງ" && resu[0].paid_status === "ຍັງບໍ່ຈ່າຍ") || ((resu[0].booking_status === "ຈອງແລ້ວ" && resu[0].paid_status === "ຍັງບໍ່ຈ່າຍ" && resu[0].approve_state === "pending" && new Date().getTime() < new Date(resu[0].booking_timecancel).getTime()) || (resu[0].booking_status === "ຈອງແລ້ວ" && resu[0].paid_status === "ຍັງບໍ່ຈ່າຍ" && resu[0].approve_state === "active"))){
                         res.status(200).send(resu);
                     }else{
                         
@@ -205,9 +205,9 @@ router.post('/booking', verifyToken, async (req,res) => {
                                 console.log(err);
                                 res.send("Something Wrong")
                             }else{
-                                db.query("select b_id,booking_status,paid_status from tbbooking where c_id=? ORDER BY b_id DESC LIMIT 0, 1", [customer_id], (err,bid) => {
+                                db.query("select b_id,booking_status,paid_status,approve_state,booking_date,booking_timecancel from tbbooking where c_id=? ORDER BY b_id DESC LIMIT 0, 1", [customer_id], (err,bid) => {
                                     if(err) return res.send(err).status(400)
-                                    res.status(200).send(bid);
+                                    return res.status(200).send(bid);
                                 })
                             }
                         }) // ເພີ່ມຂໍ້ມູນການຈອງຫຼັກໂດຍຜູ້ໃຊ້ ||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -220,7 +220,7 @@ router.post('/booking', verifyToken, async (req,res) => {
                         console.log(err);
                         res.send("Something Wrong")
                     }else{
-                        db.query("select b_id,booking_status,paid_status from tbbooking where c_id=? ORDER BY b_id DESC LIMIT 0, 1", [customer_id], (err,bid) => {
+                        db.query("select b_id,booking_status,paid_status,approve_state,booking_date,booking_timecancel from tbbooking where c_id=? ORDER BY b_id DESC LIMIT 0, 1", [customer_id], (err,bid) => {
                             if(err) return res.send(err).status(400)
                             res.status(200).send(bid);
                         })

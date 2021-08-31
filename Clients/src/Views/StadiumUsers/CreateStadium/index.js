@@ -73,12 +73,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CreateStadium = () => {
+const CreateStadium = React.memo(() => {
   const classes = useStyles();
   const { data } = useShallowEqualSelector((state) => state.auth);
-  const { stadiumLoading, stadiumFetchSuccess, stadiumError } = useShallowEqualSelector(
-    (state) => state.stadium
-  );
+  const { stadiumLoading, stadiumFetchSuccess, stadiumError } =
+    useShallowEqualSelector((state) => state.stadium);
   const [createStadium, setCreateStatdium] = useState({
     stadium_name: "",
     stadium_description: "",
@@ -87,6 +86,7 @@ const CreateStadium = () => {
     stadium_district: "ໄຊເສດຖາ",
     stadium_province: "ນະຄອນຫຼວງວຽງຈັນ",
     stadium_timeCancel: "",
+    stadium_deposit: "",
     stadium_logo: null,
     stadium_picture: null,
     phone: "",
@@ -144,6 +144,11 @@ const CreateStadium = () => {
     setCreateStatdium((prev) => ({ ...prev, [name]: value }));
   }, []);
 
+  const onStadiumDepositChange = useCallback((event) => {
+    const { name, value } = event.target;
+    setCreateStatdium((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
   const onUploadStadiumLogo = () => {
     const getStadiumLogoFile = stadiumLogoFile.current.files[0];
     setCreateStatdium((prev) => ({
@@ -175,9 +180,10 @@ const CreateStadium = () => {
     formData.append("district", createStadium.stadium_district);
     formData.append("province", createStadium.stadium_province);
     formData.append("time_cancelbooking", createStadium.stadium_timeCancel);
+    formData.append("persent_deposit", createStadium.stadium_deposit);
     formData.append("logo", createStadium.stadium_logo);
     formData.append("sampleFile", createStadium.stadium_picture);
-    formData.append('phone', createStadium.phone);
+    formData.append("phone", createStadium.phone);
     dispatch(fetchAddStadium(formData));
   };
 
@@ -277,10 +283,7 @@ const CreateStadium = () => {
                 inputProps: { maxLength: 10, min: 0 },
               }}
               onInput={(e) => {
-                e.target.value = Math.max(
-                  0,
-                  parseInt(e.target.value)
-                )
+                e.target.value = Math.max(0, parseInt(e.target.value))
                   .toString()
                   .slice(0, 8);
               }}
@@ -288,18 +291,52 @@ const CreateStadium = () => {
             <TextField
               fullWidth
               margin="normal"
-              label="ໄລຍະເວລາຍົກເລີກການຈອງເດີ່ນ - ຄິດເປັນຊົ່ວໂມງ"
+              label="ເງື່ອນໄຂໄລຍະເວລາ - ຄິດເປັນຊົ່ວໂມງ"
               name="stadium_timeCancel"
               type="number"
               onInput={(e) => {
-                e.target.value = Math.max(0, parseInt(e.target.value))
+                e.target.value = Math.max(1, parseInt(e.target.value))
                   .toString()
                   .slice(0, 2);
               }}
-              min={0}
+              min={1}
               variant="outlined"
               value={createStadium.stadium_timeCancel}
               onChange={onStadiumTimeCancelChange}
+            />
+            <Box padding="1rem 0">
+              <Typography>
+                ເປັນການກຳນົດເງື່ອນໄຂຂອບເຂດໄລຍະເວລາເຊັ່ນປ້ອນ 1 ຊົ່ວໂມງ:
+              </Typography>
+              <Box padding="0 1rem">
+                <ul>
+                  <li>ໃຊ້ກຳນົດເຊັ່ນ: ຕ້ອງຈອງກ່ອນມາເຕະ 1 ຊົ່ວໂມງ</li>
+                  <li>
+                    ໃຊ້ກຳນົດເຊັ່ນ: ຕ້ອງຈ່າຍຄ່າມັດຈຳຂອງການຈອງພາຍໃນ 1
+                    ຊົ່ວໂມງຫຼັງຈາກການຈອງ
+                  </li>
+                  <li>
+                    ໃຊ້ກຳນົດເຊັ່ນ: ສາມາດຍົກເລີກການຈອງໄດ້ພາຍໃນ 1
+                    ຊົ່ວໂມງຫຼັງຈາກການຈອງ
+                  </li>
+                </ul>
+              </Box>
+            </Box>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="ຄ່າມັດຈຳການຈອງ - ຄິດເປັນເປີເຊັນ"
+              name="stadium_deposit"
+              type="number"
+              onInput={(e) => {
+                e.target.value = Math.max(1, parseInt(e.target.value))
+                  .toString()
+                  .slice(0, 2);
+              }}
+              min={1}
+              variant="outlined"
+              value={createStadium.stadium_deposit}
+              onChange={onStadiumDepositChange}
             />
             <div className={classes.picture}>
               <span>ໂລໂກ້ຂອງເດີ່ນ</span>
@@ -338,6 +375,6 @@ const CreateStadium = () => {
       </div>
     </PageLayout>
   );
-};
+});
 
 export default CreateStadium;

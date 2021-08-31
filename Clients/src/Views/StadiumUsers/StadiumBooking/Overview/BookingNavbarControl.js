@@ -82,7 +82,9 @@ const BookingNavbarControl = React.memo(() => {
         );
         const getResult = unwrapResult(addBookingRequest);
         if (getResult.status !== 400) {
-          history.push(`/admin/stadium/${stadiumId_Admin}/booking/${stateRef.current.b_id}`);
+          history.push(
+            `/admin/stadium/${stadiumId_Admin}/booking/${stateRef.current.b_id}`
+          );
         }
       }
     } catch (err) {
@@ -166,6 +168,13 @@ const BookingNavbarControl = React.memo(() => {
             <Button
               startIcon={<AssignmentTurnedInIcon />}
               color="inherit"
+              onClick={() => RoutesButton("approve-booking")}
+            >
+              ອະນຸມັດການຈອງ
+            </Button>
+            <Button
+              startIcon={<CancelIcon />}
+              color="inherit"
               onClick={() => RoutesButton("available-canceling")}
             >
               ຍົກເລີກການຈອງ
@@ -176,6 +185,20 @@ const BookingNavbarControl = React.memo(() => {
               onClick={() => RoutesButton("")}
             >
               ການຈອງເດີ່ນທັງໝົດທີ່ຍັງບໍ່ໄດ້ຊຳລະຄ່າ
+            </Button>
+            <Button
+              startIcon={<ListIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("active-approve-booking")}
+            >
+              ການຈອງເດີ່ນທີ່ໄດ້ອະນຸມັດແລ້ວ
+            </Button>
+            <Button
+              startIcon={<ListIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("void-booking")}
+            >
+              ການຈອງທີ່ເປັນໂມຄະ
             </Button>
           </Box>
         </Box>

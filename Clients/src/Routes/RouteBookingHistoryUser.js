@@ -3,6 +3,9 @@ import AllBooking from "../Views/Users/BookingHistory/AllBooking";
 import AllBookingPaid from "../Views/Users/BookingHistory/AllBookingPaid";
 import AllBookingUnPayment from "../Views/Users/BookingHistory/AllBookingUnPayment";
 import CancelingBooking from "../Views/Users/BookingHistory/CancelingBooking";
+import ActiveBooking from "../Views/Users/BookingHistory/ActiveBooking";
+import PendingBooking from "../Views/Users/BookingHistory/PendingBooking";
+import VoidBooking from "../Views/Users/BookingHistory/VoidBooking";
 import { Switch, Redirect, Route } from "react-router-dom";
 
 const RoutesBookingHistoryUser = () => {
@@ -23,6 +26,18 @@ const RoutesBookingHistoryUser = () => {
 
         <PrivateRoutesUsers path="/booking-history/available-canceling">
           <CancelingBooking />
+        </PrivateRoutesUsers>
+
+        <PrivateRoutesUsers path="/booking-history/active-booking">
+          <ActiveBooking />
+        </PrivateRoutesUsers>
+
+        <PrivateRoutesUsers path="/booking-history/pending-booking">
+          <PendingBooking />
+        </PrivateRoutesUsers>
+
+        <PrivateRoutesUsers path="/booking-history/void-booking">
+          <VoidBooking />
         </PrivateRoutesUsers>
 
         <Route path="*">

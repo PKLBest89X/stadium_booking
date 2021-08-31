@@ -12,6 +12,18 @@ const initialState = {
   reportBookingSuccess: null,
   reportBookingError: null,
   reportBookingRequestId: undefined,
+  adminActiveLoading: false,
+  adminActiveSuccess: null,
+  adminActiveError: null,
+  adminActiveData: [],
+  adminPendingLoading: false,
+  adminPendingSuccess: null,
+  adminPendingError: null,
+  adminPendingData: [],
+  adminVoidLoading: false,
+  adminVoidSuccess: null,
+  adminVoidError: null,
+  userVoidData: [],
   filterByDateDataNonAccount: moment(Date.now()).format("YYYY-MM-DD"),
   showByDateData: moment(Date.now()).format("YYYY-MM-DD"),
   searchTyping: "",
@@ -45,6 +57,9 @@ const reportBookingSlice = createSlice({
           bookingId: payload.b_id,
           bookingDate: payload.booking_date,
           bookingCancel: payload.booking_timecancel,
+          depositTimeLimit: payload.booking_timecancel,
+          approveState: payload.approve_state,
+          depositPercent: payload.percent_of_deposit,
           customerName: payload.c_name,
           customerSurname: payload.c_surname,
           customerType: "ໂທຈອງ",
@@ -57,6 +72,9 @@ const reportBookingSlice = createSlice({
           bookingId: payload.b_id,
           bookingDate: payload.booking_date,
           bookingCancel: payload.booking_timecancel,
+          depositTimeLimit: payload.booking_timecancel,
+          approveState: payload.approve_state,
+          depositPercent: payload.percent_of_deposit,
           customerName: payload.c_name,
           customerSurname: payload.c_surname,
           customerType: "ຈອງຜ່ານເວັບ",
@@ -109,6 +127,8 @@ const reportBookingSlice = createSlice({
         );
         if (onPhone.length > 0) {
           state.reportBookingOnPhone = onPhone.length;
+        } else {
+          state.reportBookingOnPhone = 0;
         }
         let onWeb = [];
         onWeb = state.reportPaidData.filter(
@@ -116,9 +136,14 @@ const reportBookingSlice = createSlice({
         );
         if (onWeb.length > 0) {
           state.reportBookingOnWeb = onWeb.length;
+        } else {
+          state.reportBookingOnWeb = 0;
         }
       } else {
         state.reportPaidSuccess = false;
+        state.reportBookingAllValue = 0;
+        state.reportBookingOnPhone = 0;
+        state.reportBookingOnWeb = 0;
       }
     },
     onLoadAdminBookingUnPaid: (state, { payload }) => {
@@ -136,6 +161,8 @@ const reportBookingSlice = createSlice({
         );
         if (onPhone.length > 0) {
           state.reportBookingOnPhone = onPhone.length;
+        } else {
+          state.reportBookingOnPhone = 0;
         }
         let onWeb = [];
         onWeb = state.reportUnPaidData.filter(
@@ -143,12 +170,119 @@ const reportBookingSlice = createSlice({
         );
         if (onWeb.length > 0) {
           state.reportBookingOnWeb = onWeb.length;
+        } else {
+          state.reportBookingOnWeb = 0;
         }
       } else {
         state.reportUnPaidSuccess = false;
+        state.reportBookingAllValue = 0;
+        state.reportBookingOnPhone = 0;
+        state.reportBookingOnWeb = 0;
       }
     },
-
+    onLoadAdminActive: (state, { payload }) => {
+      state.adminActiveData = state.reportBookingData.filter(
+        (items) =>
+          items.sub_status === payload || items.approve_state === "active"
+      );
+      if (state.adminActiveData.length > 0) {
+        state.adminActiveSuccess = true;
+        if (state.adminActiveData.length > 0) {
+          state.reportBookingAllValue = state.adminActiveData.length;
+        }
+        let onPhone = [];
+        onPhone = state.adminActiveData.filter(
+          (items) => items.profile === "ໂທຈອງ"
+        );
+        if (onPhone.length > 0) {
+          state.reportBookingOnPhone = onPhone.length;
+        } else {
+          state.reportBookingOnPhone = 0;
+        }
+        let onWeb = [];
+        onWeb = state.adminActiveData.filter(
+          (items) => items.profile !== "ໂທຈອງ"
+        );
+        if (onWeb.length > 0) {
+          state.reportBookingOnWeb = onWeb.length;
+        } else {
+          state.reportBookingOnWeb = 0;
+        }
+      } else {
+        state.adminActiveSuccess = false;
+        state.reportBookingAllValue = 0;
+        state.reportBookingOnPhone = 0;
+        state.reportBookingOnWeb = 0;
+      }
+    },
+    onLoadAdminPending: (state, { payload }) => {
+      state.adminPendingData = state.reportBookingData.filter(
+        (items) => items.approve_state === payload
+      );
+      if (state.adminPendingData.length > 0) {
+        state.adminPendingSuccess = true;
+        if (state.adminPendingData.length > 0) {
+          state.reportBookingAllValue = state.adminPendingData.length;
+        }
+        let onPhone = [];
+        onPhone = state.adminPendingData.filter(
+          (items) => items.profile === "ໂທຈອງ"
+        );
+        if (onPhone.length > 0) {
+          state.reportBookingOnPhone = onPhone.length;
+        } else {
+          state.reportBookingOnPhone = 0;
+        }
+        let onWeb = [];
+        onWeb = state.adminPendingData.filter(
+          (items) => items.profile !== "ໂທຈອງ"
+        );
+        if (onWeb.length > 0) {
+          state.reportBookingOnWeb = onWeb.length;
+        } else {
+          state.reportBookingOnWeb = 0;
+        }
+      } else {
+        state.adminPendingSuccess = false;
+        state.reportBookingAllValue = 0;
+        state.reportBookingOnPhone = 0;
+        state.reportBookingOnWeb = 0;
+      }
+    },
+    onLoadAdminVoid: (state, { payload }) => {
+      state.adminVoidData = state.reportBookingData.filter(
+        (items) => items.approve_state === payload
+      );
+      if (state.adminVoidData.length > 0) {
+        state.adminVoidSuccess = true;
+        if (state.adminVoidData.length > 0) {
+          state.reportBookingAllValue = state.adminVoidData.length;
+        }
+        let onPhone = [];
+        onPhone = state.adminVoidData.filter(
+          (items) => items.profile === "ໂທຈອງ"
+        );
+        if (onPhone.length > 0) {
+          state.reportBookingOnPhone = onPhone.length;
+        } else {
+          state.reportBookingOnPhone = 0;
+        }
+        let onWeb = [];
+        onWeb = state.adminVoidData.filter(
+          (items) => items.profile !== "ໂທຈອງ"
+        );
+        if (onWeb.length > 0) {
+          state.reportBookingOnWeb = onWeb.length;
+        } else {
+          state.reportBookingOnWeb = 0;
+        }
+      } else {
+        state.adminVoidSuccess = false;
+        state.reportBookingAllValue = 0;
+        state.reportBookingOnPhone = 0;
+        state.reportBookingOnWeb = 0;
+      }
+    },
     onFilterBookingHistoryByDate: (state, { payload }) => {
       state.showByDateData = payload;
       if (state.reportBookingData.length > 0) {
@@ -189,6 +323,50 @@ const reportBookingSlice = createSlice({
           state.reportUnPaidSuccess = true;
         } else {
           state.reportUnPaidSuccess = false;
+        }
+      }
+      //////////ສຳລັບການຈອງທີ່ອະນຸມັດແລ້ວ
+
+      if (state.adminActiveData.length > 0) {
+        state.resultSearchAndSeletedDate = state.adminActiveData.filter(
+          (items) =>
+            moment(items.booking_date).format("YYYY-MM-DD") ===
+            state.showByDateData
+        );
+        if (state.resultSearchAndSeletedDate.length > 0) {
+          state.adminActiveSuccess = true;
+        } else {
+          state.adminActiveSuccess = false;
+        }
+      }
+
+      //////////ສຳລັບການຈອງທີ່ລໍຖ້າອະນຸມັດ
+
+      if (state.adminPendingData.length > 0) {
+        state.resultSearchAndSeletedDate = state.adminPendingData.filter(
+          (items) =>
+            moment(items.booking_date).format("YYYY-MM-DD") ===
+            state.showByDateData
+        );
+        if (state.resultSearchAndSeletedDate.length > 0) {
+          state.adminPendingSuccess = true;
+        } else {
+          state.adminPendingSuccess = false;
+        }
+      }
+
+      //////////ສຳລັບການຈອງທີ່ເປັນໂມຄະ
+
+      if (state.adminVoidData.length > 0) {
+        state.resultSearchAndSeletedDate = state.adminVoidData.filter(
+          (items) =>
+            moment(items.booking_date).format("YYYY-MM-DD") ===
+            state.showByDateData
+        );
+        if (state.resultSearchAndSeletedDate.length > 0) {
+          state.adminVoidSuccess = true;
+        } else {
+          state.adminVoidSuccess = false;
         }
       }
     },
@@ -272,9 +450,23 @@ const reportBookingSlice = createSlice({
         state.reportBookingRequestId = undefined;
         state.reportBookingSuccess = true;
         state.reportBookingData = [];
-        state.reportBookingData = action.payload;
+        state.reportBookingData = action.payload.map((items) => ({
+          ...items,
+          approve_state:
+            (new Date(items.booking_timecancel).getTime() -
+              new Date().getTime() <
+              0 &&
+              items.approve_state === "pending") ||
+            items.sub_status === "void"
+              ? "void"
+              : items.approve_state,
+        }));
         if (state.reportBookingData.length > 0) {
           state.reportBookingAllValue = state.reportBookingData.length;
+        } else {
+          state.reportBookingAllValue = 0;
+          state.reportBookingOnPhone = 0;
+          state.reportBookingOnWeb = 0;
         }
         let onPhone = [];
         onPhone = state.reportBookingData.filter(
@@ -282,6 +474,8 @@ const reportBookingSlice = createSlice({
         );
         if (onPhone.length > 0) {
           state.reportBookingOnPhone = onPhone.length;
+        } else {
+          state.reportBookingOnPhone = 0;
         }
         let onWeb = [];
         onWeb = state.reportBookingData.filter(
@@ -289,6 +483,8 @@ const reportBookingSlice = createSlice({
         );
         if (onWeb.length > 0) {
           state.reportBookingOnWeb = onWeb.length;
+        } else {
+          state.reportBookingOnWeb = 0;
         }
       }
     });
@@ -311,6 +507,9 @@ export const {
   onShowReportBooking,
   onLoadAdminBookingPaid,
   onLoadAdminBookingUnPaid,
+  onLoadAdminActive,
+  onLoadAdminPending,
+  onLoadAdminVoid,
   onFilterBookingHistoryByDate,
   onSearchAllBookingHistory,
   onClearResultSearchAndSeletedDate,

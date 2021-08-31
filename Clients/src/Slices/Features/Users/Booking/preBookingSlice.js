@@ -59,6 +59,7 @@ const preBookingSlice = createSlice({
         state.preStadiumsSuccess = false;
         state.preStadiumsRequestId = undefined;
         state.preStadiumsError = action.payload;
+        state.preStadiumsData = [];
       }
     });
 

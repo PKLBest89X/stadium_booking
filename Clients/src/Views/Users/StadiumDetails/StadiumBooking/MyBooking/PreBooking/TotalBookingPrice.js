@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TotalBookingPrice = forwardRef(
-  ({ timeCancel, totalBookingPrice }, ref) => {
+  ({ percentOfDeposit, timeCancel, totalBookingPrice, totalDeposit }, ref) => {
     const classes = useStyles();
     return (
       <div ref={ref}>
@@ -51,8 +51,6 @@ const TotalBookingPrice = forwardRef(
                 <Box
                   display="flex"
                   justifyContent="space-between"
-                  height="100%"
-                  width="100%"
                   mb={2}
                   mt={2}
                 >
@@ -74,8 +72,40 @@ const TotalBookingPrice = forwardRef(
                 <Box
                   display="flex"
                   justifyContent="space-between"
-                  height="100%"
-                  width="100%"
+                  mb={2}
+                  mt={2}
+                >
+                  <Typography variant="h4" color="textSecondary">
+                    ເປີເຊັນຄ່າມັດຈຳ:{" "}
+                  </Typography>
+                  <Typography variant="h4" color="textSecondary">
+                    {`${percentOfDeposit} %`}
+                  </Typography>
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  mb={2}
+                  mt={2}
+                >
+                  <Typography variant="h4" color="textSecondary">
+                    ເງິນມັດຈຳຕ້ອງຈ່າຍ:{" "}
+                  </Typography>
+                  <NumberFormat
+                    value={totalDeposit}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    suffix={" ກີບ"}
+                    renderText={(value) => (
+                      <Typography variant="h4" color="textSecondary">
+                        {value}
+                      </Typography>
+                    )}
+                  />
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
                   mb={2}
                   mt={2}
                 >
@@ -89,8 +119,19 @@ const TotalBookingPrice = forwardRef(
                 <Box
                   display="flex"
                   justifyContent="space-between"
-                  height="100%"
-                  width="100%"
+                  mb={2}
+                  mt={2}
+                >
+                  <Typography variant="h4" color="textSecondary">
+                    ໄລຍະຈ່າຍຄ່າມັດຈຳ:{" "}
+                  </Typography>
+                  <Typography variant="h4" color="textSecondary">
+                    {`${timeCancel} ຊົ່ວໂມງ`}
+                  </Typography>
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
                   mb={2}
                   mt={2}
                 >

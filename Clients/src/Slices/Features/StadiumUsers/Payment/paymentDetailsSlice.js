@@ -4,6 +4,13 @@ import {
   fetchAddUserNonAccount,
   fetchConfirmBookingNonAccount,
 } from "../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchBookingNonAccount";
+import {
+  fetchAddPaymentFields,
+  fetchAddPaymentWaters,
+  fetchUpdateBookingStatus,
+  fetchUpdateBookingSubStatus,
+  fetchConfirmPayment,
+} from "../../../../middlewares/stadiumUser/fetchPayment/fetchPayment";
 
 const initialState = {
   paymentDetailsLoading: false,
@@ -19,7 +26,9 @@ const initialState = {
   waterDetailsSelected: [],
   totalStadiumPrice: 0,
   totalWaterPrice: 0,
+  baseTotal: 0,
   total: 0,
+  totalDeposit: 0,
   getMoney: 0,
   thonMoney: 0,
   paymentDetailsError: null,
@@ -69,10 +78,15 @@ const paymentDetailsSlice = createSlice({
         (sum, items) => sum + items.sp_price,
         0
       );
-      state.total = state.totalStadiumPrice + state.totalWaterPrice;
+      state.totalDeposit = parseInt(payload.deposit_price);
+      state.baseTotal = state.totalStadiumPrice + state.totalWaterPrice;
+      state.total =
+        state.totalStadiumPrice + state.totalWaterPrice - state.totalDeposit;
       state.thonMoney =
         parseInt(state.getMoney) -
-        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice));
+        (parseInt(state.totalStadiumPrice) +
+          parseInt(state.totalWaterPrice) -
+          state.totalDeposit);
     },
     onSelectedPaymentDetails: (state, { payload }) => {
       const selectedIndex = state.paymentDetailsSelected.findIndex(
@@ -118,15 +132,22 @@ const paymentDetailsSlice = createSlice({
         (sum, items) => sum + items.sp_price,
         0
       );
-      state.total = state.totalStadiumPrice + state.totalWaterPrice;
+      state.baseTotal = state.totalStadiumPrice + state.totalWaterPrice;
+      state.total =
+        state.totalStadiumPrice + state.totalWaterPrice - state.totalDeposit;
       state.thonMoney =
         parseInt(state.getMoney) -
-        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice));
+        (parseInt(state.totalStadiumPrice) +
+          parseInt(state.totalWaterPrice) -
+          state.totalDeposit);
       state.paymentDetailsSelected = [];
       if (state.paymentDetailsData.length === 0) {
         state.selectedPaymentState = false;
+        state.totalDeposit = 0;
         state.totalStadiumPrice = 0;
-        state.total = state.totalStadiumPrice + state.totalWaterPrice;
+        state.baseTotal = state.totalStadiumPrice + state.totalWaterPrice;
+        state.total =
+          state.totalStadiumPrice + state.totalWaterPrice - state.totalDeposit;
       }
     },
 
@@ -218,10 +239,14 @@ const paymentDetailsSlice = createSlice({
         (sum, items) => items.stw_price * items.qty + sum,
         0
       );
-      state.total = state.totalStadiumPrice + state.totalWaterPrice;
+      state.baseTotal = state.totalStadiumPrice + state.totalWaterPrice;
+      state.total =
+        state.totalStadiumPrice + state.totalWaterPrice - state.totalDeposit;
       state.thonMoney =
         parseInt(state.getMoney) -
-        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice));
+        (parseInt(state.totalStadiumPrice) +
+          parseInt(state.totalWaterPrice) -
+          state.totalDeposit);
     },
     onClearWaterDetails: (state) => {
       state.waterDetailsSelected = [];
@@ -236,10 +261,14 @@ const paymentDetailsSlice = createSlice({
         (sum, items) => sum + items.stw_price * items.qty,
         0
       );
-      state.total = state.totalStadiumPrice + state.totalWaterPrice;
+      state.baseTotal = state.totalStadiumPrice + state.totalWaterPrice;
+      state.total =
+        state.totalStadiumPrice + state.totalWaterPrice - state.totalDeposit;
       state.thonMoney =
         parseInt(state.getMoney) -
-        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice));
+        (parseInt(state.totalStadiumPrice) +
+          parseInt(state.totalWaterPrice) -
+          state.totalDeposit);
       state.waterDetailsSelected = [];
     },
     onDeleteSelectedWaterData: (state, { payload }) => {
@@ -250,22 +279,27 @@ const paymentDetailsSlice = createSlice({
         (sum, items) => sum + items.stw_price * items.qty,
         0
       );
-      state.total = state.totalStadiumPrice + state.totalWaterPrice;
+      state.baseTotal = state.totalStadiumPrice + state.totalWaterPrice;
+      state.total =
+        state.totalStadiumPrice + state.totalWaterPrice - state.totalDeposit;
       state.thonMoney =
         parseInt(state.getMoney) -
-        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice));
+        (parseInt(state.totalStadiumPrice) +
+          parseInt(state.totalWaterPrice) -
+          state.totalDeposit);
       state.waterDetailsSelected = [];
       if (state.waterDetailsData.length === 0) {
         state.selectedWaterState = false;
         state.totalWaterPrice = 0;
-        state.total = state.totalStadiumPrice + state.totalWaterPrice;
+        state.baseTotal = state.totalStadiumPrice + state.totalWaterPrice;
+        state.total = state.totalStadiumPrice + state.totalWaterPrice - state.totalDeposit;
       }
     },
     onSaveGetMoney: (state, { payload }) => {
       state.getMoney = parseInt(payload);
       state.thonMoney =
         parseInt(payload) -
-        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice));
+        (parseInt(state.totalStadiumPrice) + parseInt(state.totalWaterPrice) - parseInt(state.totalDeposit));
     },
   },
   extraReducers: (builder) => {

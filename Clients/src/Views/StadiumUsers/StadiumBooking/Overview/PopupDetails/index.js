@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Typography, Box, Button, Divider } from "@material-ui/core";
@@ -6,6 +6,7 @@ import { useShallowEqualSelector } from "../../../../../Components/useShallowEqu
 import { useParams } from "react-router-dom";
 
 import { fetchGetStadium } from "../../../../../middlewares/stadiumUser/fetchCRUDStadium/fetchCRUDStadium";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 import { useDispatch } from "react-redux";
 import {
@@ -20,7 +21,14 @@ import Details from "./Details";
 import OtherDetails from "./OtherDetails";
 import { onPopupClose } from "../../../../../Slices/Features/Popup/popupSlice";
 import { fetchCancelBookingNonAccount } from "../../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchCancelBookingNonAccount";
-import { onCancelBookingNonAccount } from "../../../../../Slices/Features/StadiumUsers/BookingForNoAccount/preBookingNonAccountSlice";
+import {
+  onConfirmApprovingBooking,
+  onCancelBookingNonAccount,
+} from "../../../../../Slices/Features/StadiumUsers/BookingForNoAccount/preBookingNonAccountSlice";
+import {
+  fetchApproveBookingSubStatus,
+  fetchConfirmApprovingBooking,
+} from "../../../../../middlewares/stadiumUser/fetchBookingForNonAccount/fetchApproveBooking";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
@@ -46,6 +54,8 @@ const PopupDetails = React.memo(() => {
     showBookingDetails,
     showOtherBookingDetails,
     otherDetailsState,
+    findPendingBooking,
+    findPendingOtherBooking,
     information,
   } = useShallowEqualSelector((state) => state.preBookingNonAccount);
 
@@ -64,7 +74,6 @@ const PopupDetails = React.memo(() => {
     return () => dispatch(onMessageClose());
   }, [dispatch]);
 
-
   let alertCantCancel = null;
   if (messageAlert === "alertCantCancelBooking" && messageState === true) {
     alertCantCancel = (
@@ -82,6 +91,95 @@ const PopupDetails = React.memo(() => {
       return -1;
     }
     return 1;
+  };
+
+  const fetchingUpdateBookingSubStatus = useCallback(
+    async (
+      array1,
+      array2,
+      otherDetailsState,
+      findPendingOtherBooking,
+      findPendingBooking
+    ) => {
+      try {
+        let remainData = [];
+        if (
+          otherDetailsState === true &&
+          findPendingOtherBooking === "pending" &&
+          findPendingBooking === ""
+        ) {
+          remainData = array2;
+        } else if (
+          otherDetailsState === true &&
+          findPendingOtherBooking === "" &&
+          findPendingBooking === "pending"
+        ) {
+          remainData = array1;
+        } else if (
+          otherDetailsState === true &&
+          findPendingOtherBooking === "pending" &&
+          findPendingBooking === "pending"
+        ) {
+          remainData = remainData.concat(array1, array2);
+        }
+        if (remainData.length > 0) {
+          const updateBookingSubStatus = await dispatch(
+            fetchApproveBookingSubStatus(remainData)
+          );
+          const getResponse = unwrapResult(updateBookingSubStatus);
+          return getResponse;
+        }
+      } catch (err) {
+        console.log(err);
+        return 0;
+      }
+    },
+    [dispatch]
+  );
+
+  const fetchingUpdateBookingStatus = useCallback(
+    async (data) => {
+      try {
+        const updateRequest = {
+          stadiumId: stadiumId_Admin,
+          requestData: data,
+        };
+        const updateBookingStatus = await dispatch(
+          fetchConfirmApprovingBooking(updateRequest)
+        );
+        const getResponse = unwrapResult(updateBookingStatus);
+        return getResponse;
+      } catch (err) {
+        console.log(err);
+        return 0;
+      }
+    },
+    [dispatch, stadiumId_Admin]
+  );
+
+  const goBackAfterAcceptPayment = useCallback(async () => {
+    dispatch(onPopupClose());
+    dispatch(onNotiOpen("successApproveBooking"));
+  }, [dispatch]);
+
+  const confirmApproveBooking = async (payload) => {
+    const getCompareResult = compareTime(payload.bookingCancel);
+    if (getCompareResult === -1) return dispatch(onMessageOpen(""));
+    if (getCompareResult === 1) {
+      try {
+        await fetchingUpdateBookingSubStatus(
+          showBookingDetails,
+          showOtherBookingDetails,
+          otherDetailsState,
+          findPendingOtherBooking,
+          findPendingBooking
+        );
+        await fetchingUpdateBookingStatus(payload);
+        goBackAfterAcceptPayment();
+      } catch (err) {
+        console.log(err);
+      }
+    }
   };
 
   const cancel = async (payload) => {
@@ -145,6 +243,20 @@ const PopupDetails = React.memo(() => {
         justifyContent="flex-end"
         alignItems="center"
       >
+        {(findPendingBooking === "pending" ||
+          findPendingOtherBooking === "pending") && (
+          <Box mt={3} marginRight=".5rem">
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              onClick={() => confirmApproveBooking(information)}
+            >
+              ອະນຸມັດການຈອງ
+            </Button>
+          </Box>
+        )}
+
         <Box mt={3}>
           <Button
             type="submit"

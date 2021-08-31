@@ -166,6 +166,7 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
     const district = req.body.district;
     const province = req.body.province;
     const time_cancel = req.body.time_cancelbooking;
+    const persent_deposit = req.body.persent_deposit;
     const phone = req.body.phone
     
     db.query("select MAX(st_id) as mid from tbstadium", (err,result) => {
@@ -205,7 +206,7 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
                         const img = sampleFile.name;
                         db.query("call check_config_code(?)", [configcode], (err, result) => {
                             if (result[0].length > 0) return res.status(400).send("ລະຫັດນີ້ຖືກໃຊ້ແລ້ວ!!")})
-                        db.query("call stadium_add(?,?,?,?,?,?,?,?,?,?,?)", [stadium_id,stadium_name,description,configcode,village,district,province,time_cancel,lg,img, phone], (err,result) => {
+                        db.query("call stadium_add(?,?,?,?,?,?,?,?,?,?,?,?)", [stadium_id,stadium_name,description,configcode,village,district,province,time_cancel,persent_deposit,lg,img, phone], (err,result) => {
                             if(err){
                                 res.status(400)
                                 console.log(err);
@@ -280,7 +281,7 @@ router.post('/stadium_add', verifyToken, async function(req,res,next){
                         const img = sampleFile.name;
                         db.query("call check_config_code(?)", [configcode], (err, result) => {
                             if (result[0].length > 0) return res.status(400).send("ລະຫັດນີ້ຖືກໃຊ້ແລ້ວ!!")})
-                        db.query("call stadium_add(?,?,?,?,?,?,?,?,?,?,?)", [stadium_id,stadium_name,description,configcode,village,district,province,time_cancel,lg,img,phone], (err,result) => {
+                        db.query("call stadium_add(?,?,?,?,?,?,?,?,?,?,?,?)", [stadium_id,stadium_name,description,configcode,village,district,province,time_cancel,persent_deposit,lg,img,phone], (err,result) => {
                             if(err){
                                 res.status(400)
                                 console.log(err);
@@ -356,13 +357,14 @@ router.put('/edit', async function(req,res,next){
     const district = req.body.district;
     const province = req.body.province;
     const time_cancel = req.body.time_cancelbooking;
+    const persent_deposit = req.body.persent_deposit;
     const logo_old = req.body.logo_pic;
     const img_old = req.body.picture;
     const stadium_status = req.body.status;
     const phone = req.body.phone
 
     if(!req.files){
-        db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,logo_old,img_old,stadium_status,phone,stadium_id], (err,result) => {
+        db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,persent_deposit,logo_old,img_old,stadium_status,phone,stadium_id], (err,result) => {
             if(err){
                 res.status(400)
                 console.log(err);
@@ -382,7 +384,7 @@ router.put('/edit', async function(req,res,next){
                 if(err) return res.status(500).send(err);
                 
                 const im = sampleFile.name;
-                db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,logo_old,im,stadium_status,phone,stadium_id], (err,result) => {
+                db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,persent_deposit,logo_old,im,stadium_status,phone,stadium_id], (err,result) => {
                     if(err){
                         res.status(400)
                         console.log(err);
@@ -409,7 +411,7 @@ router.put('/edit', async function(req,res,next){
 
                 const lg = logo.name;
                 
-                db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,lg,img_old,stadium_status,phone,stadium_id], (err,result) => {
+                db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,persent_deposit,lg,img_old,stadium_status,phone,stadium_id], (err,result) => {
                     if(err){
                         res.status(400)
                         console.log(err);
@@ -445,7 +447,7 @@ router.put('/edit', async function(req,res,next){
                     if(err) return res.status(500).send(err);
                     
                     const im = sampleFile.name;
-                    db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,lg,im,stadium_status,phone,stadium_id], (err,result) => {
+                    db.query("call stadium_update(?,?,?,?,?,?,?,?,?,?,?,?)", [stadium_name,description,village,district,province,time_cancel,persent_deposit,lg,im,stadium_status,phone,stadium_id], (err,result) => {
                         if(err){
                             res.status(400)
                             console.log(err);

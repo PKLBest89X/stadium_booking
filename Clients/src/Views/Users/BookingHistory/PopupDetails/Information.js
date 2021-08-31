@@ -11,6 +11,7 @@ import {
   Button,
 } from "@material-ui/core";
 import moment from "moment";
+import NumberFormat from "react-number-format";
 
 const Information = React.memo(() => {
   const { bookingInfo } = useShallowEqualSelector(
@@ -63,6 +64,46 @@ const Information = React.memo(() => {
                   {`${bookingInfo.stadiumTel}`}
                 </Typography>
               </Box>
+              <Box display="flex" justifyContent="space-between" mb={2} mt={2}>
+                <Typography variant="h4" color="textSecondary">
+                  ລາຄາລວມ:{" "}
+                </Typography>
+                <NumberFormat
+                  value={bookingInfo.total}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  suffix={" ກີບ"}
+                  renderText={(value) => (
+                    <Typography variant="h4" color="textSecondary">
+                      {value}
+                    </Typography>
+                  )}
+                />
+              </Box>
+              <Box display="flex" justifyContent="space-between" mb={2} mt={2}>
+                <Typography variant="h4" color="textSecondary">
+                  ເປີເຊັນຄ່າມັດຈຳ:{" "}
+                </Typography>
+                <Typography variant="h4" color="textSecondary">
+                  {`${bookingInfo.depositPercent} %`}
+                </Typography>
+              </Box>
+              <Box display="flex" justifyContent="space-between" mb={2} mt={2}>
+                <Typography variant="h4" color="textSecondary">
+                  ເງິນມັດຈຳຕ້ອງຈ່າຍ:{" "}
+                </Typography>
+                <NumberFormat
+                  value={bookingInfo.totalDeposit}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  suffix={" ກີບ"}
+                  renderText={(value) => (
+                    <Typography variant="h4" color="textSecondary">
+                      {value}
+                    </Typography>
+                  )}
+                />
+              </Box>
               <Box
                 display="flex"
                 justifyContent="space-between"
@@ -75,6 +116,16 @@ const Information = React.memo(() => {
                 </Typography>
                 <Typography variant="h4" color="textSecondary">
                   {`${moment(bookingInfo.bookingDate).format("MM-DD-YYYY, h:mm:ss a")}`}
+                </Typography>
+              </Box>
+              <Box display="flex" justifyContent="space-between" mb={2} mt={2}>
+                <Typography variant="h4" color="textSecondary">
+                  ໄລຍະຈ່າຍຄ່າມັດຈຳ:{" "}
+                </Typography>
+                <Typography variant="h4" color="textSecondary">
+                  {`${moment(bookingInfo.depositTimeLimit).format(
+                    "MM-DD-YYYY, h:mm:ss a"
+                  )}`}
                 </Typography>
               </Box>
               <Box

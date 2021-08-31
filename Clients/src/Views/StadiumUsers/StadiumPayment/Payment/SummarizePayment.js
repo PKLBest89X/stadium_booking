@@ -37,7 +37,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SummarizePayment = forwardRef(
-  ({ totalStadiumPrice, totalWaterPrice, total }, ref) => {
+  (
+    { totalStadiumPrice, totalWaterPrice, baseTotal, total, totalDeposit },
+    ref
+  ) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { data } = useShallowEqualSelector((state) => state.auth);
@@ -170,6 +173,50 @@ const SummarizePayment = forwardRef(
                 >
                   <Typography variant="h4" color="textSecondary">
                     ລວມທັງໝົດ:{" "}
+                  </Typography>
+                  <NumberFormat
+                    value={baseTotal}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    suffix={" ກີບ"}
+                    renderText={(value) => (
+                      <Typography variant="h4" color="textSecondary">
+                        {value}
+                      </Typography>
+                    )}
+                  />
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb={2}
+                  mt={2}
+                >
+                  <Typography variant="h4" color="textSecondary">
+                    ຄ່າມັດຈຳທີ່ຈ່າຍ:{" "}
+                  </Typography>
+                  <NumberFormat
+                    value={totalDeposit}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    suffix={" ກີບ"}
+                    renderText={(value) => (
+                      <Typography variant="h4" color="textSecondary">
+                        {value}
+                      </Typography>
+                    )}
+                  />
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb={2}
+                  mt={2}
+                >
+                  <Typography variant="h4" color="textSecondary">
+                    ລວມສຸດທິ:{" "}
                   </Typography>
                   <NumberFormat
                     value={total}

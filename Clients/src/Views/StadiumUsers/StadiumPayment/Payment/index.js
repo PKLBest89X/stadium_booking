@@ -69,7 +69,9 @@ const BookingView = React.memo(({ ...rest }) => {
     waterDetailsSelected,
     totalStadiumPrice,
     totalWaterPrice,
+    baseTotal,
     total,
+    totalDeposit,
     getMoney,
     customerInfo,
   } = useShallowEqualSelector((state) => state.paymentDetails);
@@ -152,7 +154,9 @@ const BookingView = React.memo(({ ...rest }) => {
         <ConfirmPayment
           totalStadiumPrice={totalStadiumPrice}
           totalWaterPrice={totalWaterPrice}
+          baseTotal={baseTotal}
           total={total}
+          totalDeposit={totalDeposit}
         />
       </PopupLayout>
     );
@@ -253,7 +257,9 @@ const BookingView = React.memo(({ ...rest }) => {
                   <SummarizePayment
                     totalStadiumPrice={totalStadiumPrice}
                     totalWaterPrice={totalWaterPrice}
+                    baseTotal={baseTotal}
                     total={total}
+                    totalDeposit={totalDeposit}
                     ref={totalPaymentPriceRef}
                   />
                 </Paper>

@@ -26,7 +26,6 @@ import {
   onMessageClose,
   onNotiOpen,
 } from "../../../../../../Slices/Features/Notification/NotificationSlice";
-import { onMessageOpen } from "../../../../../../Slices/Features/Notification/NotificationSlice";
 
 import { onPopupClose } from "../../../../../../Slices/Features/Popup/popupSlice";
 import { useHistory } from "react-router-dom";
@@ -36,7 +35,7 @@ import PaymentDetails from "./PaymentDetails";
 import WaterPaymentDetails from "./WaterPaymentDetails";
 import BillFooter from "./BillFooter";
 
-import ReactToPrint, { useReactToPrint } from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 
 const useStyles = makeStyles(() => ({
   pageContainer: {
@@ -55,7 +54,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const ConfirmPayment = React.memo(
-  ({ totalStadiumPrice, totalWaterPrice, total }) => {
+  ({ totalStadiumPrice, totalWaterPrice, baseTotal, total, totalDeposit }) => {
     const classes = useStyles();
     let history = useHistory();
     const componentRef = useRef();
@@ -237,16 +236,13 @@ const ConfirmPayment = React.memo(
     }, [dispatch, history, stadiumId_Admin]);
 
     const confirmPayment = useCallback(
-      (event) => {
-        event.preventDefault();
-
-        if (confirmCheckBox === true)
-          return dispatch(onMessageOpen("alertPrint"));
+      async (handlePrint) => {
+        if (confirmCheckBox === true) await handlePrint();
 
         if (paymentDetailsData.length > 0 && waterDetailsData.length === 0) {
           try {
-            fetchingAddPaymentDetails(paymentDetailsData);
-            fetchingUpdateBookingSubStatus(
+            await fetchingAddPaymentDetails(paymentDetailsData);
+            await fetchingUpdateBookingSubStatus(
               getAllBookingDetailsData,
               paymentDetailsData
             );
@@ -256,14 +252,14 @@ const ConfirmPayment = React.memo(
               total_waterPrice: totalWaterPrice,
               total_stadiumPrice: totalStadiumPrice,
             };
-            fetchingConfirmPayment(requestData);
+            await fetchingConfirmPayment(requestData);
             let check = findingBookingFromPaymentDetails(
               customerInfo.bookingId,
               getAllBookingDetailsData,
               paymentDetailsData
             );
             if (check === 1) {
-              fetchingUpdateBookingStatus(customerInfo.bookingId);
+              await fetchingUpdateBookingStatus(customerInfo.bookingId);
               goBackAfterAcceptPayment();
             } else if (check === 0) {
               goBackAfterAcceptPayment();
@@ -276,9 +272,9 @@ const ConfirmPayment = React.memo(
 
         if (paymentDetailsData.length > 0 && waterDetailsData.length > 0) {
           try {
-            fetchingAddPaymentDetails(paymentDetailsData);
-            fetchingAddWaterDetails(waterDetailsData);
-            fetchingUpdateBookingSubStatus(
+            await fetchingAddPaymentDetails(paymentDetailsData);
+            await fetchingAddWaterDetails(waterDetailsData);
+            await fetchingUpdateBookingSubStatus(
               getAllBookingDetailsData,
               paymentDetailsData
             );
@@ -288,14 +284,14 @@ const ConfirmPayment = React.memo(
               total_waterPrice: totalWaterPrice,
               total_stadiumPrice: totalStadiumPrice,
             };
-            fetchingConfirmPayment(requestData);
+            await fetchingConfirmPayment(requestData);
             let check2 = findingBookingFromPaymentDetails(
               customerInfo.bookingId,
               getAllBookingDetailsData,
               paymentDetailsData
             );
             if (check2 === 1) {
-              fetchingUpdateBookingStatus(customerInfo.bookingId);
+              await fetchingUpdateBookingStatus(customerInfo.bookingId);
               goBackAfterAcceptPayment();
             } else if (check2 === 0) {
               goBackAfterAcceptPayment();
@@ -303,21 +299,10 @@ const ConfirmPayment = React.memo(
           } catch (err) {
             console.log(err);
           }
-
-          return;
-        }
-
-        if (paymentDetailsData.length === 0 && waterDetailsData.length > 0) {
-          try {
-          } catch (err) {
-            console.log(err);
-          }
-          return;
         }
       },
       [
         confirmCheckBox,
-        dispatch,
         getAllBookingDetailsData,
         paymentDetailsData,
         waterDetailsData,
@@ -390,7 +375,9 @@ const ConfirmPayment = React.memo(
                   totalStadiumPrice={totalStadiumPrice}
                   totalWaterPrice={totalWaterPrice}
                   employee={stateUserRef.current}
+                  baseTotal={baseTotal}
                   total={total}
+                  totalDeposit={totalDeposit}
                 />
               </Box>
             </Box>
@@ -424,24 +411,11 @@ const ConfirmPayment = React.memo(
               type="submit"
               color="primary"
               variant="contained"
-              onClick={confirmPayment}
+              onClick={() => confirmPayment(handlePrint)}
             >
               ຢືນຢັນ
             </Button>
           </Box>
-
-          {confirmCheckBox === true && (
-            <ReactToPrint
-              trigger={() => (
-                <Box marginLeft=".5rem">
-                  <Button color="primary" variant="contained">
-                    Print ໃບບິນ
-                  </Button>
-                </Box>
-              )}
-              content={() => componentRef.current}
-            />
-          )}
         </Box>
       </>
     );

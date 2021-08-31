@@ -12,9 +12,13 @@ import { Box, Typography } from "@material-ui/core";
 import { fetchGetCurrentBooking } from "../../../../../middlewares/user/fetchBooking/fetchBooking";
 import PopupLayout from "../../../../../Components/PopupLayout";
 import NotificationAlert from "../../../../../Components/NotificationAlert";
-import { onPopupOpen, onTabOpen } from "../../../../../Slices/Features/Popup/popupSlice";
+import {
+  onPopupOpen,
+  onTabOpen,
+} from "../../../../../Slices/Features/Popup/popupSlice";
 
 import AlreadyBooking from "./AlreadyBooking";
+import PendingBooking from "./PendingBooking";
 import PreBooking from "./PreBooking";
 import ConfirmBooking from "./ConfirmBooking";
 
@@ -24,7 +28,9 @@ const MyBooking = React.memo(() => {
     (state) => state.validBookingData
   );
   const { bookingData } = useShallowEqualSelector((state) => state.booking);
-  const { alertCompareTime } = useShallowEqualSelector((state) => state.bookingDetails);
+  const { alertCompareTime } = useShallowEqualSelector(
+    (state) => state.bookingDetails
+  );
   const { popupName, isOpen } = useShallowEqualSelector((state) => state.popup);
   const { notiName, notiState } = useShallowEqualSelector(
     (state) => state.notification
@@ -77,11 +83,20 @@ const MyBooking = React.memo(() => {
     }
   }, [dispatch, bookingId]);
 
-  useEffect(() => dispatch(onTabOpen("tabBackToOverviewBooking")))
+  useEffect(() => dispatch(onTabOpen("tabBackToOverviewBooking")));
 
   useMemo(
     () => bookingData.forEach((items) => (stateRef.current = items)),
     [bookingData]
+  );
+
+  const { feedStadiumData } = useShallowEqualSelector(
+    (state) => state.feedStadium
+  );
+  const stateRef2 = useRef(feedStadiumData);
+  useMemo(
+    () => feedStadiumData.forEach((items) => (stateRef2.current = items)),
+    [feedStadiumData]
   );
 
   let conformBookingForm = null;
@@ -109,7 +124,9 @@ const MyBooking = React.memo(() => {
   let compareBookingTime = null;
   if (notiName === "compareWithCurrentTime" && notiState === true) {
     compareBookingTime = (
-      <NotificationAlert notiTitle="ຕ້ອງຈອງກ່ອນເຕະ 1 ຊົ່ວໂມງ, ເບິ່ງແດ່ເວລາຫັ້ນ!">
+      <NotificationAlert
+        notiTitle={`ຕ້ອງຈອງກ່ອນເຕະ ${stateRef2.current.time_cancelbooking} ຊົ່ວໂມງ, ເບິ່ງແດ່ເວລາຫັ້ນ!`}
+      >
         {alertCompareTime.map((items, index) => {
           return (
             <Box key={index} display="flex" alignItems="center">
@@ -150,7 +167,11 @@ const MyBooking = React.memo(() => {
         {stateRef.current.booking_status === "ຍັງບໍ່ຈອງ" &&
           stateRef.current.paid_status === "ຍັງບໍ່ຈ່າຍ" && <PreBooking />}
         {stateRef.current.booking_status === "ຈອງແລ້ວ" &&
-          stateRef.current.paid_status === "ຍັງບໍ່ຈ່າຍ" && <AlreadyBooking />}
+          stateRef.current.paid_status === "ຍັງບໍ່ຈ່າຍ" &&
+          stateRef.current.approve_state === "pending" && <PendingBooking />}
+        {stateRef.current.booking_status === "ຈອງແລ້ວ" &&
+          stateRef.current.paid_status === "ຍັງບໍ່ຈ່າຍ" &&
+          stateRef.current.approve_state === "active" && <AlreadyBooking />}
       </ChildPageLayout>
     </>
   );

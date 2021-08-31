@@ -50,6 +50,9 @@ const useStyles = makeStyles(() => ({
   paid: {
     color: colors.green[900],
   },
+  pending: {
+    color: colors.yellow[800],
+  },
   notYet: {
     color: colors.red[600],
   },
@@ -57,9 +60,9 @@ const useStyles = makeStyles(() => ({
 
 const OtherDetails = React.memo(({ data }) => {
   const classes = useStyles();
-  // const { paymentDetailsData } = useShallowEqualSelector(
-  //   (state) => state.paymentDetails
-  // );
+  const { bookingInfo } = useShallowEqualSelector(
+    (state) => state.bookingHistory
+  );
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(-1);
   const emptyRows =
@@ -132,6 +135,24 @@ const OtherDetails = React.memo(({ data }) => {
                   {row.sub_status === "ຍັງບໍ່ເຕະ" && (
                     <Typography className={classes.notYet} variant="h5">
                       ຍັງບໍ່ຈ່າຍ
+                    </Typography>
+                  )}
+                  {row.sub_status === "pending" &&
+                    (bookingInfo.approveState !== "void" ||
+                      new Date(row.booking_timecancel).getTime() -
+                        new Date().getTime() >
+                        0) && (
+                      <Typography className={classes.pending} variant="h5">
+                        ລໍຖ້າອະນຸມັດ
+                      </Typography>
+                    )}
+                  {(row.sub_status === "void" ||
+                    (row.sub_status === "pending" &&
+                      new Date(row.booking_timecancel).getTime() -
+                        new Date().getTime() <
+                        0)) && (
+                    <Typography className={classes.notYet} variant="h5">
+                      ໂມຄະ
                     </Typography>
                   )}
                 </TableCell>

@@ -56,7 +56,7 @@ const AlreadyBooking = () => {
         <LibraryAddCheckIcon className={classes.bookingIcon} />
         <div className={classes.textContainer}>
           <Typography variant="h3" color="textSecondary">
-            ທ່ານໄດ້ມີການຈອງເດີ່ນແລ້ວ!!
+            ການຈອງເດີ່ນຂອງທ່ານໄດ້ຮັບການອະນຸມັດແລ້ວ!!
           </Typography>
           <Typography variant="h5" color="textSecondary">
             ການຈອງເດີ່ນປັດຈຸບັນຂອງທ່ານແມ່ນຍັງບໍ່ໄດ້ດຳເນີນການຊຳລະຄ່າເດີ່ນ,

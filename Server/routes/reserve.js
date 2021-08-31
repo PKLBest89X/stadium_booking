@@ -78,6 +78,56 @@ router.get('/getBookingDetailsNonAccountList/:stadiumId', async function(req,res
 }) // ສະແດງລາຍກາ່ນຈອງທັງໝົດຂອງເດີ່ນນັ້ນໆ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
+router.get('/getActiveApprovingBooking/:stadiumId', async function(req,res,next){
+    const sid = req.params.stadiumId;
+
+    await db.query("call bookingNonAccount_getActiveApproveBooking(?)" , [sid], (err,result) => {
+        if(err){
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+}) // ສະແດງລາຍກາ່ນຈອງທີ່ໄດ້ອະນຸມັດແລ້ວດ້ວຍການຮັບເງິນມັດຈຳ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+router.get('/getUnActiveApprovingBooking/:stadiumId', async function(req,res,next){
+    const sid = req.params.stadiumId;
+
+    await db.query("call bookingNonAccount_getUnActiveApproveBooking(?)" , [sid], (err,result) => {
+        if(err){
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+}) // ສະແດງລາຍກາ່ນຈອງທີ່ຍັງບໍ່ໄດ້ອະນຸມັດ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+router.get('/getVoidBookingNonAccount/:stadiumId', async function(req,res,next){
+    const sid = req.params.stadiumId;
+
+    await db.query("call bookingNonAccount_getVoidBooking(?)" , [sid], (err,result) => {
+        if(err){
+            console.log(err);
+            return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+        }
+        if (result[0].length > 0) {
+            return res.send(result[0])
+        } else {
+            return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+        }
+    })
+}) // ສະແດງລາຍກາ່ນຈອງທີ່ຍັງບໍ່ໄດ້ອະນຸມັດ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
 router.get('/getStadiumDetailsToBookingForNonAccount/:st_id', async function(req,res,next){
     const stadium_id = req.params.st_id;
     await db.query("call field(?)", [stadium_id] , (err,result) => {
@@ -257,6 +307,74 @@ router.put('/acceptForNonAccount/:stadiumId/:bookingId', async (req,res) => {
 
     
 }) // ຢືນຢັນການຈອງ ||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+router.put('/approveBooking/updateBookingSubStatus', async (req, res) => {
+    const data = req.body.data;
+    for(let i=0; i<data.length; i++){
+        db.query("call approveBooking_updateBookingSubStatus(?,?,?)", [data[i].std_id,data[i].td_id,data[i].kickoff_date], (err2,result1) => {
+            if(err2){
+                console.log(err2)
+                return res.status(400).send(err2);
+            }
+        }) // ເພີ່ມຂໍ້ມູນເດີ່ນທີ່ຈອງໂດຍພະນັກງານ
+    }
+
+    for(let i=0; i<data.length; i++){
+        db.query("call approveBooking_approveBookingSubStatus(?,?,?,?)", [data[i].b_id,data[i].std_id,data[i].td_id,data[i].kickoff_date], (err2,result1) => {
+            if(err2){
+                console.log(err2)
+                return res.status(400).send(err2);
+            }
+        }) // ເພີ່ມຂໍ້ມູນເດີ່ນທີ່ຈອງໂດຍພະນັກງານ
+    }
+    res.sendStatus(200)
+})//ການປັບ status ຂອງລາຍລະອຽດຈອງ
+
+
+router.put('/confirmApprovingBooking/:stadiumId/:b_id', async (req,res) => {
+    const stadiumId = req.params.stadiumId;
+    const book_id = req.params.b_id;
+    const deposit_price = req.body.deposit_price;
+    await db.query("call cancel_reserve(?)", [book_id], async (err, result) => { //ກວດສອບລາຍການຈອງດັ່ງກ່າວ ວ່າສາມາດອະນຸມັດໄດ້ບໍ່ 
+                                                                            //if = 0 man yok lerk br dai // if = 1 man yok lerk dai
+        if(err){
+            res.status(400)
+            console.log(err);
+            res.send("Something Wrong")
+        }else{
+            if(result[0][0].c===1){
+                
+                await db.query("call approveBooking_confirmApprovingBooking(?,?)", [book_id, deposit_price], async (err1, result) => {   //ຍົກເລີກໃນຂໍ້ມູນການຈອງຂອງເດີ່ນໃນສະໜາມ
+                    if(err1){
+                        res.status(400)
+                        console.log(err1);
+                        res.send("Something Wrong")
+                    }else{
+                        await db.query("call bookingNonAccount_getBookingDetailsList(?)" , [stadiumId], (err,result) => {
+                            if(err){
+                                console.log(err);
+                                return res.status(400).send('ເກີດຂໍ້ຜິດພາດ!!');
+                            }
+                            if (result[0].length > 0) {
+                                return res.send(result[0])
+                            } else {
+                                return res.status(302).send('ບໍ່ມີຂໍ້ມູນ!!')
+                            }
+                        })
+                    }
+                })
+                
+            }else{
+                res.status(400);
+                res.send("ບໍ່ສາມາດອະນຸມັດໄດ້");
+            }
+        }
+    })
+
+    
+}) //  // ອະນຸມັດການຈອງເດີ່ນ ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
 // CHECK IF DATE CAN CANCEL : SELECT booking_timecancel>=now() from `tbbooking` where b_id='stt1' // if = 0 man yok lerk br dai // if = 1 man yok lerk dai 

@@ -31,6 +31,18 @@ const initialState = {
   bookingHistoryDetailsSuccess: null,
   bookingHistoryDetailsError: null,
   bookingHistoryDetailsRequestId: undefined,
+  userActiveLoading: false,
+  userActiveSuccess: null,
+  userActiveError: null,
+  userActiveData: [],
+  userPendingLoading: false,
+  userPendingSuccess: null,
+  userPendingError: null,
+  userPendingData: [],
+  userVoidLoading: false,
+  userVoidSuccess: null,
+  userVoidError: null,
+  userVoidData: [],
   showByDateData: moment(Date.now()).format("YYYY-MM-DD"),
   searchTyping: "",
   resultSearchAndSeletedDate: [],
@@ -41,6 +53,11 @@ const initialState = {
     bookingId: "",
     bookingDate: "",
     bookingCancel: "",
+    depositTimeLimit: "",
+    approveState: "",
+    depositPercent: 0,
+    total: 0,
+    totalDeposit: 0,
     stadiumName: "",
     stadiumTel: "",
     stadiumLogo: "",
@@ -57,6 +74,9 @@ const bookingHistorySlice = createSlice({
         bookingId: payload.b_id,
         bookingDate: payload.booking_date,
         bookingCancel: payload.booking_timecancel,
+        depositTimeLimit: payload.booking_timecancel,
+        approveState: payload.approve_state,
+        depositPercent: payload.percent_of_deposit,
         stadiumName: payload.st_name,
         stadiumTel: payload.phone,
         stadiumLogo: payload.logo,
@@ -89,6 +109,15 @@ const bookingHistorySlice = createSlice({
       } else {
         state.otherBookingState = false;
       }
+      state.bookingInfo.total = otherDataSameBooking.reduce(
+        (sum, items) =>
+          items.sub_status === "pending" || items.sub_status === "ຍັງບໍ່ເຕະ" || items.sub_status === "ເຕະແລ້ວ"
+            ? sum + items.sp_price
+            : sum,
+        0
+      );
+      state.bookingInfo.totalDeposit =
+        (state.bookingInfo.total * parseInt(payload.percent_of_deposit)) / 100;
     },
     onCancelBooking: (state, { payload }) => {
       let afterDeleted = [];
@@ -115,12 +144,46 @@ const bookingHistorySlice = createSlice({
     },
     onLoadUserBookingUnPaid: (state, { payload }) => {
       state.userUnPaidData = state.bookingHistoryDetailsData.filter(
-        (items) => items.sub_status === payload
+        (items) =>
+          items.sub_status === payload ||
+          items.sub_status === "void" ||
+          items.sub_status === "pending"
       );
       if (state.userUnPaidData.length > 0) {
         state.userUnPaidSuccess = true;
       } else {
         state.userUnPaidSuccess = false;
+      }
+    },
+    onLoadUserActiveBooking: (state, { payload }) => {
+      state.userActiveData = state.bookingHistoryDetailsData.filter(
+        (items) =>
+          items.sub_status === payload || items.approve_state === "active"
+      );
+      if (state.userActiveData.length > 0) {
+        state.userActiveSuccess = true;
+      } else {
+        state.userActiveSuccess = false;
+      }
+    },
+    onLoadUserPendingBooking: (state, { payload }) => {
+      state.userPendingData = state.bookingHistoryDetailsData.filter(
+        (items) => items.approve_state === payload
+      );
+      if (state.userPendingData.length > 0) {
+        state.userPendingSuccess = true;
+      } else {
+        state.userPendingSuccess = false;
+      }
+    },
+    onLoadUserVoidBooking: (state, { payload }) => {
+      state.userVoidData = state.bookingHistoryDetailsData.filter(
+        (items) => items.approve_state === payload
+      );
+      if (state.userVoidData.length > 0) {
+        state.userVoidSuccess = true;
+      } else {
+        state.userVoidSuccess = false;
       }
     },
     onFilterBookingHistoryByDate: (state, { payload }) => {
@@ -164,6 +227,51 @@ const bookingHistorySlice = createSlice({
           state.userUnPaidSuccess = true;
         } else {
           state.userUnPaidSuccess = false;
+        }
+      }
+
+      //////////ສຳລັບການຈອງທີ່ອະນຸມັດແລ້ວ
+
+      if (state.userActiveData.length > 0) {
+        state.resultSearchAndSeletedDate = state.userActiveData.filter(
+          (items) =>
+            moment(items.booking_date).format("YYYY-MM-DD") ===
+            state.showByDateData
+        );
+        if (state.resultSearchAndSeletedDate.length > 0) {
+          state.userActiveSuccess = true;
+        } else {
+          state.userActiveSuccess = false;
+        }
+      }
+
+      //////////ສຳລັບການຈອງທີ່ລໍຖ້າອະນຸມັດ
+
+      if (state.userPendingData.length > 0) {
+        state.resultSearchAndSeletedDate = state.userPendingData.filter(
+          (items) =>
+            moment(items.booking_date).format("YYYY-MM-DD") ===
+            state.showByDateData
+        );
+        if (state.resultSearchAndSeletedDate.length > 0) {
+          state.userPendingSuccess = true;
+        } else {
+          state.userPendingSuccess = false;
+        }
+      }
+
+      //////////ສຳລັບການຈອງທີ່ເປັນໂມຄະ
+
+      if (state.userVoidData.length > 0) {
+        state.resultSearchAndSeletedDate = state.userVoidData.filter(
+          (items) =>
+            moment(items.booking_date).format("YYYY-MM-DD") ===
+            state.showByDateData
+        );
+        if (state.resultSearchAndSeletedDate.length > 0) {
+          state.userVoidSuccess = true;
+        } else {
+          state.userVoidSuccess = false;
         }
       }
     },
@@ -240,7 +348,17 @@ const bookingHistorySlice = createSlice({
         state.bookingHistoryDetailsRequestId = undefined;
         state.bookingHistoryDetailsSuccess = true;
         state.bookingHistoryDetailsData = [];
-        state.bookingHistoryDetailsData = action.payload;
+        state.bookingHistoryDetailsData = action.payload.map((items) => ({
+          ...items,
+          approve_state:
+            (new Date(items.booking_timecancel).getTime() -
+              new Date().getTime() <
+              0 &&
+              items.approve_state === "pending") ||
+            items.sub_status === "void"
+              ? "void"
+              : items.approve_state,
+        }));
       }
     });
     builder.addCase(fetchGetHistoryDetailsByUser.rejected, (state, action) => {
@@ -272,7 +390,17 @@ const bookingHistorySlice = createSlice({
         state.cancelRequestId = undefined;
         state.cancelSuccess = true;
         state.cancelData = [];
-        state.cancelData = action.payload;
+        state.cancelData = action.payload.map((items) => ({
+          ...items,
+          approve_state:
+            (new Date(items.booking_timecancel).getTime() -
+              new Date().getTime() <
+              0 &&
+              items.approve_state === "pending") ||
+            items.sub_status === "void"
+              ? "void"
+              : items.approve_state,
+        }));
       }
     });
     builder.addCase(fetchAvailableCancel.rejected, (state, action) => {
@@ -309,6 +437,9 @@ export const {
   onCancelBooking,
   onLoadUserBookingPaid,
   onLoadUserBookingUnPaid,
+  onLoadUserActiveBooking,
+  onLoadUserPendingBooking,
+  onLoadUserVoidBooking,
   onFilterBookingHistoryByDate,
   onSearchAllBookingHistory,
   onClearResultSearchAndSeletedDate,

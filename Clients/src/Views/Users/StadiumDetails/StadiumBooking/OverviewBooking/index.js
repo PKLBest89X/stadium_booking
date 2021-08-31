@@ -30,6 +30,7 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DatePickerBooking from "./DatePickerBooking";
 import EventIcon from "@material-ui/icons/Event";
 import NonBooking from "./NonBooking";
+import NonStadiums from './NonStadiums';
 
 import {
   fetchBookingList,
@@ -58,8 +59,12 @@ const StadiumBooking = React.memo(({ getTabChange, ...rest }) => {
   const classes = useStyles();
   SwiperCore.use([Keyboard, Navigation, Pagination]);
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
-  const { preBookingDetailsData, preStadiumsData, preBookingDetailsSuccess } =
-    useShallowEqualSelector((state) => state.preBooking);
+  const {
+    preBookingDetailsData,
+    preStadiumsSuccess,
+    preStadiumsData,
+    preBookingDetailsSuccess,
+  } = useShallowEqualSelector((state) => state.preBooking);
   const { stadiumId } = useParams();
   const { url } = useRouteMatch();
   const history = useHistory();
@@ -121,34 +126,37 @@ const StadiumBooking = React.memo(({ getTabChange, ...rest }) => {
             </Typography>
           </Toolbar>
           <Divider />
-          <Swiper
-            spaceBetween={20}
-            observeParents={true}
-            simulateTouch={false}
-            observer={true}
-            slidesPerView={1}
-            navigation={true}
-            keyboard={{ enabled: true }}
-            pagination={{
-              clickable: true,
-            }}
-            breakpoints={{
-              600: {
-                slidesPerView: 2,
-              },
-              960: {
-                slidesPerView: 3,
-              },
-            }}
-          >
-            {preStadiumsData.map((items, index) => {
-              return (
-                <SwiperSlide key={index}>
-                  <StadiumsCard getitems={items} />
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
+          {preStadiumsSuccess === true && (
+            <Swiper
+              spaceBetween={20}
+              observeParents={true}
+              simulateTouch={false}
+              observer={true}
+              slidesPerView={1}
+              navigation={true}
+              keyboard={{ enabled: true }}
+              pagination={{
+                clickable: true,
+              }}
+              breakpoints={{
+                600: {
+                  slidesPerView: 2,
+                },
+                960: {
+                  slidesPerView: 3,
+                },
+              }}
+            >
+              {preStadiumsData.map((items, index) => {
+                return (
+                  <SwiperSlide key={index}>
+                    <StadiumsCard getitems={items} />
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          )}
+          {preStadiumsSuccess === false && <NonStadiums/>}
         </Paper>
       </Box>
       <Box

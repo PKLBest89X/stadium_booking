@@ -8,7 +8,7 @@ import {
   TableCell,
   Typography,
   Box,
-  colors
+  colors,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
@@ -50,6 +50,9 @@ const useStyles = makeStyles(() => ({
   paid: {
     color: colors.green[900],
   },
+  pending: {
+    color: colors.yellow[800],
+  },
   notYet: {
     color: colors.red[600],
   },
@@ -57,9 +60,9 @@ const useStyles = makeStyles(() => ({
 
 const OtherDetails = React.memo(({ data }) => {
   const classes = useStyles();
-  // const { paymentDetailsData } = useShallowEqualSelector(
-  //   (state) => state.paymentDetails
-  // );
+  const { reportBookingInfo } = useShallowEqualSelector(
+    (state) => state.reportBooking
+  );
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(-1);
   const emptyRows =
@@ -125,10 +128,32 @@ const OtherDetails = React.memo(({ data }) => {
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="center">
                   {row.sub_status === "ເຕະແລ້ວ" && (
-                    <Typography className={classes.paid} variant="h5">ຈ່າຍແລ້ວ</Typography>
+                    <Typography className={classes.paid} variant="h5">
+                      ຈ່າຍແລ້ວ
+                    </Typography>
                   )}
                   {row.sub_status === "ຍັງບໍ່ເຕະ" && (
-                    <Typography className={classes.notYet} variant="h5">ຍັງບໍ່ຈ່າຍ</Typography>
+                    <Typography className={classes.notYet} variant="h5">
+                      ຍັງບໍ່ຈ່າຍ
+                    </Typography>
+                  )}
+                  {row.sub_status === "pending" &&
+                    (reportBookingInfo.approveState !== "void" ||
+                      new Date(row.booking_timecancel).getTime() -
+                        new Date().getTime() >
+                        0) && (
+                      <Typography className={classes.pending} variant="h5">
+                        ລໍຖ້າອະນຸມັດ
+                      </Typography>
+                    )}
+                  {(row.sub_status === "void" ||
+                    (row.sub_status === "pending" &&
+                      new Date(row.booking_timecancel).getTime() -
+                        new Date().getTime() <
+                        0)) && (
+                    <Typography className={classes.notYet} variant="h5">
+                      ໂມຄະ
+                    </Typography>
                   )}
                 </TableCell>
               </TableRow>

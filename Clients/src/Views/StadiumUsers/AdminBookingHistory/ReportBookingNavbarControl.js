@@ -268,6 +268,27 @@ const ReportBookingNavbarControl = React.memo(() => {
             >
               ການຈອງທີ່ຊຳລະຄ່າແລ້ວ
             </Button>
+            <Button
+              startIcon={<AdjustIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("active-booking")}
+            >
+              ການຈອງທີ່ໄດ້ອະນຸມັດແລ້ວ
+            </Button>
+            <Button
+              startIcon={<AdjustIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("pending-booking")}
+            >
+              ການຈອງທີ່ລໍຖ້າອະນຸມັດ
+            </Button>
+            <Button
+              startIcon={<AdjustIcon />}
+              color="inherit"
+              onClick={() => RoutesButton("void-booking")}
+            >
+              ການຈອງທີ່ເປັນໂມຄະ
+            </Button>
           </Box>
         </Box>
       </Paper>

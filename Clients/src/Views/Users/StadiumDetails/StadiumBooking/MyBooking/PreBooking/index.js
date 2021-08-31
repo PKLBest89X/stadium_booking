@@ -38,6 +38,7 @@ const PreBooking = React.memo(() => {
     bookingDetailsData,
     bookingDetailsSelected,
     totalPrice,
+    totalDeposit
   } = useShallowEqualSelector((state) => state.bookingDetails);
   const { feedStadiumData } = useShallowEqualSelector(
     (state) => state.feedStadium
@@ -58,8 +59,8 @@ const PreBooking = React.memo(() => {
     </div>
   );
 
-  const compareWithCurrentTime = (KickoffTime) => {
-    let timeFixed = parseInt(KickoffTime.slice(0, 2)) - 1;
+  const compareWithCurrentTime = (KickoffTime, beforeBooking) => {
+    let timeFixed = parseInt(KickoffTime.slice(0, 2)) - parseInt(beforeBooking);
     let realTime = `${timeFixed}:00:00`;
     let time3 = moment(Date.now()).format("YYYY-MM-DD");
     let time4 = new Date(`${time3} ${realTime}`);
@@ -79,8 +80,10 @@ const PreBooking = React.memo(() => {
       let dateNow = moment(Date.now()).format("YYYY-MM-DD");
       compareTime = bookingDetailsData.filter(
         (items) =>
-          compareWithCurrentTime(items.td_start) < 0 &&
-          items.kickoff_date === dateNow
+          compareWithCurrentTime(
+            items.td_start,
+            stateRef.current.time_cancelbooking
+          ) < 0 && items.kickoff_date === dateNow
       );
       if (compareTime.length > 0) {
         dispatch(onShowAlertCompareTime(compareTime));
@@ -109,8 +112,10 @@ const PreBooking = React.memo(() => {
         </Paper>
         <Paper className={classes.paper}>
           <TotalBookingPrice
+            percentOfDeposit={stateRef.current.percent_of_deposit}
             timeCancel={stateRef.current.time_cancelbooking}
             totalBookingPrice={totalPrice}
+            totalDeposit={totalDeposit}
             ref={totalBookingPriceRef}
           />
         </Paper>

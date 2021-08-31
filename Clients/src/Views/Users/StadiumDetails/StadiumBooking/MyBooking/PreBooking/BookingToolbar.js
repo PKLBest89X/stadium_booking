@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef, useMemo } from "react";
 import { lighten, makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import { Tooltip, Toolbar, Typography, Button } from "@material-ui/core";
@@ -11,6 +11,7 @@ import { useRouteMatch, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import { onDeleteSelectedData } from "../../../../../../Slices/Features/Users/Booking/bookingDetailsSlice";
+import { useShallowEqualSelector } from "../../../../../../Components/useShallowEqualSelector";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,6 +39,23 @@ const BookingToolbar = React.memo((props) => {
   const { url } = useRouteMatch();
   const dispatch = useDispatch();
   const { numSelected, dataForDelete } = props;
+
+  const { feedStadiumData } = useShallowEqualSelector(
+    (state) => state.feedStadium
+  );
+  const stateRef = useRef(feedStadiumData);
+  useMemo(
+    () => feedStadiumData.forEach((items) => (stateRef.current = items)),
+    [feedStadiumData]
+  );
+
+  const onDeleteBookingDetails = (percent, timeAndPriceSelected) => {
+    const deleteRequest = {
+      percent_of_deposit: percent,
+      timeAndPriceSelected
+    };
+    dispatch(onDeleteSelectedData(deleteRequest));
+  };
 
   return (
     <Toolbar
@@ -70,7 +88,12 @@ const BookingToolbar = React.memo((props) => {
         <Tooltip title="Delete">
           <IconButton
             aria-label="delete"
-            onClick={() => dispatch(onDeleteSelectedData(dataForDelete))}
+            onClick={() =>
+              onDeleteBookingDetails(
+                stateRef.current.percent_of_deposit,
+                dataForDelete
+              )
+            }
           >
             <Cancel />
           </IconButton>

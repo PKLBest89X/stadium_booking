@@ -63,6 +63,7 @@ const UpdateStadium = ({ stadiumData }) => {
     stadium_district: "ໄຊເສດຖາ",
     stadium_province: "ນະຄອນຫຼວງວຽງຈັນ",
     stadium_timeCancel: "",
+    stadium_deposit: "",
     stadium_logo: null,
     stadium_logo_name: "",
     stadium_logo_name_old: "",
@@ -91,6 +92,7 @@ const UpdateStadium = ({ stadiumData }) => {
       description: stadiumData.description,
       stadium_village: stadiumData.village,
       stadium_timeCancel: stadiumData.time_cancelbooking,
+      stadium_deposit: stadiumData.percent_of_deposit,
       stadium_logo_name: stadiumData.logo,
       stadium_logo_name_old: stadiumData.logo,
       stadium_picture_name: stadiumData.picture,
@@ -150,6 +152,11 @@ const UpdateStadium = ({ stadiumData }) => {
     setStadiumState((prev) => ({ ...prev, [name]: value }));
   }, []);
 
+  const onStadiumDepositChange = useCallback((event) => {
+    const { name, value } = event.target;
+    setStadiumState((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
   const onStadiumStatusSelected = useCallback((event) => {
     const { name, value } = event.target;
     setStadiumState((prev) => ({ ...prev, [name]: value }));
@@ -197,6 +204,7 @@ const UpdateStadium = ({ stadiumData }) => {
     formData.append("district", stadiumState.stadium_district);
     formData.append("province", stadiumState.stadium_province);
     formData.append("time_cancelbooking", stadiumState.stadium_timeCancel);
+    formData.append("persent_deposit", stadiumState.stadium_deposit);
     formData.append("logo_pic", stadiumState.stadium_logo_name_old);
     formData.append("picture", stadiumState.stadium_picture_name_old);
     formData.append("logo", stadiumState.stadium_logo);
@@ -316,10 +324,7 @@ const UpdateStadium = ({ stadiumData }) => {
                   inputProps: { maxLength: 10, min: 0 },
                 }}
                 onInput={(e) => {
-                  e.target.value = Math.max(
-                    0,
-                    parseInt(e.target.value)
-                  )
+                  e.target.value = Math.max(0, parseInt(e.target.value))
                     .toString()
                     .slice(0, 8);
                 }}
@@ -328,18 +333,52 @@ const UpdateStadium = ({ stadiumData }) => {
               <TextField
                 fullWidth
                 margin="normal"
-                label="ໄລຍະເວລາຍົກເລີກການຈອງເດີ່ນ - ຄິດເປັນຊົ່ວໂມງ"
+                label="ເງື່ອນໄຂໄລຍະເວລາ - ຄິດເປັນຊົ່ວໂມງ"
                 name="stadium_timeCancel"
                 type="number"
                 onInput={(e) => {
-                  e.target.value = Math.max(0, parseInt(e.target.value))
+                  e.target.value = Math.max(1, parseInt(e.target.value))
                     .toString()
                     .slice(0, 2);
                 }}
-                min={0}
+                min={1}
                 variant="outlined"
                 value={stadiumState.stadium_timeCancel}
                 onChange={onStadiumTimeCancelChange}
+              />
+              <Box padding="1rem 0">
+                <Typography>
+                  ເປັນການກຳນົດເງື່ອນໄຂຂອບເຂດໄລຍະເວລາເຊັ່ນປ້ອນ 1 ຊົ່ວໂມງ:
+                </Typography>
+                <Box padding="0 1rem">
+                  <ul>
+                    <li>ໃຊ້ກຳນົດເຊັ່ນ: ຕ້ອງຈອງກ່ອນມາເຕະ 1 ຊົ່ວໂມງ</li>
+                    <li>
+                      ໃຊ້ກຳນົດເຊັ່ນ: ຕ້ອງຈ່າຍຄ່າມັດຈຳຂອງການຈອງພາຍໃນ 1
+                      ຊົ່ວໂມງຫຼັງຈາກການຈອງ
+                    </li>
+                    <li>
+                      ໃຊ້ກຳນົດເຊັ່ນ: ສາມາດຍົກເລີກການຈອງໄດ້ພາຍໃນ 1
+                      ຊົ່ວໂມງຫຼັງຈາກການຈອງ
+                    </li>
+                  </ul>
+                </Box>
+              </Box>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="ຄ່າມັດຈຳການຈອງ - ຄິດເປັນເປີເຊັນ"
+                name="stadium_deposit"
+                type="number"
+                onInput={(e) => {
+                  e.target.value = Math.max(1, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 2);
+                }}
+                min={1}
+                variant="outlined"
+                value={stadiumState.stadium_deposit}
+                onChange={onStadiumDepositChange}
               />
               <FormControl
                 required

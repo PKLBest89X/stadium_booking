@@ -6,7 +6,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { useShallowEqualSelector } from "../../../../Components/useShallowEqualSelector";
 import { fetchAuthAdmin } from "../../../../middlewares/fetchAuth/fetchStadiumUsers";
 import { fetchGetStadium } from "../../../../middlewares/stadiumUser/fetchCRUDStadium/fetchCRUDStadium";
-import { onPopupOpen } from '../../../../Slices/Features/Popup/popupSlice';
+import { onPopupOpen } from "../../../../Slices/Features/Popup/popupSlice";
 import ShowAddress from "./ShowAddress";
 import ShowDescription from "./ShowDescription";
 import ShowFollowers from "./ShowFollowers";
@@ -14,11 +14,20 @@ import ShowCancelBooking from "./ShowCancelBooking";
 import { userNow } from "../../../../Slices/Authentication/authSlice";
 import { useDispatch } from "react-redux";
 import moment from "moment";
-import { Box, Divider, Grid, Typography, Button } from "@material-ui/core";
+import {
+  Box,
+  Divider,
+  Grid,
+  Typography,
+  Button,
+  Avatar,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import UpdateStadium from "./UpdateStadium";
 
 import { unwrapResult } from "@reduxjs/toolkit";
+import ShowPercentOfBooking from "./ShowPercentOfDeposit";
+import ShowDepositTime from "./ShowDepositTime";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,7 +35,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
   },
-  pictureContainer: {},
+  avatar: {
+    width: 80,
+    height: 80,
+    boxShadow: "1px 1px 4px 1px rgba(0, 0, 0, .5)",
+  },
   picture: {
     cursor: "pointer",
     display: "block",
@@ -39,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Overall = () => {
+const Overall = React.memo(() => {
   const classes = useStyles();
   const { checkResult } = useShallowEqualSelector((state) => state.validData);
   const { stadiumData } = useShallowEqualSelector((state) => state.stadium);
@@ -84,7 +97,7 @@ const Overall = () => {
   );
 
   let UpdateStadiumForm = null;
-  if (popupName === 'updateStadium' && isOpen === true) {
+  if (popupName === "updateStadium" && isOpen === true) {
     UpdateStadiumForm = (
       <PopupLayout>
         <UpdateStadium stadiumData={stateRef.current} />
@@ -94,41 +107,41 @@ const Overall = () => {
 
   return (
     <>
-    {UpdateStadiumForm}
+      {UpdateStadiumForm}
       <ChildPageLayout title="Stadium Overall">
         <Box>
           <div className={classes.root}>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <Box padding={3}>
-                  <div className={classes.pictureContainer}>
-                    <img
-                      className={classes.picture}
-                      src={`/assets/images/adminPics/stadiumPics/icons/${stateRef.current.logo}`}
-                      alt={stateRef.current.st_name}
-                    />
-                  </div>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={8} xl={8}>
+              <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                 <Box padding={3}>
                   <Box display="flex" justifyContent="space-between" mb={3}>
-                    <Box>
-                      <Box>
-                        <Typography variant="h1">
-                          {stateRef.current.st_name}
-                        </Typography>
-                      </Box>
-                      <Box>
-                        <Typography variant="h6">
-                          {`ມື້ເປີດໃຊ້ງານ: ${moment(
-                            stateRef.current.regis_date
-                          ).format("DD/MM/YYYY")}`}
-                        </Typography>
+                    <Box display="flex" alignItems="center">
+                      <Avatar
+                        className={classes.avatar}
+                        src={`/assets/images/adminPics/stadiumPics/icons/${stateRef.current.logo}`}
+                        alt={stateRef.current.st_name}
+                      />
+                      <Box marginLeft="1rem">
+                        <Box>
+                          <Typography variant="h1">
+                            {stateRef.current.st_name}
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography variant="h6">
+                            {`ມື້ເປີດໃຊ້ງານ: ${moment(
+                              stateRef.current.regis_date
+                            ).format("DD/MM/YYYY")}`}
+                          </Typography>
+                        </Box>
                       </Box>
                     </Box>
 
-                    <Button color="primary" variant="contained" onClick={() => dispatch(onPopupOpen('updateStadium'))}>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => dispatch(onPopupOpen("updateStadium"))}
+                    >
                       ແກ້ໄຂ
                     </Button>
                   </Box>
@@ -147,6 +160,12 @@ const Overall = () => {
                       <Grid item lg={6} sm={6} md={12} xl={6} xs={12}>
                         <ShowCancelBooking data={stateRef.current} />
                       </Grid>
+                      <Grid item lg={6} sm={6} md={12} xl={6} xs={12}>
+                        <ShowPercentOfBooking data={stateRef.current} />
+                      </Grid>
+                      <Grid item lg={6} sm={6} md={12} xl={6} xs={12}>
+                        <ShowDepositTime data={stateRef.current} />
+                      </Grid>
                     </Grid>
                   </Box>
                 </Box>
@@ -157,5 +176,5 @@ const Overall = () => {
       </ChildPageLayout>
     </>
   );
-};
+});
 export default Overall;

@@ -76,6 +76,15 @@ const useStyles = makeStyles((theme) => ({
     width: 20,
     height: 20,
   },
+  textActive: {
+    color: colors.green[600],
+  },
+  textPending: {
+    color: colors.yellow[800],
+  },
+  textVoid: {
+    color: colors.red[600],
+  },
 }));
 
 const ReportBookingPaid = React.memo(() => {
@@ -207,6 +216,40 @@ const ReportBookingPaid = React.memo(() => {
                                 </Typography>
                               )}
                             </Box>
+                          </Box>
+                          <Box display="flex" alignItems="center">
+                            <Box marginRight=".5rem">
+                              <Typography variant="h6" color="textSecondary">
+                                ສະຖານະ:
+                              </Typography>
+                            </Box>
+                            {items.approve_state === "void" && (
+                              <Typography
+                                variant="h6"
+                                color="textSecondary"
+                                className={classes.textVoid}
+                              >
+                                ການຈອງໂມຄະ
+                              </Typography>
+                            )}
+                            {items.approve_state === "pending" && (
+                              <Typography
+                                variant="h6"
+                                color="textSecondary"
+                                className={classes.textPending}
+                              >
+                                ລໍຖ້າອະນຸມັດ
+                              </Typography>
+                            )}
+                            {items.approve_state === "active" && (
+                              <Typography
+                                color="textSecondary"
+                                variant="h6"
+                                className={classes.textActive}
+                              >
+                                ອະນຸມັດແລ້ວ
+                              </Typography>
+                            )}
                           </Box>
                         </Box>
                         <Button

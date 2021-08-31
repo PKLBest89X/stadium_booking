@@ -29,6 +29,7 @@ const crudStadiumSlice = createSlice({
           description: payload.description,
           village: payload.stadium_village,
           time_cancelbooking: payload.stadium_timeCancel,
+          percent_of_deposit: payload.stadium_deposit,
           logo: payload.stadium_logo_name,
           picture: payload.stadium_picture_name,
           status: payload.stadium_status,

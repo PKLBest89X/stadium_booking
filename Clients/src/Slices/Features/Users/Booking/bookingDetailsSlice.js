@@ -13,6 +13,7 @@ const initialState = {
   alertCompareTime: [],
   bookingDetailsSelected: [],
   totalPrice: 0,
+  totalDeposit: 0,
   bookingDetailsError: null,
   bookingDetailsRequestId: undefined,
 };
@@ -87,9 +88,17 @@ const bookingDetailsSlice = createSlice({
     onSaveSelectedData: (state, { payload }) => {
       state.selectedState = true;
       let newSelected = [];
-      newSelected = newSelected.concat(state.bookingDetailsData, payload);
+      newSelected = newSelected.concat(
+        state.bookingDetailsData,
+        payload.timeAndPriceSelected
+      );
       state.bookingDetailsData = newSelected;
-      state.totalPrice = state.bookingDetailsData.reduce((sum, items) => sum + items.sp_price, 0);
+      state.totalPrice = state.bookingDetailsData.reduce(
+        (sum, items) => sum + items.sp_price,
+        0
+      );
+      state.totalDeposit =
+        (state.totalPrice * parseInt(payload.percent_of_deposit)) / 100;
     },
     onSelectedBookingDetails: (state, { payload }) => {
       const selectedIndex = state.bookingDetailsSelected.findIndex(
@@ -124,7 +133,7 @@ const bookingDetailsSlice = createSlice({
     onDeleteSelectedData: (state, { payload }) => {
       state.bookingDetailsData = state.bookingDetailsData.filter(
         (items1) =>
-          !payload.some(
+          !payload.timeAndPriceSelected.some(
             (items2) =>
               items1.std_id === items2.std_id &&
               items1.td_id === items2.td_id &&
@@ -133,18 +142,24 @@ const bookingDetailsSlice = createSlice({
       );
       state.timeAndPriceSelected = state.timeAndPriceSelected.filter(
         (items1) =>
-          !payload.some(
+          !payload.timeAndPriceSelected.some(
             (items2) =>
               items1.std_id === items2.std_id &&
               items1.td_id === items2.td_id &&
               items1.kickoff_date === items2.kickoff_date
           )
       );
-      state.totalPrice = state.bookingDetailsData.reduce((sum, items) => sum + items.sp_price, 0);
+      state.totalPrice = state.bookingDetailsData.reduce(
+        (sum, items) => sum + items.sp_price,
+        0
+      );
+      state.totalDeposit =
+        (state.totalPrice * parseInt(payload.percent_of_deposit)) / 100;
       state.bookingDetailsSelected = [];
       if (state.bookingDetailsData.length === 0) {
         state.selectedState = false;
         state.totalPrice = 0;
+        state.totalDeposit = 0;
       }
     },
   },
@@ -156,6 +171,7 @@ const bookingDetailsSlice = createSlice({
     builder.addCase(fetchAddBookingFields.fulfilled, (state, action) => {
       state.bookingDetailsSuccess = true;
       state.bookingDetailsLoading = false;
+      state.bookingDetailsSelected = [];
     });
     builder.addCase(fetchAddBookingFields.rejected, (state, action) => {
       state.bookingDetailsLoading = false;

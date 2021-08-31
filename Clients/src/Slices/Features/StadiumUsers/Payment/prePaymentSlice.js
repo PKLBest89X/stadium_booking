@@ -153,7 +153,17 @@ const prePaymentSlice = createSlice({
         state.getAllBookingDetailsRequestId = undefined;
         state.getAllBookingDetailsSuccess = true;
         state.getAllBookingDetailsData = [];
-        state.getAllBookingDetailsData = action.payload;
+        state.getAllBookingDetailsData = action.payload.map((items) => ({
+          ...items,
+          approve_state:
+            (new Date(items.booking_timecancel).getTime() -
+              new Date().getTime() <
+              0 &&
+              items.approve_state === "pending") ||
+            items.sub_status === "void"
+              ? "void"
+              : items.approve_state,
+        }));
         if (state.getAllBookingDetailsData.length > 0) {
           state.bookingAllValue = state.getAllBookingDetailsData.length;
         }

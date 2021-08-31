@@ -8,8 +8,7 @@ import {
   TableCell,
   Typography,
   Box,
-  Avatar,
-  Checkbox,
+  colors,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
@@ -48,18 +47,26 @@ const useStyles = makeStyles(() => ({
       outline: "0px solid slategrey",
     },
   },
+  paid: {
+    color: colors.green[900],
+  },
+  pending: {
+    color: colors.yellow[800],
+  },
+  notYet: {
+    color: colors.red[600],
+  },
 }));
 
 const OtherDetails = React.memo(({ data }) => {
   const classes = useStyles();
-  // const { paymentDetailsData } = useShallowEqualSelector(
-  //   (state) => state.paymentDetails
-  // );
+  const { information } = useShallowEqualSelector(
+    (state) => state.preBookingNonAccount
+  );
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(-1);
   const emptyRows =
-    rowsPerPage -
-    Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
   return (
     <>
       <TableContainer className={classes.customScrollbar}>
@@ -79,17 +86,14 @@ const OtherDetails = React.memo(({ data }) => {
               <TableCell align="center">
                 <Typography variant="h5">ມື້ຈອງ</Typography>
               </TableCell>
-              {/* <TableCell align="center">
-                <Typography variant="h5">ລາຄາ</Typography>
-              </TableCell> */}
+              <TableCell align="center">
+                <Typography variant="h5">ສະຖານະ</Typography>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? data.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
+              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : data
             ).map((row, index) => (
               <TableRow key={index}>
@@ -122,19 +126,36 @@ const OtherDetails = React.memo(({ data }) => {
                     {moment(row.kickoff_date).format("DD/MM/YYYY")}
                   </Typography>
                 </TableCell>
-                {/* <TableCell style={{ width: 100 }} align="center">
-                  <NumberFormat
-                    value={row.sp_price}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    suffix={" ກີບ"}
-                    renderText={(value) => (
-                      <Typography variant="h5" color="textSecondary">
-                        {value}
+                <TableCell style={{ width: 100 }} align="center">
+                  {row.sub_status === "ເຕະແລ້ວ" && (
+                    <Typography className={classes.paid} variant="h5">
+                      ຈ່າຍແລ້ວ
+                    </Typography>
+                  )}
+                  {row.sub_status === "ຍັງບໍ່ເຕະ" && (
+                    <Typography className={classes.notYet} variant="h5">
+                      ຍັງບໍ່ຈ່າຍ
+                    </Typography>
+                  )}
+                  {row.sub_status === "pending" &&
+                    (information.approveState !== "void" ||
+                      new Date(row.booking_timecancel).getTime() -
+                        new Date().getTime() >
+                        0) && (
+                      <Typography className={classes.pending} variant="h5">
+                        ລໍຖ້າອະນຸມັດ
                       </Typography>
                     )}
-                  />
-                </TableCell> */}
+                  {(row.sub_status === "void" ||
+                    (row.sub_status === "pending" &&
+                      new Date(row.booking_timecancel).getTime() -
+                        new Date().getTime() <
+                        0)) && (
+                    <Typography className={classes.notYet} variant="h5">
+                      ໂມຄະ
+                    </Typography>
+                  )}
+                </TableCell>
               </TableRow>
             ))}
 
