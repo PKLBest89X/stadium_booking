@@ -75,11 +75,11 @@ const PopupDetails = React.memo(() => {
   }, [dispatch]);
 
   let alertCantCancel = null;
-  if (messageAlert === "alertCantCancelBooking" && messageState === true) {
+  if (messageAlert === "ັalertErrorApproveBooking" && messageState === true) {
     alertCantCancel = (
       <Box display="flex" alignItems="center">
         <Typography className={classes.text} variant="h5" color="secondary">
-          ກາຍເວລາຍົກເລີກແລ້ວ!!
+          ກາຍເວລາແລ້ວ!!
         </Typography>
       </Box>
     );
@@ -164,7 +164,7 @@ const PopupDetails = React.memo(() => {
 
   const confirmApproveBooking = async (payload) => {
     const getCompareResult = compareTime(payload.bookingCancel);
-    if (getCompareResult === -1) return dispatch(onMessageOpen(""));
+    if (getCompareResult === -1) return dispatch(onMessageOpen("ັalertErrorApproveBooking"));
     if (getCompareResult === 1) {
       try {
         await fetchingUpdateBookingSubStatus(
