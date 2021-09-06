@@ -110,7 +110,7 @@ const PopupDetails = React.memo(() => {
         ) {
           remainData = array2;
         } else if (
-          otherDetailsState === true &&
+          otherDetailsState === false &&
           findPendingOtherBooking === "" &&
           findPendingBooking === "pending"
         ) {
