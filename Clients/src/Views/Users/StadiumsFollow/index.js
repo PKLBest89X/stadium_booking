@@ -74,7 +74,11 @@ const StadiumFollow = React.memo(({ ...rest }) => {
                     <Divider />
                     <Box>
                         <Swiper
-                            autoplay={true}
+                            centeredSlides={true}
+                            autoplay={{
+                                delay: 2500,
+                                disableOnInteraction: false,
+                            }}
                             spaceBetween={20}
                             observeParents={true}
                             simulateTouch={false}

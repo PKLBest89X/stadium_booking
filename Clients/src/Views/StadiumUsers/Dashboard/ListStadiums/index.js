@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper.min.css";
 import "swiper/components/pagination/pagination.min.css";
 import "swiper/components/navigation/navigation.min.css";
-import SwiperCore, { Keyboard, Navigation, Pagination } from "swiper/core";
+import SwiperCore, { Keyboard, Navigation, Pagination, Autoplay } from "swiper/core";
 // Import Swiper styles
 import "swiper/swiper.scss";
 import "./swiper1.css";
@@ -63,10 +63,14 @@ const ListStadiums = React.memo(() => {
           <Divider />
           {stadiumsSuccess === true && (
             <Swiper
+            centeredSlides={true}
+            autoplay={{
+                delay: 2500,
+                disableOnInteraction: false,
+            }}
               spaceBetween={20}
               observeParents={true}
               simulateTouch={false}
-              centeredSlides={true}
               observer={true}
               slidesPerView={1}
               navigation={true}
